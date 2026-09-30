@@ -1,0 +1,9 @@
+{
+  "target_length_chars": 1000,
+  "sections": [
+    {"id": "S1", "heading": "お願いしたいこと", "blocks": [{"kind": "prose", "plan": "依頼と理由を3文で"}], "new_terms": [{"term": "全文検索エンジン", "definition": "記事の本文すべてから語を探せる検索の仕組み"}], "length_chars": 200},
+    {"id": "S2", "heading": "いま困っていること", "blocks": [{"kind": "prose", "plan": "アンケートの数字を2つ示す"}], "new_terms": [], "length_chars": 250},
+    {"id": "S3", "heading": "置き換えで変わること", "blocks": [{"kind": "prose", "plan": "試験環境の結果と本番での見込み"}], "new_terms": [{"term": "インデックス", "definition": "検索を速くするために記事から作っておく索引"}], "length_chars": 300},
+    {"id": "S4", "heading": "費用と効果", "blocks": [{"kind": "table", "plan": "費用と、失われている時間の比較", "why": "2つの金額を並べて比べるため"}], "new_terms": [], "length_chars": 250}
+  ]
+}

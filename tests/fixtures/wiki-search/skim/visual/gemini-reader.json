@@ -1,0 +1,31 @@
+{
+  "source": "draft.md",
+  "draft_hash": "1a0f9091dbea07b6",
+  "media": "screen",
+  "model": "gemini-3.8-flash-medium",
+  "status": "SUCCESS",
+  "duration_seconds": 40.0,
+  "pages_given": [
+    "page-01.png",
+    "page-02.png"
+  ],
+  "truncated": false,
+  "usage": null,
+  "denied_actions": [],
+  "result": {
+    "reader_summary": "検索を全文検索エンジンに置き換えるため300万円の承認を求める提案。",
+    "main_point": "300万円を承認してほしい。",
+    "requested_action": "予算の承認",
+    "sections": [],
+    "confusing_points": [],
+    "visual_notes": {
+      "stood_out": [
+        "見出し"
+      ],
+      "missed_or_hidden": [
+        "表1の金額"
+      ],
+      "layout_issues": []
+    }
+  }
+}

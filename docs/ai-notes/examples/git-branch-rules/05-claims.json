@@ -1,0 +1,149 @@
+{
+  "main_claim": {
+    "id": "C0",
+    "text": "変更は main に直接 push せず、作業ブランチを切り、プルリクエストを出し、1名以上の承認を受けてから、自分で squash merge して main に取り込む。",
+    "premises": [
+      "C1",
+      "C2",
+      "C3",
+      "C4",
+      "C5"
+    ]
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "text": "main への直接 push は、チーム全員の作業を止めたり、未レビューの変更を本番に出しかけたりする危険がある。",
+      "type": "judgement",
+      "supports": "C0",
+      "premises": [
+        "F1",
+        "F2"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "直接 push は今月はまだ仕組みで止められないので、一人ひとりが流れを守る必要がある。",
+      "type": "judgement",
+      "supports": "C0",
+      "premises": [
+        "F3",
+        "C1"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "この流れを守るかぎり、main に入る変更はすべて、マージ前にほかの人のレビューと承認を通る。",
+      "type": "explanation",
+      "supports": "C0",
+      "premises": [
+        "F5",
+        "F6",
+        "F7",
+        "F8"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "コンフリクト（同じ箇所の変更の衝突）が起きなければ、社内の決まりに沿った手順で、新人でも最初から最後まで自分で進められる。",
+      "type": "explanation",
+      "supports": "C0",
+      "premises": [
+        "F9",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "来月、仕組みで直接 push が拒否されるようになっても、この流れを知っておく必要がある。",
+      "type": "judgement",
+      "supports": "C0",
+      "premises": [
+        "F4",
+        "F3"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "F1",
+      "statement": "先月、新人が main に直接 push した1回目の事故では、ビルドが壊れ、半日チーム全員の作業が止まった。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F2",
+      "statement": "先月、新人が main に直接 push した2回目の事故では、未レビューの変更が本番に出かけ、リリース直前に気づいて戻した。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F3",
+      "statement": "社内の GitHub では、main への直接 push を拒否する設定に来月変える予定で、今はまだ拒否されない。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F4",
+      "statement": "GitHub のブランチ保護ルールで「Require a pull request before merging」を有効にすると、main などの保護したブランチには、プルリクエストを通して承認を得た変更しか入れられなくなる。ただし初期設定では、リポジトリの管理者などにはこの制限が効かない。",
+      "source_hint": "GitHub Docs: About protected branches"
+    },
+    {
+      "id": "F5",
+      "statement": "作業ブランチに commit しても、main ブランチの内容は変わらない。",
+      "source_hint": "git を実行して確かめる"
+    },
+    {
+      "id": "F6",
+      "statement": "GitHub のプルリクエストは、あるブランチで行った変更を別のブランチ（main など）へマージするよう提案する機能で、マージする前に変更を話し合い、レビューできる。",
+      "source_hint": "GitHub Docs: About pull requests"
+    },
+    {
+      "id": "F7",
+      "statement": "社内では、プルリクエストをマージするには1名以上の承認が必要である。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F8",
+      "statement": "プルリクエストを出したあとに同じブランチへ commit を push すると、その commit はプルリクエストに自動で加わる。",
+      "source_hint": "GitHub Docs: About pull requests / Incorporating feedback"
+    },
+    {
+      "id": "F9",
+      "statement": "社内の作業ブランチの名前は feature/<内容> または fix/<内容> とする。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F10",
+      "statement": "git switch -c <ブランチ名> で、今いる場所から新しいブランチを作り、そこに移れる。",
+      "source_hint": "git を実行して確かめる / git-switch のマニュアル"
+    },
+    {
+      "id": "F11",
+      "statement": "社内では、承認後にプルリクエストを出した本人が squash merge でマージする。",
+      "source_hint": "ユーザーの証言"
+    },
+    {
+      "id": "F12",
+      "statement": "GitHub の squash merge は、プルリクエストの commit を1つの commit にまとめて取り込み先のブランチに加える。",
+      "source_hint": "GitHub Docs: About merge methods on GitHub"
+    },
+    {
+      "id": "F13",
+      "statement": "git push -u origin <ブランチ名> で、手元の作業ブランチを GitHub（リモート）に送り、同じ名前のブランチを作れる。",
+      "source_hint": "git を実行して確かめる"
+    },
+    {
+      "id": "F14",
+      "statement": "GitHub の画面で、push したブランチからプルリクエストを作り、レビューする人（Reviewers）を指定できる。",
+      "source_hint": "GitHub Docs: Creating a pull request / Requesting a pull request review"
+    },
+    {
+      "id": "F15",
+      "statement": "git switch main のあと git pull を実行すると、手元の main がリモートの最新の状態になる。",
+      "source_hint": "git を実行して確かめる"
+    }
+  ]
+}

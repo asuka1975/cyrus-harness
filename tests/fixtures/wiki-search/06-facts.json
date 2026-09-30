@@ -1,0 +1,12 @@
+{
+  "facts": [
+    {"id": "F1", "statement": "社員は検索で探し物をするのに1日平均20分使っている", "status": "verified", "method": "document",
+     "sources": [{"title": "社内アンケート2026 集計", "location": "02-context/survey-2026.md 設問5"}], "notes": "回答者412名の平均"},
+    {"id": "F2", "statement": "検索への不満の理由で最も多いのは「当日の記事が出てこない」で、回答者の48%が挙げた", "status": "partially_verified", "method": "document",
+     "sources": [{"title": "社内アンケート2026 集計", "location": "02-context/survey-2026.md 設問6"}], "notes": "複数回答の設問のため、割合は回答者に占める比率"},
+    {"id": "F3", "statement": "試験環境の全文検索エンジンでは、記事の保存から5秒以内に検索に出た", "status": "verified", "method": "execution",
+     "sources": [], "evidence": "試験環境で記事を20件保存し、検索に出るまでの時間を計測した。最大4.2秒", "notes": "本番の記事数での計測ではない"},
+    {"id": "F4", "statement": "移行の初年度費用の見積もりは300万円である", "status": "user_asserted", "method": "user",
+     "sources": [], "notes": "見積書はユーザーの手元にあり、金額はユーザーの証言"}
+  ]
+}

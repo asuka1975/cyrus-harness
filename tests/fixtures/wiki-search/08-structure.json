@@ -1,0 +1,12 @@
+{
+  "title": "社内Wikiの検索を置き換える提案",
+  "doc_type": "提案書",
+  "format": "markdown",
+  "conclusion_first": true,
+  "sections": [
+    {"id": "S1", "heading": "お願いしたいこと", "level": 2, "purpose": "結論と依頼を先に伝える", "reader_question": "結局、何を判断すればよいのか", "claims": ["C0"]},
+    {"id": "S2", "heading": "いま困っていること", "level": 2, "purpose": "問題の大きさを示す", "reader_question": "何が問題なのか", "claims": ["C1"]},
+    {"id": "S3", "heading": "置き換えで変わること", "level": 2, "purpose": "解決の見通しを示す", "reader_question": "置き換えると何がよくなるのか", "claims": ["C2"]},
+    {"id": "S4", "heading": "費用と効果", "level": 2, "purpose": "費用対効果を示す", "reader_question": "費用に見合うのか", "claims": ["C3"]}
+  ]
+}

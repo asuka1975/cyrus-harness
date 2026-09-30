@@ -1,0 +1,114 @@
+{
+  "target_length_chars": 3200,
+  "sections": [
+    {
+      "id": "S1", "heading": "まず覚える流れ",
+      "blocks": [
+        {"kind": "prose", "plan": "結論を1〜2文で。main に直接 push しない"},
+        {"kind": "figure", "plan": "main → 作業ブランチ → プルリクエスト → 承認 → マージ → main の流れ（Mermaid のフロー図）", "why": "4つの段階が順につながり main に戻る形を、一目で覚えられるようにするため"},
+        {"kind": "prose", "plan": "3つの新しい語を1文ずつで紹介し、詳しくは後の節で、と案内する"}
+      ],
+      "new_terms": [
+        {"term": "ブランチ", "definition": "main から枝分かれした、自分用の作業場所"},
+        {"term": "プルリクエスト", "definition": "ブランチの変更を main に取り込んでほしいと頼む、GitHub の機能"},
+        {"term": "マージ", "definition": "ブランチの変更を main に取り込むこと"}
+      ],
+      "length_chars": 350
+    },
+    {
+      "id": "S2", "heading": "main に直接 push しない理由",
+      "blocks": [
+        {"kind": "prose", "plan": "main はチーム全員の土台で本番のもと。先月の事故2件の影響を具体的に"},
+        {"kind": "prose", "plan": "今月はまだ直接 push が拒否されない。来月拒否されるようになっても、手順は教えてくれないので流れを知る必要がある"}
+      ],
+      "new_terms": [],
+      "length_chars": 500
+    },
+    {
+      "id": "S3", "heading": "ブランチとプルリクエストの仕組み",
+      "blocks": [{"kind": "prose", "plan": "2つの道具で、変更は必ずほかの人の確認を通ってから main に入る、と先に言う"}],
+      "new_terms": [],
+      "length_chars": 100
+    },
+    {
+      "id": "S3.1", "heading": "ブランチ",
+      "blocks": [
+        {"kind": "prose", "plan": "ブランチで commit しても main は変わらない。作業ごとに分けると、確認と取り込みを作業単位でできる"}
+      ],
+      "new_terms": [],
+      "length_chars": 300
+    },
+    {
+      "id": "S3.2", "heading": "プルリクエスト",
+      "blocks": [
+        {"kind": "prose", "plan": "プルリクエストは取り込みの依頼。取り込む前にレビューを受け、承認が要る（社内ルール）"}
+      ],
+      "new_terms": [
+        {"term": "レビュー", "definition": "ほかの人が変更を読み、問題がないかを確かめること"},
+        {"term": "承認", "definition": "レビューした人が「取り込んでよい」と認めること"}
+      ],
+      "length_chars": 300
+    },
+    {
+      "id": "S4", "heading": "作業の手順",
+      "blocks": [{"kind": "prose", "plan": "5つの手順があること、コンフリクトは扱わないので困ったら先輩に聞くことを伝える"}],
+      "new_terms": [
+        {"term": "コンフリクト", "definition": "自分の変更とほかの人の変更が同じ箇所でぶつかること"}
+      ],
+      "length_chars": 150
+    },
+    {
+      "id": "S4.1", "heading": "作業ブランチの作成",
+      "blocks": [
+        {"kind": "code", "plan": "git switch main / git pull / git switch -c feature/<内容>"},
+        {"kind": "list", "plan": "名前の決まり: feature/<内容>（新しい機能）、fix/<内容>（不具合の修正）と例"}
+      ],
+      "new_terms": [],
+      "length_chars": 300
+    },
+    {
+      "id": "S4.2", "heading": "変更の commit と push",
+      "blocks": [
+        {"kind": "code", "plan": "git add / git commit / git push -u origin feature/<内容>"},
+        {"kind": "prose", "plan": "-u を付けると、次からは git push だけで送れる。origin は GitHub 上のリポジトリの呼び名"}
+      ],
+      "new_terms": [],
+      "length_chars": 250
+    },
+    {
+      "id": "S4.3", "heading": "プルリクエストの作成",
+      "blocks": [
+        {"kind": "steps", "plan": "GitHub の画面で Compare & pull request → 取り込み先が main か確かめる → タイトルと説明 → Reviewers で1名以上を指定 → Create pull request"}
+      ],
+      "new_terms": [],
+      "length_chars": 250
+    },
+    {
+      "id": "S4.4", "heading": "レビューへの対応",
+      "blocks": [
+        {"kind": "prose", "plan": "指摘は同じブランチに commit して push すれば、プルリクエストに自動で加わる"},
+        {"kind": "callout", "plan": "承認後に変更を足したら、もう一度見てもらう（その変更は確認されていないため）"}
+      ],
+      "new_terms": [],
+      "length_chars": 300
+    },
+    {
+      "id": "S4.5", "heading": "マージ",
+      "blocks": [
+        {"kind": "prose", "plan": "1名以上の承認後、出した本人が Squash and merge を押す。squash merge の意味を説明"}
+      ],
+      "new_terms": [
+        {"term": "squash merge", "definition": "ブランチの commit を1つにまとめて main に取り込むマージの方法"}
+      ],
+      "length_chars": 250
+    },
+    {
+      "id": "S5", "heading": "まとめ",
+      "blocks": [
+        {"kind": "list", "plan": "確認用の一覧（直接 push しない、ブランチ名、プルリクエスト、1名以上の承認、本人が squash merge）"}
+      ],
+      "new_terms": [],
+      "length_chars": 150
+    }
+  ]
+}

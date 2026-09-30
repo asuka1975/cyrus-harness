@@ -1,0 +1,197 @@
+{
+  "metrics_before": {
+    "profile": "novice",
+    "chars": 2138,
+    "sentences": 75,
+    "avg_sentence_length": 28.5,
+    "max_sentence_length": 47,
+    "paragraphs": 21,
+    "avg_paragraph_length": 82.8,
+    "headings": 13,
+    "kanji_ratio": 0.222,
+    "reading_minutes": 5.3,
+    "styles": {
+      "desumasu": 59,
+      "plain": 1
+    }
+  },
+  "metrics_after": {
+    "profile": "novice",
+    "chars": 2564,
+    "sentences": 89,
+    "avg_sentence_length": 28.8,
+    "max_sentence_length": 49,
+    "paragraphs": 27,
+    "avg_paragraph_length": 81.4,
+    "headings": 13,
+    "kanji_ratio": 0.233,
+    "reading_minutes": 6.4,
+    "styles": {
+      "desumasu": 72,
+      "plain": 1
+    }
+  },
+  "skim_test": {
+    "reader_summary": "新人向けに、Gitの変更をmainへ直接pushせず、作業ブランチとプルリクエストを使って取り込むルールと手順を説明した文書。先月の直接pushによる事故2回と、来月からGitHubの設定で直接pushが拒否されることが背景。流れは、mainを最新にする、feature/かfix/のブランチを作る、pushしてプルリクエストを出す、1名以上の承認を受ける、本人がSquash and mergeする、の順。",
+    "main_claim_recovered": true,
+    "recall": 0.96,
+    "sections": [
+      {
+        "id": "S1",
+        "recovered": "yes",
+        "note": "直接 push しないことと、ブランチ→プルリクエスト→承認の流れが伝わった"
+      },
+      {
+        "id": "S2",
+        "recovered": "partial",
+        "note": "事故と今月は止まらないことは伝わったが、『だから自分で避ける』が事実説明として読まれた。段落の最初の文を『今月は仕組みで止まらないので、直接 push は自分で避けるしかありません。』に直した"
+      },
+      {
+        "id": "S3",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S3.1",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S3.2",
+        "recovered": "yes",
+        "note": "1名以上の承認も伝わった"
+      },
+      {
+        "id": "S4",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S4.1",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S4.2",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S4.3",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S4.4",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S4.5",
+        "recovered": "yes",
+        "note": ""
+      },
+      {
+        "id": "S5",
+        "recovered": "yes",
+        "note": ""
+      }
+    ]
+  },
+  "local_test": {
+    "unclear_paragraphs": [
+      {
+        "line": 42,
+        "problem": "『この流れ』が前の節の図1を指していた",
+        "fix": "『作業ブランチからマージまでの流れ』と名詞で書いた"
+      },
+      {
+        "line": 68,
+        "problem": "『事故の原因になった変更』が別の節の事故を指していた",
+        "fix": "『先月の2件の事故の変更』と書いた"
+      },
+      {
+        "line": 89,
+        "problem": "『1行目』『2行目』が直前のコードに依存していた",
+        "fix": "『上の3行のうち、1行目で…』と参照先を明示した"
+      },
+      {
+        "line": 97,
+        "problem": "『上の例』が離れたコードを指していた",
+        "fix": "『例のブランチ名は…』と何の例かを書いた"
+      },
+      {
+        "line": 110,
+        "problem": "origin と -u の説明がコードに依存していた",
+        "fix": "『git push -u origin の origin は…』とコマンドを文中に書いた"
+      }
+    ]
+  },
+  "persona_review": {
+    "issues": [
+      {
+        "where": "S1 冒頭",
+        "problem": "図1より先に、未説明の語（ブランチ・プルリクエスト・承認）が出てくる",
+        "resolution": "用語の説明を図1の前に移し、承認の説明も加えた"
+      },
+      {
+        "where": "S1 main の説明",
+        "problem": "ブランチの説明より前に main をブランチとして説明していた",
+        "resolution": "ブランチを先に説明し、その後に main を説明する順にした。『変更の履歴を枝分かれさせて持つ』と補った"
+      },
+      {
+        "where": "S2 第1段落",
+        "problem": "ビルドが壊れるとなぜ全員が止まるのかがつながらない",
+        "resolution": "『main が壊れると、その影響は全員に届きます』と土台の説明につなげた"
+      },
+      {
+        "where": "S3.1 第2段落",
+        "problem": "作業ごとにブランチを切る利点が具体的でない",
+        "resolution": "2つの作業を混ぜると片方だけ取り込めなくなる例を加えた"
+      },
+      {
+        "where": "S3.2 第2段落",
+        "problem": "『事故の原因になった変更』がどの事故か分からない",
+        "resolution": "『先月の2件の事故の変更』と明示した"
+      },
+      {
+        "where": "S4.1",
+        "problem": "<内容> の書き方と、pull 前の手元の変更の扱いが分からない",
+        "resolution": "手元の変更は commit しておくよう加えた。<内容> の書き方は社内ルールが未確認のため作らず、『迷ったら先輩に確かめる』とした"
+      },
+      {
+        "where": "S4.2",
+        "problem": "-u がブランチごとに必要か分からない",
+        "resolution": "『新しいブランチを作るたびに、最初の push にだけ -u を付けます』と書いた"
+      },
+      {
+        "where": "S4.3",
+        "problem": "ボタンがないとき・レビューを頼む相手が分からない",
+        "resolution": "社内ルールが未確認のため相手は決めず、どちらも先輩に相談するよう書いた"
+      },
+      {
+        "where": "S4.4",
+        "problem": "レビューで何を見られるか、指摘の届き方、返信・再依頼の方法が不明",
+        "resolution": "見られる点の例（動くか・目的に合うか・読みやすいか）、指摘はコメントで届くこと、返信すること、承認後の変更は再度レビューを頼むことを加えた"
+      },
+      {
+        "where": "S4.5",
+        "problem": "承認の確かめ方とマージ後の動きが不明",
+        "resolution": "承認は画面に表示されること、次の作業は『作業ブランチの作成』から始めることを加えた"
+      },
+      {
+        "where": "S5",
+        "problem": "まとめからレビュー対応が抜けていた",
+        "resolution": "『指摘は同じブランチで直して push する』を加えた"
+      }
+    ]
+  },
+  "changes": [
+    "S1 の用語説明を図1の前に移し、ブランチ→main→プルリクエスト→承認の順で説明した",
+    "マージの定義を S3.2 に移し、S1 の新しい用語を3個に減らした",
+    "段落の外を指す指示語（この流れ・上の例・1行目など）を名詞やコマンド名に置き換えた",
+    "S4.3〜S4.5 にレビュー依頼・指摘への対応・承認後の動きを補った（未確認の社内ルールは作らず『先輩に相談』とした）",
+    "S2 の第3段落の最初の文を『自分で避けるしかない』という結論に変えた",
+    "lint 警告のうち、図のキャプションの体言止め（JA006）と GitHub のボタン名（ST011）は、画面表示と慣例に合わせるため残した"
+  ]
+}

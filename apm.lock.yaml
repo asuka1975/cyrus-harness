@@ -1,0 +1,621 @@
+lockfile_version: '1'
+generated_at: '2026-09-27T16:58:31.199564+00:00'
+dependencies: []
+deployments:
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-alignment-judge.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d3057b3b8213332d81d9d6f0a825a5b9c970b2e393ccd389d97aa048b4783157
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-fact-checker.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d4d0f6d273bd294335c6fdeffa5895d7ed31ce120007163fc591491adc63de6c
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-logic-critic.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e08e92cd69d94a0f783af245fb29dde713640580b7bc19bfcb5c1f06e753869f
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-persona-reader.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:78f07277bf01e9aeec29ce2677391eb802b9af1308fcd4cc2c27cef67ed921ca
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-skim-reader.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1d3eef8f0f34052956fc0c33b3b11d4c4d86d87eddf7ff84d4e2706bdd1ddbd0
+- kind: project-relative
+  target: claude
+  value: .claude/agents/cyrus-wording-reviewer.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f575dd3cafa796f267082d76d6b33deec6c6df89c597b944bf24fa5ec5d97d89
+- kind: project-relative
+  target: claude
+  value: .claude/commands/cyrus-status.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f0cce7658bac76dfb65f8a670c6cddac7edba572f4a2e908a1bd8b5161d824dd
+- kind: project-relative
+  target: claude
+  value: .claude/commands/cyrus.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:76d8692125100e6f56cc251927f693a0c066249342cf7a10d1d1e5777f253794
+- kind: project-relative
+  target: claude
+  value: .claude/rules/cyrus-documents.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ca0288e3cdc866b1d0c8da4c9a7d061d02c2ce30362a8fe9ab8cc11b73c5bafa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0e6414d78559921086dab9095bce6b3867a82384d484ad609c76f0fba1aa5d7d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/data/wording-rules.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:da3f345cf0f3969635c0fae6c6eee018cb7d0d09700bafb87d3430f9c73a2c2f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/references/japanese-style.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:85154ca643bcbdfc9b12cff3077ec04faef70d77944b101286a86bcdbc601174
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyrus.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__init__.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cb9deaf9b915a549a45536cbf1fdd3315d0a45d18ae969d1105afeac827d31a0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b54c2c1d95b30f21601c6e5c41d16489068da593464bf45a7316a7ad9699d76e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/agyreader.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8ba860efe9e301e31d7b9fc96a5df9e606354175b9e7f363f0d6268a50c99fb9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7271013fff9339a9b5897f9df281971ad6ce340af2b522a296dc0bda1faaaeaa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:515a0cb9bb7252a35d5c46210096dbe6b4b1f1961042858f3576858cf8a0c5b5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:01c17cb52002b9762fe10055ccd6e131804907c104666fc7331107f3f2fa390e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:03091f2ec875022fa2f5614376d9232093fcbc747edb6f3b186c9965abc47c26
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5d40c0bfccd4f545f119339ef283388422d885964511cc9e681bb27aea24c623
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:56647cb0359e06d7f2c4a6dbdfaec2e0c056f6dd044ce5a9b69241f5e7575e5b
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0ea3cfe156812d665f82a623a03dac59b54cc7ea834ecc9569ca124846af6abe
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fd9e53b2f9f47ec7eab635d99364f5b105720189f657acf86539d2258df4e2c4
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:01b4a6250b88947718c90a31f1e6856511cddb4164ab3895472547d77adb8ac9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fd2a363131139e598fb63870f0e5876e8e3d24fc4a9413c31ffae6b72ff02229
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/agyreader.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cbb1b94509f5d8c571bdcaa294a8eb794bf30b4719c8981994fd3d4b6fcce0f7
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/cli.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:da21ffcb40073da17b774fe7b5c51294e55efc1e8000c4cc3bd9cc3fd034bbe0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/gates.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:2241c97f6d596912f6b5c7c75f02d76ce077d0f6b6d908bfda0642787b9c4942
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/hooks.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:835034fad61bd05eb7ac3e1f34ab5e21ed44786e8dedc1c08849e703c3d8285c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/issues.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:31964f1bb2e42f5d53501327391c4898026093f3ebb652f857169753263ba8dd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/jatext.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:4f667e1c17582d64776af9255b5f37067a7c92bbf986d9bfe635f7b8ca4f51f6
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/leancheck.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:bc44cd952da5348e85b877a910929e341cf1b278473039408000736779e7fa56
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/lint.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a7a578082d5ac05807a1103318738f26c0251efd6eeda5579355561f169215e2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/mdparse.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9f2510c035a3e0bab672a567fc703219470b45f6707277cafbbf111f305317ef
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/reader.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a0e78500f98bf05d98c15c2d02332812eb31db3ba8607dbf309a26d3d3360233
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/scaffold.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:599d8469be54fe0d22788f8f0c00f6ad8730f0a97decff92a4b0b6d4042ad73b
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/skim.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8900d931cfc691df862d9fe7b3232e07ce677d6bfe9cf8135c54e0cbf1a5824a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/terms.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:dbd331c8f292579b1cc435be28d69aa613a9a50f750771c5d51ed7b1525f9d02
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/visual.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:eca7442860d907b3e04211ad4f17bc65e054e71565599e54761c72ef3ce07ba4
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/wording.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:238004bc28a1447758b35a5c194bc62a753a723b286d3becc8f62e46740c1385
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/workspace.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ea473f04dd04c28904b533de250d45620a48b4208495a437e19af5ae1e27382c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/01-intent.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ceaac6e85b911055cf009a103c296ff8432ae8000a0ad09f55562e11ba2b9675
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/02-context.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8ded718107da464bd7c5ea22d75dc028f550f7f8f5cfd5fe26782b957f5b6462
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/03-reader.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:75971b29e7577d44f2c560fd6bbc6d9d7b8cea764d7792380da477e2e7051277
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/04-analysis.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f4bc1e65081ec7fc6976fbb4fe8dc9e1892467c62d125f7a06dc5065da43aec0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/05-claims.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:bf7364b8bfa1cec235d193e2fbc4423b359541cd93bc4adab73eeaec606d08c0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/06-facts.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:66c752e0872482d63cd5c3c0e9f027228f78cadac07a4f0a143e10d101c05d3b
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/07-logic.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1e39e6d9ac7786a2aa7edbf08a65f6c4947dd766db80d31e2833e4a127ab8d84
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/08-structure.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:68b753982b6f41b46eec56bd0b5efd42b487143af33fa8b95a6f6687fe69c590
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/09-storyline.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e9c4af7b327b55d2a272b716abcd065ac47595c7f2d2ff63d0ab5f7a321eac9a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/10-detail.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e700b91ef4f4134a35940517e52b9547155ed823879f4049c8edd322c9f81a54
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/11-writing.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6947bca50a7c321b574f1576f5b9823c9ea48a4327a5c2282a38dfdf525624f9
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/12-cogload.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1ecb2516219cf40ee94cf63da4b2d956071297852a6342563c3327479288bbe5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/stages/13-wording.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e40fbf40a8b8a5642b4374cfb92f8ed6021243b8d398f3064d59ef46dcd8f37a
+local_deployed_files:
+- .claude/agents/cyrus-alignment-judge.md
+- .claude/agents/cyrus-fact-checker.md
+- .claude/agents/cyrus-logic-critic.md
+- .claude/agents/cyrus-persona-reader.md
+- .claude/agents/cyrus-skim-reader.md
+- .claude/agents/cyrus-wording-reviewer.md
+- .claude/commands/cyrus-status.md
+- .claude/commands/cyrus.md
+- .claude/rules/cyrus-documents.md
+- .claude/skills/cyrus
+- .claude/skills/cyrus/SKILL.md
+- .claude/skills/cyrus/data/wording-rules.json
+- .claude/skills/cyrus/references/japanese-style.md
+- .claude/skills/cyrus/scripts/cyrus.py
+- .claude/skills/cyrus/scripts/cyruslib/__init__.py
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/agyreader.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/agyreader.py
+- .claude/skills/cyrus/scripts/cyruslib/cli.py
+- .claude/skills/cyrus/scripts/cyruslib/gates.py
+- .claude/skills/cyrus/scripts/cyruslib/hooks.py
+- .claude/skills/cyrus/scripts/cyruslib/issues.py
+- .claude/skills/cyrus/scripts/cyruslib/jatext.py
+- .claude/skills/cyrus/scripts/cyruslib/leancheck.py
+- .claude/skills/cyrus/scripts/cyruslib/lint.py
+- .claude/skills/cyrus/scripts/cyruslib/mdparse.py
+- .claude/skills/cyrus/scripts/cyruslib/reader.py
+- .claude/skills/cyrus/scripts/cyruslib/scaffold.py
+- .claude/skills/cyrus/scripts/cyruslib/skim.py
+- .claude/skills/cyrus/scripts/cyruslib/terms.py
+- .claude/skills/cyrus/scripts/cyruslib/visual.py
+- .claude/skills/cyrus/scripts/cyruslib/wording.py
+- .claude/skills/cyrus/scripts/cyruslib/workspace.py
+- .claude/skills/cyrus/stages/01-intent.md
+- .claude/skills/cyrus/stages/02-context.md
+- .claude/skills/cyrus/stages/03-reader.md
+- .claude/skills/cyrus/stages/04-analysis.md
+- .claude/skills/cyrus/stages/05-claims.md
+- .claude/skills/cyrus/stages/06-facts.md
+- .claude/skills/cyrus/stages/07-logic.md
+- .claude/skills/cyrus/stages/08-structure.md
+- .claude/skills/cyrus/stages/09-storyline.md
+- .claude/skills/cyrus/stages/10-detail.md
+- .claude/skills/cyrus/stages/11-writing.md
+- .claude/skills/cyrus/stages/12-cogload.md
+- .claude/skills/cyrus/stages/13-wording.md
+local_deployed_file_hashes:
+  .claude/agents/cyrus-alignment-judge.md: sha256:d3057b3b8213332d81d9d6f0a825a5b9c970b2e393ccd389d97aa048b4783157
+  .claude/agents/cyrus-fact-checker.md: sha256:d4d0f6d273bd294335c6fdeffa5895d7ed31ce120007163fc591491adc63de6c
+  .claude/agents/cyrus-logic-critic.md: sha256:e08e92cd69d94a0f783af245fb29dde713640580b7bc19bfcb5c1f06e753869f
+  .claude/agents/cyrus-persona-reader.md: sha256:78f07277bf01e9aeec29ce2677391eb802b9af1308fcd4cc2c27cef67ed921ca
+  .claude/agents/cyrus-skim-reader.md: sha256:1d3eef8f0f34052956fc0c33b3b11d4c4d86d87eddf7ff84d4e2706bdd1ddbd0
+  .claude/agents/cyrus-wording-reviewer.md: sha256:f575dd3cafa796f267082d76d6b33deec6c6df89c597b944bf24fa5ec5d97d89
+  .claude/commands/cyrus-status.md: sha256:f0cce7658bac76dfb65f8a670c6cddac7edba572f4a2e908a1bd8b5161d824dd
+  .claude/commands/cyrus.md: sha256:76d8692125100e6f56cc251927f693a0c066249342cf7a10d1d1e5777f253794
+  .claude/rules/cyrus-documents.md: sha256:ca0288e3cdc866b1d0c8da4c9a7d061d02c2ce30362a8fe9ab8cc11b73c5bafa
+  .claude/skills/cyrus/SKILL.md: sha256:0e6414d78559921086dab9095bce6b3867a82384d484ad609c76f0fba1aa5d7d
+  .claude/skills/cyrus/data/wording-rules.json: sha256:da3f345cf0f3969635c0fae6c6eee018cb7d0d09700bafb87d3430f9c73a2c2f
+  .claude/skills/cyrus/references/japanese-style.md: sha256:85154ca643bcbdfc9b12cff3077ec04faef70d77944b101286a86bcdbc601174
+  .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:cb9deaf9b915a549a45536cbf1fdd3315d0a45d18ae969d1105afeac827d31a0
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc: sha256:b54c2c1d95b30f21601c6e5c41d16489068da593464bf45a7316a7ad9699d76e
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/agyreader.cpython-312.pyc: sha256:8ba860efe9e301e31d7b9fc96a5df9e606354175b9e7f363f0d6268a50c99fb9
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc: sha256:7271013fff9339a9b5897f9df281971ad6ce340af2b522a296dc0bda1faaaeaa
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc: sha256:515a0cb9bb7252a35d5c46210096dbe6b4b1f1961042858f3576858cf8a0c5b5
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc: sha256:01c17cb52002b9762fe10055ccd6e131804907c104666fc7331107f3f2fa390e
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc: sha256:03091f2ec875022fa2f5614376d9232093fcbc747edb6f3b186c9965abc47c26
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc: sha256:5d40c0bfccd4f545f119339ef283388422d885964511cc9e681bb27aea24c623
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc: sha256:56647cb0359e06d7f2c4a6dbdfaec2e0c056f6dd044ce5a9b69241f5e7575e5b
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc: sha256:0ea3cfe156812d665f82a623a03dac59b54cc7ea834ecc9569ca124846af6abe
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc: sha256:fd9e53b2f9f47ec7eab635d99364f5b105720189f657acf86539d2258df4e2c4
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc: sha256:01b4a6250b88947718c90a31f1e6856511cddb4164ab3895472547d77adb8ac9
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc: sha256:fd2a363131139e598fb63870f0e5876e8e3d24fc4a9413c31ffae6b72ff02229
+  .claude/skills/cyrus/scripts/cyruslib/agyreader.py: sha256:cbb1b94509f5d8c571bdcaa294a8eb794bf30b4719c8981994fd3d4b6fcce0f7
+  .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:da21ffcb40073da17b774fe7b5c51294e55efc1e8000c4cc3bd9cc3fd034bbe0
+  .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:2241c97f6d596912f6b5c7c75f02d76ce077d0f6b6d908bfda0642787b9c4942
+  .claude/skills/cyrus/scripts/cyruslib/hooks.py: sha256:835034fad61bd05eb7ac3e1f34ab5e21ed44786e8dedc1c08849e703c3d8285c
+  .claude/skills/cyrus/scripts/cyruslib/issues.py: sha256:31964f1bb2e42f5d53501327391c4898026093f3ebb652f857169753263ba8dd
+  .claude/skills/cyrus/scripts/cyruslib/jatext.py: sha256:4f667e1c17582d64776af9255b5f37067a7c92bbf986d9bfe635f7b8ca4f51f6
+  .claude/skills/cyrus/scripts/cyruslib/leancheck.py: sha256:bc44cd952da5348e85b877a910929e341cf1b278473039408000736779e7fa56
+  .claude/skills/cyrus/scripts/cyruslib/lint.py: sha256:a7a578082d5ac05807a1103318738f26c0251efd6eeda5579355561f169215e2
+  .claude/skills/cyrus/scripts/cyruslib/mdparse.py: sha256:9f2510c035a3e0bab672a567fc703219470b45f6707277cafbbf111f305317ef
+  .claude/skills/cyrus/scripts/cyruslib/reader.py: sha256:a0e78500f98bf05d98c15c2d02332812eb31db3ba8607dbf309a26d3d3360233
+  .claude/skills/cyrus/scripts/cyruslib/scaffold.py: sha256:599d8469be54fe0d22788f8f0c00f6ad8730f0a97decff92a4b0b6d4042ad73b
+  .claude/skills/cyrus/scripts/cyruslib/skim.py: sha256:8900d931cfc691df862d9fe7b3232e07ce677d6bfe9cf8135c54e0cbf1a5824a
+  .claude/skills/cyrus/scripts/cyruslib/terms.py: sha256:dbd331c8f292579b1cc435be28d69aa613a9a50f750771c5d51ed7b1525f9d02
+  .claude/skills/cyrus/scripts/cyruslib/visual.py: sha256:eca7442860d907b3e04211ad4f17bc65e054e71565599e54761c72ef3ce07ba4
+  .claude/skills/cyrus/scripts/cyruslib/wording.py: sha256:238004bc28a1447758b35a5c194bc62a753a723b286d3becc8f62e46740c1385
+  .claude/skills/cyrus/scripts/cyruslib/workspace.py: sha256:ea473f04dd04c28904b533de250d45620a48b4208495a437e19af5ae1e27382c
+  .claude/skills/cyrus/stages/01-intent.md: sha256:ceaac6e85b911055cf009a103c296ff8432ae8000a0ad09f55562e11ba2b9675
+  .claude/skills/cyrus/stages/02-context.md: sha256:8ded718107da464bd7c5ea22d75dc028f550f7f8f5cfd5fe26782b957f5b6462
+  .claude/skills/cyrus/stages/03-reader.md: sha256:75971b29e7577d44f2c560fd6bbc6d9d7b8cea764d7792380da477e2e7051277
+  .claude/skills/cyrus/stages/04-analysis.md: sha256:f4bc1e65081ec7fc6976fbb4fe8dc9e1892467c62d125f7a06dc5065da43aec0
+  .claude/skills/cyrus/stages/05-claims.md: sha256:bf7364b8bfa1cec235d193e2fbc4423b359541cd93bc4adab73eeaec606d08c0
+  .claude/skills/cyrus/stages/06-facts.md: sha256:66c752e0872482d63cd5c3c0e9f027228f78cadac07a4f0a143e10d101c05d3b
+  .claude/skills/cyrus/stages/07-logic.md: sha256:1e39e6d9ac7786a2aa7edbf08a65f6c4947dd766db80d31e2833e4a127ab8d84
+  .claude/skills/cyrus/stages/08-structure.md: sha256:68b753982b6f41b46eec56bd0b5efd42b487143af33fa8b95a6f6687fe69c590
+  .claude/skills/cyrus/stages/09-storyline.md: sha256:e9c4af7b327b55d2a272b716abcd065ac47595c7f2d2ff63d0ab5f7a321eac9a
+  .claude/skills/cyrus/stages/10-detail.md: sha256:e700b91ef4f4134a35940517e52b9547155ed823879f4049c8edd322c9f81a54
+  .claude/skills/cyrus/stages/11-writing.md: sha256:6947bca50a7c321b574f1576f5b9823c9ea48a4327a5c2282a38dfdf525624f9
+  .claude/skills/cyrus/stages/12-cogload.md: sha256:1ecb2516219cf40ee94cf63da4b2d956071297852a6342563c3327479288bbe5
+  .claude/skills/cyrus/stages/13-wording.md: sha256:e40fbf40a8b8a5642b4374cfb92f8ed6021243b8d398f3064d59ef46dcd8f37a

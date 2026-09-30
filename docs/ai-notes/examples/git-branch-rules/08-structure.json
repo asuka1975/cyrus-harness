@@ -1,0 +1,20 @@
+{
+  "title": "新人向け Gitブランチ運用ルール",
+  "doc_type": "解説",
+  "format": "markdown",
+  "conclusion_first": true,
+  "sections": [
+    {"id": "S1", "heading": "まず覚える流れ", "level": 2, "purpose": "守るべき流れ全体を最初に示す", "reader_question": "結局、何をすればよいのか", "claims": ["C0"]},
+    {"id": "S2", "heading": "main に直接 push しない理由", "level": 2, "purpose": "事故の影響と、今は仕組みで止まらないことを伝える", "reader_question": "なぜ main に直接 push してはいけないのか", "claims": ["C1", "C2", "C5"]},
+    {"id": "S3", "heading": "ブランチとプルリクエストの仕組み", "level": 2, "purpose": "2つの道具が、未承認の変更を main に入れない仕組みを説明する", "reader_question": "ブランチとプルリクエストで何が守られるのか", "claims": ["C3"]},
+    {"id": "S3.1", "heading": "ブランチ", "level": 3, "purpose": "ブランチとは何か、なぜ作業ごとに分けるのかを説明する", "reader_question": "ブランチとは何で、なぜ作業ごとに切るのか", "claims": ["C3"]},
+    {"id": "S3.2", "heading": "プルリクエスト", "level": 3, "purpose": "プルリクエストとは何かを説明する", "reader_question": "プルリクエストとは何で、どうやって出すのか", "claims": ["C3"]},
+    {"id": "S4", "heading": "作業の手順", "level": 2, "purpose": "社内の決まりに沿って、最初から最後までの手順を示す", "reader_question": "実際にどう進めればよいのか", "claims": ["C4"]},
+    {"id": "S4.1", "heading": "作業ブランチの作成", "level": 3, "purpose": "main を最新にしてから、決まった名前でブランチを作る", "reader_question": "作業ブランチはどうやって切ればよいのか", "claims": ["C4"]},
+    {"id": "S4.2", "heading": "変更の commit と push", "level": 3, "purpose": "作業ブランチに commit し、GitHub に push する", "reader_question": "作業ブランチはどうやって切ればよいのか", "claims": ["C4"]},
+    {"id": "S4.3", "heading": "プルリクエストの作成", "level": 3, "purpose": "GitHub でプルリクエストを作り、レビューを頼む", "reader_question": "プルリクエストとは何で、どうやって出すのか", "claims": ["C4"]},
+    {"id": "S4.4", "heading": "レビューへの対応", "level": 3, "purpose": "指摘への対応のしかたと、承認後に変更を足すときの注意を示す", "reader_question": "レビューでは何を見られ、指摘されたらどうすればよいのか", "claims": ["C3", "C4"]},
+    {"id": "S4.5", "heading": "マージ", "level": 3, "purpose": "承認後に本人が squash merge する", "reader_question": "マージは誰が、いつ行うのか", "claims": ["C4"]},
+    {"id": "S5", "heading": "まとめ", "level": 2, "purpose": "流れを確認用の一覧で振り返る", "reader_question": "何を覚えておけばよいのか", "claims": ["C0"]}
+  ]
+}

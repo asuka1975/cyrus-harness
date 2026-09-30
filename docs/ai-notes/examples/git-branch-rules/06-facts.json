@@ -1,0 +1,192 @@
+{
+  "facts": [
+    {
+      "id": "F1",
+      "statement": "先月、新人が main に直接 push した1回目の事故では、ビルドが壊れ、半日チーム全員の作業が止まった。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "依頼者の証言。社内の事故記録は未確認。"
+    },
+    {
+      "id": "F2",
+      "statement": "先月、新人が main に直接 push した2回目の事故では、未レビューの変更が本番に出かけ、リリース直前に気づいて戻した。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "依頼者の証言。社内の事故記録は未確認。"
+    },
+    {
+      "id": "F3",
+      "statement": "社内の GitHub では、main への直接 push を拒否する設定に来月変える予定で、今はまだ拒否されない。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "社内ルール。依頼者の証言。GitHub で設定できること自体は F4 で確認。"
+    },
+    {
+      "id": "F4",
+      "statement": "GitHub のブランチ保護ルールで「Require a pull request before merging」を有効にすると、main などの保護したブランチには、プルリクエストを通して承認を得た変更しか入れられなくなる。ただし初期設定では、リポジトリの管理者などにはこの制限が効かない。",
+      "status": "verified",
+      "method": "web",
+      "sources": [
+        {
+          "title": "About protected branches - GitHub Docs",
+          "url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+          "accessed": "2026-09-28",
+          "quote": "collaborators can only push changes to a protected branch via a pull request that is approved by the required number of reviewers with write permissions."
+        },
+        {
+          "title": "About protected branches - GitHub Docs",
+          "url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+          "accessed": "2026-09-28",
+          "quote": "By default, the restrictions of a branch protection rule don't apply to people with admin permissions to the repository"
+        }
+      ],
+      "evidence": "",
+      "notes": "cyrus-fact-checker が確認。管理者への適用は別の設定で有効にできる。"
+    },
+    {
+      "id": "F5",
+      "statement": "作業ブランチに commit しても、main ブランチの内容は変わらない。",
+      "status": "verified",
+      "method": "execution",
+      "sources": [],
+      "evidence": "git 2.43.0 で一時リポジトリを作り、main で a.txt を commit → git switch -c feature/sample → a.txt に1行足して commit。git show main:a.txt は \"a\" のまま、git show feature/sample:a.txt は \"a\\nb\" だった。",
+      "notes": "ローカルでの確認。"
+    },
+    {
+      "id": "F6",
+      "statement": "GitHub のプルリクエストは、あるブランチで行った変更を別のブランチ（main など）へマージするよう提案する機能で、マージする前に変更を話し合い、レビューできる。",
+      "status": "verified",
+      "method": "web",
+      "sources": [
+        {
+          "title": "About pull requests - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests",
+          "accessed": "2026-09-28",
+          "quote": "A pull request is GitHub's key collaboration feature, letting you discuss and review changes before merging them."
+        },
+        {
+          "title": "Creating a pull request - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request",
+          "accessed": "2026-09-28",
+          "quote": "Pull requests can only be opened between two different branches."
+        }
+      ],
+      "evidence": "",
+      "notes": "cyrus-fact-checker が確認。"
+    },
+    {
+      "id": "F7",
+      "statement": "社内では、プルリクエストをマージするには1名以上の承認が必要である。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "社内ルール。依頼者の証言。GitHub で必要な承認数を設定できること（Required number of approvals before merging）は公式ドキュメントで確認済み。"
+    },
+    {
+      "id": "F8",
+      "statement": "プルリクエストを出したあとに同じブランチへ commit を push すると、その commit はプルリクエストに自動で加わる。",
+      "status": "verified",
+      "method": "web",
+      "sources": [
+        {
+          "title": "Quickstart for pull requests - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart",
+          "accessed": "2026-09-28",
+          "quote": "push new commits to the same branch. The pull request updates automatically and will re-run any checks."
+        }
+      ],
+      "evidence": "",
+      "notes": "cyrus-fact-checker が確認。"
+    },
+    {
+      "id": "F9",
+      "statement": "社内の作業ブランチの名前は feature/<内容> または fix/<内容> とする。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "社内ルール。依頼者の証言。"
+    },
+    {
+      "id": "F10",
+      "statement": "git switch -c <ブランチ名> で、今いる場所から新しいブランチを作り、そこに移れる。",
+      "status": "verified",
+      "method": "execution",
+      "sources": [],
+      "evidence": "git 2.43.0 で git switch -c feature/sample を実行。\"Switched to a new branch 'feature/sample'\" と表示され、git branch --show-current は feature/sample を返した。",
+      "notes": "git 2.23 以降のコマンド。"
+    },
+    {
+      "id": "F11",
+      "statement": "社内では、承認後にプルリクエストを出した本人が squash merge でマージする。",
+      "status": "user_asserted",
+      "method": "user",
+      "sources": [],
+      "evidence": "",
+      "notes": "社内ルール。依頼者の証言。"
+    },
+    {
+      "id": "F12",
+      "statement": "GitHub の squash merge は、プルリクエストの commit を1つの commit にまとめて取り込み先のブランチに加える。",
+      "status": "verified",
+      "method": "web",
+      "sources": [
+        {
+          "title": "About pull request merges - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges",
+          "accessed": "2026-09-28",
+          "quote": "the pull request's commits are squashed into a single commit"
+        }
+      ],
+      "evidence": "",
+      "notes": "cyrus-fact-checker が確認。画面上のボタン名は「Squash and merge」。"
+    },
+    {
+      "id": "F13",
+      "statement": "git push -u origin <ブランチ名> で、手元の作業ブランチを GitHub（リモート）に送り、同じ名前のブランチを作れる。",
+      "status": "verified",
+      "method": "execution",
+      "sources": [],
+      "evidence": "git 2.43.0。ローカルの bare リポジトリを origin として、feature/sample を作って commit し、git push -u origin feature/sample を実行。\"* [new branch] feature/sample -> feature/sample\" と表示され、git ls-remote --heads origin に refs/heads/feature/sample が現れた。",
+      "notes": "GitHub ではなくローカルのリモートで確認。git の動きとしては同じ。"
+    },
+    {
+      "id": "F14",
+      "statement": "GitHub の画面で、push したブランチからプルリクエストを作り、レビューする人（Reviewers）を指定できる。",
+      "status": "verified",
+      "method": "web",
+      "sources": [
+        {
+          "title": "Creating a pull request - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request",
+          "accessed": "2026-09-28",
+          "quote": "click Compare & pull request to create a pull request for the associated branch."
+        },
+        {
+          "title": "Requesting a pull request review - GitHub Docs",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/requesting-a-pull-request-review",
+          "accessed": "2026-09-28",
+          "quote": "To request a review from a suggested person under Reviewers, next to their username, click Request."
+        }
+      ],
+      "evidence": "",
+      "notes": "cyrus-fact-checker が確認。参考: ブランチ保護には \"Dismiss stale pull request approvals when new commits are pushed\" という設定もある（社内で有効かは不明）。"
+    },
+    {
+      "id": "F15",
+      "statement": "git switch main のあと git pull を実行すると、手元の main がリモートの最新の状態になる。",
+      "status": "verified",
+      "method": "execution",
+      "sources": [],
+      "evidence": "git 2.43.0。別のクローンから main に commit \"upd\" を push したあと、元のクローンで git switch main && git pull を実行。git log に upd が現れ、a.txt に追加行が入った。",
+      "notes": "ローカルのリモートで確認。"
+    }
+  ]
+}

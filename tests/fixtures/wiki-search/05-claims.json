@@ -1,0 +1,14 @@
+{
+  "main_claim": {"id": "C0", "text": "社内Wikiの検索を全文検索エンジンに置き換えるため、来期予算で300万円を承認してほしい", "premises": []},
+  "claims": [
+    {"id": "C1", "text": "いまの検索では、社員が探し物に多くの時間を使っている", "type": "fact", "supports": "C0", "premises": ["F1", "F2"]},
+    {"id": "C2", "text": "置き換えれば、書いた記事がすぐ検索に出るようになる", "type": "judgement", "supports": "C0", "premises": ["F3"]},
+    {"id": "C3", "text": "費用は、失われている時間に比べて小さい", "type": "judgement", "supports": "C0", "premises": ["F4", "F1"]}
+  ],
+  "facts": [
+    {"id": "F1", "statement": "社員は検索で探し物をするのに1日平均20分使っている", "source_hint": "社内アンケート2026"},
+    {"id": "F2", "statement": "検索への不満の理由で最も多いのは「当日の記事が出てこない」で、回答者の48%が挙げた", "source_hint": "社内アンケート2026"},
+    {"id": "F3", "statement": "試験環境の全文検索エンジンでは、記事の保存から5秒以内に検索に出た", "source_hint": "試験環境での計測"},
+    {"id": "F4", "statement": "移行の初年度費用の見積もりは300万円である", "source_hint": "見積もり"}
+  ]
+}

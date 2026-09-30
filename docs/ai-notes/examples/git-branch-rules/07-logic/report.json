@@ -1,0 +1,208 @@
+{
+  "claims": {
+    "C0": {
+      "text": "変更は main に直接 push せず、作業ブランチを切り、プルリクエストを出し、1名以上の承認を受けてから、自分で squash merge して main に取り込む。",
+      "confidence": 0.6,
+      "joint_probability": 0.001,
+      "derivations": [
+        {
+          "theorem": "claim_C0",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A1",
+        "assume_A2",
+        "assume_A3",
+        "assume_A4",
+        "assume_A5",
+        "assume_A6",
+        "assume_A7",
+        "fact_F1",
+        "fact_F10",
+        "fact_F11",
+        "fact_F12",
+        "fact_F13",
+        "fact_F14",
+        "fact_F15",
+        "fact_F2",
+        "fact_F3",
+        "fact_F4",
+        "fact_F5",
+        "fact_F6",
+        "fact_F7",
+        "fact_F8",
+        "fact_F9",
+        "rule_C0",
+        "rule_C1",
+        "rule_C2",
+        "rule_C3",
+        "rule_C4",
+        "rule_C5"
+      ],
+      "weakest_link": "assume_A4",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    },
+    "C1": {
+      "text": "main への直接 push は、チーム全員の作業を止めたり、未レビューの変更を本番に出しかけたりする危険がある。",
+      "confidence": 0.6,
+      "joint_probability": 0.214,
+      "derivations": [
+        {
+          "theorem": "claim_C1",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A1",
+        "fact_F1",
+        "fact_F2",
+        "rule_C1"
+      ],
+      "weakest_link": "fact_F1",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    },
+    "C2": {
+      "text": "直接 push は今月はまだ仕組みで止められないので、一人ひとりが流れを守る必要がある。",
+      "confidence": 0.6,
+      "joint_probability": 0.103,
+      "derivations": [
+        {
+          "theorem": "claim_C2",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A1",
+        "fact_F1",
+        "fact_F2",
+        "fact_F3",
+        "rule_C1",
+        "rule_C2"
+      ],
+      "weakest_link": "fact_F1",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    },
+    "C3": {
+      "text": "この流れを守るかぎり、main に入る変更はすべて、マージ前にほかの人のレビューと承認を通る。",
+      "confidence": 0.6,
+      "joint_probability": 0.171,
+      "derivations": [
+        {
+          "theorem": "claim_C3",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A2",
+        "assume_A4",
+        "fact_F5",
+        "fact_F6",
+        "fact_F7",
+        "fact_F8",
+        "rule_C3"
+      ],
+      "weakest_link": "assume_A4",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    },
+    "C4": {
+      "text": "コンフリクト（同じ箇所の変更の衝突）が起きなければ、社内の決まりに沿った手順で、新人でも最初から最後まで自分で進められる。",
+      "confidence": 0.6,
+      "joint_probability": 0.178,
+      "derivations": [
+        {
+          "theorem": "claim_C4",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A3",
+        "fact_F10",
+        "fact_F11",
+        "fact_F12",
+        "fact_F13",
+        "fact_F14",
+        "fact_F15",
+        "fact_F9",
+        "rule_C4"
+      ],
+      "weakest_link": "fact_F11",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    },
+    "C5": {
+      "text": "来月、仕組みで直接 push が拒否されるようになっても、この流れを知っておく必要がある。",
+      "confidence": 0.6,
+      "joint_probability": 0.342,
+      "derivations": [
+        {
+          "theorem": "claim_C5",
+          "confidence": 0.6
+        }
+      ],
+      "depends_on": [
+        "assume_A6",
+        "fact_F3",
+        "fact_F4",
+        "rule_C5"
+      ],
+      "weakest_link": "fact_F3",
+      "weakest_confidence": 0.6,
+      "hedge": {
+        "level": "moderate",
+        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+      }
+    }
+  },
+  "axioms": {
+    "fact_F1": 0.6,
+    "fact_F2": 0.6,
+    "fact_F3": 0.6,
+    "fact_F4": 0.95,
+    "fact_F5": 0.95,
+    "fact_F6": 0.95,
+    "fact_F7": 0.6,
+    "fact_F8": 0.95,
+    "fact_F9": 0.6,
+    "fact_F10": 0.95,
+    "fact_F11": 0.6,
+    "fact_F12": 0.95,
+    "fact_F13": 0.95,
+    "fact_F14": 0.95,
+    "fact_F15": 0.95,
+    "assume_A1": 0.85,
+    "assume_A2": 0.65,
+    "assume_A3": 0.8,
+    "assume_A4": 0.6,
+    "assume_A5": 0.65,
+    "assume_A6": 0.8,
+    "assume_A7": 0.9,
+    "rule_C1": 0.7,
+    "rule_C2": 0.8,
+    "rule_C3": 0.85,
+    "rule_C4": 0.8,
+    "rule_C5": 0.75,
+    "rule_C0": 0.8
+  },
+  "lean_exit_code": 0,
+  "lean_output": "'claim_C1' depends on axioms: [P_A1, P_C1, P_F1, P_F2, assume_A1, fact_F1, fact_F2, rule_C1]\n'claim_C2' depends on axioms: [P_A1,\n P_C1,\n P_C2,\n P_F1,\n P_F2,\n P_F3,\n assume_A1,\n fact_F1,\n fact_F2,\n fact_F3,\n rule_C1,\n rule_C2]\n'claim_C3' depends on axioms: [P_A2,\n P_A4,\n P_C3,\n P_F5,\n P_F6,\n P_F7,\n P_F8,\n assume_A2,\n assume_A4,\n fact_F5,\n fact_F6,\n fact_F7,\n fact_F8,\n rule_C3]\n'claim_C4' depends on axioms: [P_A3,\n P_C4,\n P_F10,\n P_F11,\n P_F12,\n P_F13,\n P_F14,\n P_F15,\n P_F9,\n assume_A3,\n fact_F10,\n fact_F11,\n fact_F12,\n fact_F13,\n fact_F14,\n fact_F15,\n fact_F9,\n rule_C4]\n'claim_C5' depends on axioms: [P_A6, P_C5, P_F3, P_F4, assume_A6, fact_F3, fact_F4, rule_C5]\n'claim_C0' depends on axioms: [P_A1,\n P_A2,\n P_A3,\n P_A4,\n P_A5,\n P_A6,\n P_A7,\n P_C0,\n P_C1,\n P_C2,\n P_C3,\n P_C4,\n P_C5,\n P_F1,\n P_F10,\n P_F11,\n P_F12,\n P_F13,\n P_F14,\n P_F15,\n P_F2,\n P_F3,\n P_F4,\n P_F5,\n P_F6,\n P_F7,\n P_F8,\n P_F9,\n assume_A1,\n assume_A2,\n assume_A3,\n assume_A4,\n assume_A5,\n assume_A6,\n assume_A7,\n fact_F1,\n fact_F10,\n fact_F11,\n fact_F12,\n fact_F13,\n fact_F14,\n fact_F15,\n fact_F2,\n fact_F3,\n fact_F4,\n fact_F5,\n fact_F6,\n fact_F7,\n fact_F8,\n fact_F9,\n rule_C0,\n rule_C1,\n rule_C2,\n rule_C3,\n rule_C4,\n rule_C5]"
+}

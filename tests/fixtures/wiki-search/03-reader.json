@@ -1,0 +1,11 @@
+{
+  "persona": {"name": "情報システム部の部長", "role": "予算の決裁者", "background": "管理職歴10年。検索の仕組みの詳細は知らないが、費用対効果には厳しい"},
+  "knowledge_level": "novice",
+  "known_terms": ["Wiki", "社内Wiki"],
+  "unknown_terms": ["全文検索エンジン", "インデックス"],
+  "avoid_terms": [{"term": "Elasticsearch", "replace": "いまの検索の仕組み"}],
+  "reading_context": {"medium": "screen", "reading_mode": "careful", "time_budget_min": 5},
+  "motivation": "部会で予算を判断する前に、要点と費用対効果を知りたい",
+  "questions": ["何が問題なのか", "置き換えると何がよくなるのか", "費用に見合うのか"],
+  "success_criteria": ["読後に、承認するかどうかを判断できる"]
+}
