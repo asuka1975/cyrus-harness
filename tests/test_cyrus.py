@@ -19,6 +19,7 @@ SCRIPTS = ROOT / ".apm" / "skills" / "cyrus" / "scripts"
 CLI = SCRIPTS / "cyrus.py"
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "wiki-search"
 sys.path.insert(0, str(SCRIPTS))
+sys.dont_write_bytecode = True  # .apm/ に __pycache__ を作らない（apm install がそれを .claude/ に写してしまうため）
 
 from cyruslib import agyreader, jatext, leancheck, lint, skim, visual, wording  # noqa: E402
 from cyruslib.reader import build_profile  # noqa: E402
