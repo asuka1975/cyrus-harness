@@ -46,7 +46,7 @@
     {"pattern": "的な", "suggest": "具体的な語にする", "reason": "意味がぼやける", "severity": "info"},
     {"pattern": "と(思|考え)われ(る|ます)", "suggest": "主語と根拠を明示して言い切る／「〜と考えます」", "reason": "判断の主体が曖昧", "severity": "warn"},
     {"pattern": "ていきたいと(思|考え)", "suggest": "〜します", "reason": "婉曲すぎる", "severity": "warn"},
-    {"pattern": "(かもしれない|かもしれません)(かもしれ)?", "suggest": "確からしさに合った表現にする（Lean の確からしさ評価を参照）", "reason": "ぼかし", "severity": "info"},
+    {"pattern": "(かもしれない|かもしれません)(かもしれ)?", "suggest": "確信度に合った表現にする（07-logic/report.json の hedge を参照）", "reason": "ぼかし", "severity": "info"},
     {"pattern": "(ではないでしょうか|ではないだろうか)", "suggest": "言い切る／「〜と考えます」", "reason": "反語的な問いかけは処理が重い", "severity": "warn"},
     {"pattern": "等々", "suggest": "など（具体例を挙げる）", "reason": "曖昧", "severity": "warn"},
     {"pattern": "なので、", "suggest": "そのため、／だから、", "reason": "話し言葉", "severity": "info"}

@@ -2,6 +2,7 @@
   "main_claim": {
     "id": "C0",
     "text": "変更は main に直接 push せず、作業ブランチを切り、プルリクエストを出し、1名以上の承認を受けてから、自分で squash merge して main に取り込む。",
+    "form": "capability",
     "premises": [
       "C1",
       "C2",
@@ -14,6 +15,7 @@
     {
       "id": "C1",
       "text": "main への直接 push は、チーム全員の作業を止めたり、未レビューの変更を本番に出しかけたりする危険がある。",
+      "form": "capability",
       "type": "judgement",
       "supports": "C0",
       "premises": [
@@ -24,6 +26,7 @@
     {
       "id": "C2",
       "text": "直接 push は今月はまだ仕組みで止められないので、一人ひとりが流れを守る必要がある。",
+      "form": "capability",
       "type": "judgement",
       "supports": "C0",
       "premises": [
@@ -33,7 +36,8 @@
     },
     {
       "id": "C3",
-      "text": "この流れを守るかぎり、main に入る変更はすべて、マージ前にほかの人のレビューと承認を通る。",
+      "text": "この流れ（承認のあとに commit を足したら、もう一度レビューを頼むことを含む）を自分が守るかぎり、自分が main に入れる変更はすべて、マージ前にほかの人のレビューと承認を通る。",
+      "form": "capability",
       "type": "explanation",
       "supports": "C0",
       "premises": [
@@ -46,6 +50,7 @@
     {
       "id": "C4",
       "text": "コンフリクト（同じ箇所の変更の衝突）が起きなければ、社内の決まりに沿った手順で、新人でも最初から最後まで自分で進められる。",
+      "form": "capability",
       "type": "explanation",
       "supports": "C0",
       "premises": [
@@ -61,6 +66,7 @@
     {
       "id": "C5",
       "text": "来月、仕組みで直接 push が拒否されるようになっても、この流れを知っておく必要がある。",
+      "form": "capability",
       "type": "judgement",
       "supports": "C0",
       "premises": [

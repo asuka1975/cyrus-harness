@@ -1,0 +1,68 @@
+{
+  "hints": [
+    {
+      "kind": "single_atom_claim",
+      "target": "c1_direct_push_can_stop_team",
+      "line": 567,
+      "detail": {
+        "axiom": "incident_direct_push_stopped_team",
+        "claims": [
+          "C1"
+        ],
+        "restates_acknowledged": true
+      }
+    },
+    {
+      "kind": "single_atom_claim",
+      "target": "c1_direct_push_unreviewed_release",
+      "line": 572,
+      "detail": {
+        "axiom": "main_feeds_release",
+        "claims": [
+          "C1"
+        ],
+        "restates_acknowledged": false
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "push_joins_pr",
+      "line": 397,
+      "detail": {
+        "kind": "実験"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "squash_brings_all_pr",
+      "line": 402,
+      "detail": {
+        "kind": "実験"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "pushed_after_not_seen",
+      "line": 406,
+      "detail": {
+        "kind": "自明"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "approved_change_can_break",
+      "line": 416,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "bypass_exempt_by_default",
+      "line": 559,
+      "detail": {
+        "kind": "実験"
+      }
+    }
+  ]
+}

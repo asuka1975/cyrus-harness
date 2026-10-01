@@ -32,7 +32,8 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `advance [--confirmed "承認の要旨"] [--accept-warnings]` | 次のステージへ。次の成果物の雛形も作られる |
 | `back <stage> --reason "…"` | 前のステージに戻る |
 | `scaffold [stage] [--force]` | 成果物の雛形を作る |
-| `lean` | 論証を Lean で検証し、主張ごとの確からしさを出す |
+| `lean` | 論証のモデルを検査し（門）、主張ごとの確信度と手戻りの一覧を出す |
+| `logic-round close` / `logic-round diff` | ステージ7の周を記録し打ち切りを判定する／前の周との差分と対応表を作る |
 | `lint [file]` | 認知負荷の検査（既定は draft.md） |
 | `wording [file]` | 言葉遣いの検査（読者辞書・硬い表現・表記ゆれ） |
 | `skim [file]` | 拾い読みビュー（outline / pickup / local）を作る |
@@ -72,7 +73,9 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | エージェント | 役割 | 主に使うステージ |
 | --- | --- | --- |
 | `cyrus-fact-checker` | 事実を外部の資料や実行で確かめる | 6 |
-| `cyrus-logic-critic` | 論証の飛躍・隠れた前提・過信を指摘する | 7 |
+| `cyrus-logic-planner` | 論証のモデル（コンポーネント・関係公理・定理の計画）を設計する | 7 |
+| `cyrus-lean-writer` | 設計書のとおりに Lean でモデルと証人を書く | 7 |
+| `cyrus-logic-reviewer` | モデルを敵対的に監査し、証拠のない公理の確信度を下げる | 7 |
 | `cyrus-persona-reader` | 読者になりきって通読し、つまずきを報告する | 12 |
 | `cyrus-skim-reader` | 拾い読みビューだけを見て内容を再構成する | 12 |
 | `cyrus-alignment-judge` | 再構成された内容と、意図したメッセージを照合する（テキスト・画像の両方） | 12 |
@@ -89,7 +92,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 - 1文に1つのこと。1文はおおむね60字以内。
 - 結論を先に。節の最初の文で、その節のメッセージを言う。
 - 読者が知らない語は、初めて出たところで説明する。説明できないなら使わない。
-- 主張の強さは、Lean で計算した確からしさに合わせる（`07-logic/report.json` の hedge）。
+- 主張の強さは、ステージ7で計算した確信度に合わせる（`07-logic/report.json` の hedge）。
 - 文体（です・ます／だ・である）を混ぜない。
 
 ## ファイルの置き場所

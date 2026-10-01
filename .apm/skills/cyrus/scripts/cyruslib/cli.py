@@ -8,7 +8,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import gates, lint, leancheck, scaffold, skim, wording
+from . import gates, lint, leancheck, logicround, scaffold, skim, wording
 from .issues import count, format_issues
 from .reader import build_profile, load_profile
 from .workspace import (PHASE_JA, STAGE_KEYS, STAGES, Workspace, documents_dir, list_workspaces,
@@ -299,19 +299,61 @@ def cmd_vision(args):
     print("\n次に cyrus-alignment-judge で 09-storyline.json と照合し、12-cogload.json の visual_test に記録してください。")
 
 
+def _names(names: list[str], limit: int = 5) -> str:
+    return "、".join(names[:limit]) + (f" ほか {len(names) - limit} 個" if len(names) > limit else "")
+
+
 def cmd_lean(args):
     ws = _ws(args)
     issues, report = leancheck.check(ws.dir)
     c = count(issues)
+    if report.get("counts"):
+        k = report["counts"]
+        a = report["atoms"]
+        print(f"公理 {k['axioms']}（宣言 {k['declarations']}・関係公理 {k['relational']}）、"
+              f"原子命題 {a['total']}（自明でないもの {a['non_trivial']}。主張の定理が使う {a['used_by_claims']}、"
+              f"@beyond・@baseline だけが使う {a['side_only']}、使われない {a['unused']}）")
     if report.get("claims"):
-        print("主張ごとの確からしさ（最も弱い根拠の確からしさ。独立した導出が複数あれば最大のもの）:")
+        print("主張ごとの確信度（主張の定理が依存する関係公理の確信度の最小値）:")
         for cid, r in report["claims"].items():
             print(f"  {cid}: {r['confidence']:.2f}  → {r['hedge']['guidance']}"
-                  + (f"  ／最も弱い根拠: {r['weakest_link']}（{r['weakest_confidence']}）" if r.get("weakest_link") else ""))
+                  + (f"  ／最も弱い公理: {_names(r.get('weakest_links') or [r['weakest_link']])}（{r['weakest_confidence']}）"
+                     if r.get("weakest_link") else ""))
+    if report.get("weak_premises"):
+        print("確信度を左右する弱い前提（ステージの終わりに、日常語でユーザーに見せる）:")
+        for w in report["weak_premises"]:
+            print(f"  {w['axiom']}（【{w['kind']}】{w['confidence']}、主張 {', '.join(w['claims'])}）: {w['statement'][:60]}")
+    if report.get("rework"):
+        print(f"手戻りの一覧（ステージ6で証拠を集める公理。確信度 {leancheck.REWORK_THRESHOLD} 未満か @against 付き）:")
+        for r in report["rework"]:
+            why = "・".join({"low_confidence": "確信度が低い", "against": "反対の証拠"}[x] for x in r["reasons"])
+            print(f"  {r['axiom']}（{r['confidence']}、{why}）→ 主張 {', '.join(r['claims']) or 'なし'}")
     print(f"Lean 検査: エラー {c['error']} 件・警告 {c['warn']} 件・参考 {c['info']} 件")
     if issues:
         print(format_issues(issues, "Argument.lean"))
     sys.exit(1 if c["error"] else 0)
+
+
+def cmd_logic_round(args):
+    ws = _ws(args)
+    if args.action == "close":
+        issues, s = logicround.close(ws.dir)
+        if issues:
+            print(format_issues(issues))
+            sys.exit(1)
+        print(f"{s['round']}周目（このループの {s['loop_round']} 周目）を閉じました（07-logic/rounds/{s['round']:02d}/）。判定: {s['verdict']}"
+              f"（高 {s['high']}・中 {s['mid']}・低 {s['low']}）、門のエラー {s['gate_errors']} 件")
+        print("主張の確信度: " + "、".join(f"{k} {v}" for k, v in s["claims"].items()))
+        if s["rework"]:
+            print("手戻りの一覧: " + "、".join(s["rework"]))
+        print(("→ 打ち切り: " if s["stop"] else "→ 続ける: ") + s["reason"])
+        sys.exit(0 if s["stop"] else (3 if s["escalate"] else 2))
+    issues, s = logicround.diff(ws.dir)
+    if issues:
+        print(format_issues(issues))
+        sys.exit(1)
+    print(f"07-logic/diff.md を作りました（rounds/{s['previous']} との差分）。変わった宣言 {len(s['changes'])} 個、"
+          f"設計書の行 {s['rows']}（当たっていない行 {s['rows_without_hit']}）、設計書にない変更 {len(s['unplanned'])} 個。")
 
 
 def cmd_hook(args):
@@ -384,7 +426,11 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--keep-sharp", action="store_true", help="ぼかす前の画像（sharp.png）も残す")
     p.set_defaults(func=cmd_vision)
 
-    sub.add_parser("lean", help="Lean で論証を検査し、確からしさを計算する").set_defaults(func=cmd_lean)
+    p = sub.add_parser("logic-round", help="ステージ7の周を記録する（close: いまの周を写して打ち切りを判定 / diff: 前の周との差分と対応表）")
+    p.add_argument("action", choices=["close", "diff"])
+    p.set_defaults(func=cmd_logic_round)
+
+    sub.add_parser("lean", help="論証のモデルを検査し（門）、主張ごとの確信度と手戻りの一覧を出す").set_defaults(func=cmd_lean)
 
     p = sub.add_parser("hook", help="Claude Code のフックから呼ばれる")
     p.add_argument("event", choices=["post-edit", "session-start"])

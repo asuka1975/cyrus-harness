@@ -1,0 +1,93 @@
+{
+  "methods": ["current", "fullText"],
+  "rows": [
+    {
+      "layer": "層1: まだ検索に出ない",
+      "failure": "探す記事が、検索の時点でまだ検索に出ていない",
+      "quantity": "pNotYet",
+      "cells": {
+        "current": {"what": "保存から検索に出るまで8時間以上かかるので、その日に保存された記事を探すと出てこない", "axioms": ["delay_current_ge_workday", "notYet_ge_of_slow"]},
+        "fullText": {"what": "保存から5秒以内に検索に出るので、まだ出ていない記事を探すことはまれ", "axioms": ["testDelay_le_five", "prodDelay_le_test", "notYet_le_of_fast"]}
+      },
+      "comparison": "fullText ≤ current（fullText は 1/1000 以下、current は 1/10 以上。【実験】【経験則】【仮定】の組み合わせ）",
+      "theorems": ["notYet_current_ge", "notYet_fullText_le", "saved_only_from_notYet", "saved_ge", "claim_C3_lost", "claim_C3_saved"]
+    },
+    {
+      "layer": "層2: 語で引けない",
+      "failure": "検索に出る状態の記事が、入れた語で引けない",
+      "quantity": "pNoHit",
+      "cells": {
+        "current": {"what": "入れた語が記事の語と合わず、記事が結果に出ない", "axioms": ["noHit_current_le"]},
+        "fullText": {"what": "入れた語が記事の語と合わず、記事が結果に出ない（いまの検索と同じとみなす）", "axioms": ["noHit_same", "noHit_current_le"]}
+      },
+      "comparison": "fullText = current（【仮定】。新方式に不利な向き）",
+      "theorems": ["saved_only_from_notYet", "saved_ge", "claim_C3_saved"]
+    },
+    {
+      "layer": "層3: 見落とす",
+      "failure": "引けた記事を、結果の中で見落とす",
+      "quantity": "pOverlook",
+      "cells": {
+        "current": {"what": "記事は結果に出ているが、下のほうにあって気づかない", "axioms": ["overlook_current_le"]},
+        "fullText": {"what": "記事は結果に出ているが、下のほうにあって気づかない（いまの検索と同じとみなす）", "axioms": ["overlook_same", "overlook_current_le"]}
+      },
+      "comparison": "fullText = current（【仮定】。新方式に有利な向き）",
+      "theorems": ["saved_only_from_notYet", "saved_ge", "claim_C3_saved"]
+    },
+    {
+      "layer": "合成: 探し物1回",
+      "failure": "探し物1回が、3つの層のどれかで失敗して見つからない",
+      "quantity": "missProb",
+      "cells": {
+        "current": {"what": "層1〜3で失敗しない確率の積の余事象", "axioms": ["miss_compose"]},
+        "fullText": {"what": "層1〜3で失敗しない確率の積の余事象", "axioms": ["miss_compose"]}
+      },
+      "comparison": "層2・層3が同じなので、差は（層1の確率の差）×（層2・層3で失敗しない確率）だけ（【仮定】: 層の独立）",
+      "theorems": ["miss_current_ge", "saved_only_from_notYet", "claim_C3_lost", "claim_C3_saved"]
+    },
+    {
+      "layer": "時間: 見つからなかった探し物",
+      "failure": "見つからなかった探し物で、余分な時間を使う",
+      "quantity": "missExtraMinutes",
+      "cells": {
+        "current": {"what": "探し直したり、ほかの場所を探したりして、1回あたり5分以上余分にかかる", "axioms": ["missExtra_current_ge"]},
+        "fullText": {"what": "見つからなかった後の行動はいまの検索と同じ（同じとみなす）", "axioms": ["missExtra_same", "missExtra_current_ge"]}
+      },
+      "comparison": "fullText = current（【仮定】。中立）",
+      "theorems": ["lost_ge", "saved_only_from_notYet", "saved_ge", "unfav_saved_le_lost", "claim_C3_lost", "claim_C3_saved"]
+    },
+    {
+      "layer": "時間: 失敗が起こる機会",
+      "failure": "探し物の回数（失敗が起こる機会の数）",
+      "quantity": "searchesPerDay",
+      "cells": {
+        "current": {"what": "1人1日に4回以上、検索で探し物をする", "axioms": ["searches_current_ge"]},
+        "fullText": {"what": "回数はいまの検索と同じ（同じとみなす）", "axioms": ["searches_same", "searches_current_ge"]}
+      },
+      "comparison": "fullText = current（【仮定】。新方式に有利な向き）",
+      "theorems": ["lost_ge", "saved_only_from_notYet", "saved_ge", "unfav_saved_le_lost", "baseline_lost_le_survey", "claim_C3_lost", "claim_C3_saved"]
+    },
+    {
+      "layer": "時間: 見つかった探し物",
+      "failure": "見つかった探し物にかかる時間（失敗ではないが、両方式で同じに数える）",
+      "quantity": "foundMinutes",
+      "cells": {
+        "current": {"what": "見つかった探し物1回の時間（0以上）", "axioms": ["foundMinutes_nonneg"]},
+        "fullText": {"what": "見つかった探し物1回の時間はいまの検索と同じ（同じとみなす）", "axioms": ["foundMinutes_same", "foundMinutes_nonneg"]}
+      },
+      "comparison": "fullText = current（【仮定】。向きは決まらない）",
+      "theorems": ["saved_only_from_notYet", "unfav_saved_le_lost", "baseline_lost_le_survey", "claim_C3_saved"]
+    },
+    {
+      "layer": "結果: 1日の探し物の時間",
+      "failure": "探し物に使う1日の時間（見つからなかった探し物の余分な時間を含む）",
+      "quantity": "searchMinutes",
+      "cells": {
+        "current": {"what": "1人1日20分（F1）。回数 ×（見つかった場合の時間 ＋ 見つからない確率 × 余分な時間）", "axioms": ["search_current_eq", "search_decomp"]},
+        "fullText": {"what": "回数 ×（見つかった場合の時間 ＋ 見つからない確率 × 余分な時間）", "axioms": ["search_decomp", "searchMinutes_nonneg"]}
+      },
+      "comparison": "current − fullText = savedMinutes。1.2672分以上（saved_ge）、20分以下（unfav_saved_le_survey）",
+      "theorems": ["saved_ge", "unfav_saved_le_survey", "baseline_lost_le_survey", "claim_C3_saved"]
+    }
+  ]
+}

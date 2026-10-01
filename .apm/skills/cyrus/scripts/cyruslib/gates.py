@@ -16,7 +16,7 @@ from .workspace import Workspace
 
 PLACEHOLDER_RE = re.compile(r"(TODO|TBD|（未記入）|\(未記入\)|<ここに.*?>)")
 CLAIM_ID = re.compile(r"^C\d+$")
-FACT_ID = re.compile(r"^F\d+$")
+FACT_ID = re.compile(r"^F\d+[a-z]?$")  # 分けた事実は枝番（F26a）
 SECTION_ID = re.compile(r"^S\d+(\.\d+)*$")
 
 
@@ -145,6 +145,7 @@ def gate_analysis(ws: Workspace) -> list[Issue]:
 
 
 CLAIM_TYPES = {"fact", "judgement", "proposal", "explanation"}
+CLAIM_FORMS = {"capability", "comparison"}  # 能力の文／比較の文（ステージ7の論証の深さを決める）
 
 
 def gate_claims(ws: Workspace) -> list[Issue]:
@@ -155,6 +156,10 @@ def gate_claims(ws: Workspace) -> list[Issue]:
     if main.get("id", "C0") != "C0" or not _nonempty_str(main.get("text")):
         issues.append(Issue("GT030", "error", "main_claim は id \"C0\" と text（文書全体で最も伝えたい主張）を持たせてください。"))
     claims = _all_claims(data)
+    for c in claims:
+        if c.get("form") not in CLAIM_FORMS:
+            issues.append(Issue("GT042", "error", f"主張 {c.get('id')} の form を capability（能力の文）か comparison（比較の文）にしてください。"
+                                                  "比較の文を選ぶと、ステージ7で確率の世界を作ることになります。"))
     facts = data.get("facts") or []
     ids = [c.get("id") for c in claims]
     fids = [f.get("id") for f in facts]
@@ -163,7 +168,7 @@ def gate_claims(ws: Workspace) -> list[Issue]:
             issues.append(Issue("GT031", "error", f"主張の id「{i}」は C1, C2… の形にしてください。"))
     for i in fids:
         if not (isinstance(i, str) and FACT_ID.match(i)):
-            issues.append(Issue("GT031", "error", f"事実の id「{i}」は F1, F2… の形にしてください。"))
+            issues.append(Issue("GT031", "error", f"事実の id「{i}」は F1, F2…（分けた事実は F26a のような枝番）の形にしてください。"))
     for dup in {x for x in ids + fids if (ids + fids).count(x) > 1}:
         issues.append(Issue("GT032", "error", f"id「{dup}」が重複しています。"))
     known = set(ids) | set(fids)
@@ -239,8 +244,28 @@ def gate_facts(ws: Workspace) -> list[Issue]:
         if fid not in got:
             issues.append(Issue("GT050", "error", f"事実 {fid} の検証結果がありません。"))
     for fid in got:
-        if fid not in expected:
-            issues.append(Issue("GT051", "warn", f"事実 {fid} は 05-claims.json にありません。主張側にも追加してください。"))
+        if fid not in expected and not got[fid].get("axioms"):
+            issues.append(Issue("GT051", "warn", f"事実 {fid} は 05-claims.json にありません。主張側にも追加するか、"
+                                                 "ステージ7の手戻りで集めた事実なら axioms に公理の名前を書いてください。"))
+    # ステージ7からの手戻り: 一覧の公理ごとに扱い（事実・棄却・集められなかった記録）があるか
+    report = ws.read_json("07-logic/report.json") if ws.path("07-logic/report.json").exists() else None
+    history = ws.load().get("history") or []
+    back_from_logic = any(h.get("event") == "back" and h.get("from") == "logic" for h in history)
+    if report and back_from_logic:
+        covered = {a for f in got.values() for a in (f.get("axioms") or [])}
+        rejected_doc = ws.read_json("07-logic/rejected.json") or {}
+        covered |= {r.get("axiom") for r in rejected_doc.get("rejected") or [] if isinstance(r, dict)}
+        open_items = [r["axiom"] for r in report.get("rework") or [] if r.get("axiom") not in covered]
+        if open_items:
+            issues.append(Issue("GT058", "warn", f"ステージ7の手戻りの一覧のうち {len(open_items)} 個の公理に、扱い（事実の axioms・rejected.json・集められなかった記録）がありません: "
+                                                 + "、".join(open_items[:8]) + (" ほか" if len(open_items) > 8 else "")))
+    arg = ws.path("07-logic/Argument.lean")
+    if arg.exists():
+        names = set(re.findall(r"^axiom\s+([A-Za-z_][A-Za-z0-9_'.]*)", arg.read_text(encoding="utf-8"), re.M))
+        for fid, f in got.items():
+            unknown = [a for a in f.get("axioms") or [] if a not in names]
+            if unknown:
+                issues.append(Issue("GT059", "warn", f"事実 {fid} の axioms にある {', '.join(unknown)} は、07-logic/Argument.lean の公理にありません。"))
     for fid, f in got.items():
         st = f.get("status")
         if st not in FACT_STATUS:
@@ -261,6 +286,11 @@ def gate_facts(ws: Workspace) -> list[Issue]:
                 issues.append(Issue("GT055", "error",
                                     f"事実 {fid} は反証されましたが、主張 {', '.join(users)} の前提になっています。"
                                     "`cyrus back claims` で主張を見直してください。"))
+        for src in f.get("sources") or []:
+            loc = src.get("location", "") if isinstance(src, dict) else ""
+            path = re.split(r"[\s　（(]", loc.strip())[0] if isinstance(loc, str) else ""
+            if path and "/" in path and not path.startswith(("http", "/")) and not (ws.dir / path).exists():
+                issues.append(Issue("GT057", "warn", f"事実 {fid} の出典 {path} が文書のフォルダにありません。素材を 02-context/ に置くか、出典を直してください。"))
         if not _nonempty_str(f.get("notes")) and st != "verified":
             issues.append(Issue("GT056", "warn", f"事実 {fid} が verified でない理由や、確認できた範囲を notes に書いてください。"))
     return issues

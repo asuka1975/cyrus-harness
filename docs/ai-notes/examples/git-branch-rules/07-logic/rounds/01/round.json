@@ -1,0 +1,29 @@
+{
+  "round": 1,
+  "verdict": "差し戻し",
+  "high": 2,
+  "mid": 6,
+  "low": 6,
+  "gate_errors": 0,
+  "claims": {
+    "C0": 0.05,
+    "C1": 0.6,
+    "C2": 0.6,
+    "C3": 0.05,
+    "C4": 0.05,
+    "C5": 0.05
+  },
+  "raised": [],
+  "stop": false,
+  "escalate": false,
+  "reason": "高の指摘が 2 件ある。 指摘を役に戻し、局所修正で次の周へ進む。",
+  "rework": [
+    "main_entry_has_op",
+    "approval_covers_content",
+    "approver_not_author",
+    "approved_change_can_break",
+    "newcomer_can_commit",
+    "recipe_doable",
+    "newcomer_not_admin"
+  ]
+}

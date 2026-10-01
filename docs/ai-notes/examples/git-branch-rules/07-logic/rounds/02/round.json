@@ -1,0 +1,29 @@
+{
+  "round": 2,
+  "verdict": "条件付き合格",
+  "high": 0,
+  "mid": 3,
+  "low": 4,
+  "gate_errors": 0,
+  "claims": {
+    "C0": 0.05,
+    "C1": 0.6,
+    "C2": 0.6,
+    "C3": 0.05,
+    "C4": 0.05,
+    "C5": 0.05
+  },
+  "raised": [],
+  "stop": true,
+  "escalate": false,
+  "reason": "高の指摘が0で、どの主張の確信度も前の周から上がらなかった。ループを止める。",
+  "rework": [
+    "approval_covers_content",
+    "approver_not_author",
+    "approved_change_can_break",
+    "newcomer_can_commit",
+    "recipe_doable",
+    "newcomer_no_bypass",
+    "next_month_block_requires_pr"
+  ]
+}

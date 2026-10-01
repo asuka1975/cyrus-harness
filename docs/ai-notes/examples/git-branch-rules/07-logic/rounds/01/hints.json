@@ -1,0 +1,55 @@
+{
+  "hints": [
+    {
+      "kind": "single_atom_claim",
+      "target": "c1_direct_push_unreviewed_release",
+      "line": 561,
+      "detail": {
+        "axiom": "main_feeds_release",
+        "claims": [
+          "C1"
+        ]
+      }
+    },
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "push_joins_pr",
+      "line": 396,
+      "detail": {
+        "kind": "実験"
+      }
+    },
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "squash_brings_all_pr",
+      "line": 401,
+      "detail": {
+        "kind": "実験"
+      }
+    },
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "pushed_after_not_seen",
+      "line": 405,
+      "detail": {
+        "kind": "自明"
+      }
+    },
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "approved_change_can_break",
+      "line": 415,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "admin_exempt_by_default",
+      "line": 549,
+      "detail": {
+        "kind": "実験"
+      }
+    }
+  ]
+}

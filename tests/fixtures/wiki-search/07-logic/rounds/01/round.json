@@ -1,0 +1,40 @@
+{
+  "round": 1,
+  "verdict": "差し戻し",
+  "high": 2,
+  "mid": 7,
+  "low": 6,
+  "gate_errors": 0,
+  "claims": {
+    "C0": 0.05,
+    "C1": 0.05,
+    "C2": 0.05,
+    "C3": 0.05
+  },
+  "raised": [],
+  "stop": false,
+  "escalate": false,
+  "reason": "高の指摘が 2 件ある。 指摘を役に戻し、局所修正で次の周へ進む。",
+  "rework": [
+    "cost_eq",
+    "delay_current_ge_workday",
+    "prodDelay_le_test",
+    "notYet_ge_of_slow",
+    "notYet_le_of_fast",
+    "noHit_current_le",
+    "overlook_current_le",
+    "noHit_same",
+    "overlook_same",
+    "miss_compose",
+    "searches_current_ge",
+    "missExtra_current_ge",
+    "searches_same",
+    "foundMinutes_same",
+    "missExtra_same",
+    "workDays_ge",
+    "wage_ge",
+    "many_threshold_le",
+    "no_cheaper_fix",
+    "approvable_of_net"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "methods": ["current", "tuned", "fullText"],
+  "rows": [
+    {
+      "layer": "層1: まだ検索に出ない（索引の更新の遅れ）",
+      "failure": "探す記事が、検索の時点でまだ検索に出ていない",
+      "quantity": "pNotYet",
+      "cells": {
+        "current": {"what": "夜間の作り直しを待つので、保存から検索に出るまで8時間以上かかり、その日の記事を探すと出てこない（10%以上）", "axioms": ["delay_current_ge_workday", "notYet_ge_of_slow"]},
+        "tuned": {"what": "いまの仕組みは保存のたびに索引へ足せず、300万円より安い設定の変更では8時間より短くできないので、その日の記事はやはり出てこない（10%以上）", "axioms": ["current_not_incremental", "tuned_slow_of_rebuild", "notYet_ge_of_slow"]},
+        "fullText": {"what": "保存から5秒以内に検索に出て、移行で欠けた記事もないので、まだ出ていない記事を探すことはまれ（0.1%以下）", "axioms": ["testDelay_le_five", "prodDelay_le_test", "fullText_complete", "notYet_le_of_fast"]}
+      },
+      "comparison": "fullText ≤ 1/1000、current と tuned ≥ 1/10（【実験】【経験則】【仮定】の組み合わせ）。tuned の下限は、C0 に有利な向きの【仮定】2つに頼る",
+      "theorems": ["notYet_current_ge", "notYet_tuned_ge", "notYet_fullText_le", "lost_ge", "saved_ge", "savedOverTuned_ge", "claim_C3_lost", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "層1: まだ検索に出ない（新方式だけ: 本番の記事数と負荷）",
+      "failure": "本番の記事数（約3万件）と負荷のもとで、索引の更新が試験環境より遅れる",
+      "quantity": "indexDelaySec",
+      "cells": {
+        "current": {"what": "起こらない。いまの仕組みを本番で使い続けるので、遅れは本番の値として数えている", "axioms": ["delay_current_ge_workday"]},
+        "tuned": {"what": "起こらない。本番の仕組みの設定を変えるだけなので、遅れは本番の値として数えている", "axioms": ["tuned_slow_of_rebuild"]},
+        "fullText": {"what": "試験環境の20件で測った最大4.2秒を、本番でも超えないとみなす", "axioms": ["testDelay_le_five", "prodDelay_le_test"]}
+      },
+      "comparison": "fullText の本番の遅れ ≤ 試験環境の値（【仮定】。新方式に有利な向き）",
+      "theorems": ["claim_C2_soon", "claim_C2_faster", "notYet_fullText_le", "saved_ge", "savedOverTuned_ge", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "層1: まだ検索に出ない（新方式だけ: 移行）",
+      "failure": "移行で記事や閲覧の権限が欠け、その記事が遅れによらず検索に出ない",
+      "quantity": "pNotYet",
+      "cells": {
+        "current": {"what": "起こらない（移行しない）", "axioms": []},
+        "tuned": {"what": "起こらない（設定を変えるだけで、移行しない）", "axioms": []},
+        "fullText": {"what": "移行で欠ける記事や権限はないとみなす", "axioms": ["fullText_complete", "notYet_le_of_fast"]}
+      },
+      "comparison": "欠けない（【仮定】。新方式に有利な向き）",
+      "theorems": ["notYet_fullText_le", "saved_ge", "savedOverTuned_ge", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "層2: 語で引けない",
+      "failure": "索引に入っている記事が、入れた語で引けない（索引に入っていることを条件とした確率）",
+      "quantity": "pNoHit",
+      "cells": {
+        "current": {"what": "20%以下", "axioms": ["noHit_current_le"]},
+        "tuned": {"what": "設定の変更は語の引き方を変えないので、いまの検索より低くはない", "axioms": ["noHit_tuned_ge", "noHit_current_le"]},
+        "fullText": {"what": "主張の側: いまの検索より高くない。不利な結論の側: いまの検索より低くない", "axioms": ["noHit_full_le", "noHit_full_ge", "noHit_current_le"]}
+      },
+      "comparison": "fullText ≤ current（主張が使う。新方式に有利）、current ≤ fullText（不利な結論だけが使う。新方式に不利）、current ≤ tuned（C0 だけが使う。C0 に有利）",
+      "theorems": ["saved_ge_gap", "saved_ge", "savedOverTuned_ge_gap", "savedOverTuned_ge", "unfav_saved_le_gap", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "層3: 見落とす",
+      "failure": "引けた記事を、結果の中で見落とす（引けたことを条件とした確率）",
+      "quantity": "pOverlook",
+      "cells": {
+        "current": {"what": "20%以下", "axioms": ["overlook_current_le"]},
+        "tuned": {"what": "設定の変更は並びを変えないので、いまの検索より低くはない", "axioms": ["overlook_tuned_ge", "overlook_current_le"]},
+        "fullText": {"what": "主張の側: いまの検索より高くない。不利な結論の側: いまの検索より低くない", "axioms": ["overlook_full_le", "overlook_full_ge", "overlook_current_le"]}
+      },
+      "comparison": "fullText ≤ current（主張が使う。新方式に有利）、current ≤ fullText（不利な結論だけが使う。新方式に不利）、current ≤ tuned（C0 だけが使う。C0 に有利）",
+      "theorems": ["saved_ge_gap", "saved_ge", "savedOverTuned_ge_gap", "savedOverTuned_ge", "unfav_saved_le_gap", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "合成: 探し物1回",
+      "failure": "探し物1回が、3つの層のどれかで失敗して見つからない",
+      "quantity": "missProb",
+      "cells": {
+        "current": {"what": "1 −（層1で失敗しない確率 × 層2で失敗しない確率 × 層3で失敗しない確率）", "axioms": ["miss_compose"]},
+        "tuned": {"what": "同じ式", "axioms": ["miss_compose"]},
+        "fullText": {"what": "同じ式", "axioms": ["miss_compose"]}
+      },
+      "comparison": "式はどの方式でも同じ（【自明】。層2・層3を条件付きの確率で宣言したので、確率の連鎖律そのもの）",
+      "theorems": ["lost_ge", "saved_ge_gap", "savedOverTuned_ge_gap", "unfav_saved_le_gap", "unfav_saved_le_lost", "claim_C3_lost", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "時間: 層1で見つからなかった探し物",
+      "failure": "探す記事がまだ検索に出ていなくて見つからず、余分に検索で時間を使う",
+      "quantity": "extraNotYetMinutes",
+      "cells": {
+        "current": {"what": "1回あたり5分以上余分にかかる（符号だけの仮定として0以上も別に置く）", "axioms": ["extraNotYet_current_ge", "extraNotYet_nonneg"]},
+        "tuned": {"what": "いまの検索より短くはない", "axioms": ["extraNotYet_tuned_ge"]},
+        "fullText": {"what": "主張の側: いまの検索より長くない。不利な結論の側: いまの検索より短くない", "axioms": ["extraNotYet_full_le", "extraNotYet_full_ge"]}
+      },
+      "comparison": "fullText ≤ current（主張が使う。新方式に有利）、current ≤ fullText（不利な結論だけが使う）、current ≤ tuned（C0 だけが使う）",
+      "theorems": ["lost_ge", "saved_ge_gap", "saved_ge", "savedOverTuned_ge_gap", "savedOverTuned_ge", "unfav_saved_le_gap", "unfav_saved_le_lost", "claim_C3_lost", "claim_C3_saved", "claim_C0_approvable"]
+    },
+    {
+      "layer": "時間: 層2・層3で見つからなかった探し物",
+      "failure": "語で引けないか見落として見つからず、余分に検索で時間を使う",
+      "quantity": "extraOtherMinutes",
+      "cells": {
+        "current": {"what": "0以上で、層1で見つからなかったときの余分な時間を超えない", "axioms": ["extraOther_nonneg", "extraOther_le_notYet"]},
+        "tuned": {"what": "いまの検索より短くはない", "axioms": ["extraOther_tuned_ge"]},
+        "fullText": {"what": "主張の側: いまの検索より長くない。不利な結論の側: いまの検索より短くない", "axioms": ["extraOther_full_le", "extraOther_full_ge"]}
+      },
+      "comparison": "fullText ≤ current（主張が使う。新方式に有利）、current ≤ fullText（不利な結論だけが使う）、current ≤ tuned（C0 だけが使う）。層1の失敗が減った分の一部は層2・層3の失敗に移るので、この時間は効果から差し引かれる",
+      "theorems": ["lost_ge", "saved_ge_gap", "saved_ge", "savedOverTuned_ge_gap", "savedOverTuned_ge", "unfav_saved_le_gap", "unfav_saved_le_lost", "claim_C3_lost", "claim_C3_saved", "claim_C0_approvable"]
+    }
+  ]
+}

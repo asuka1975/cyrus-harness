@@ -10,7 +10,6 @@ import json
 import re
 
 from .workspace import Workspace
-from . import leancheck
 
 INTENT_MD = """# 目的のメモ
 
@@ -86,9 +85,10 @@ def reader_template() -> dict:
 def claims_template() -> dict:
     return {
         "main_claim": {"id": "C0", "text": "TODO: 文書全体で最も伝えたい主張（01-intent.md の「伝えたいこと」を精密にしたもの）",
-                       "premises": []},
+                       "form": "TODO: capability（能力の文）か comparison（比較の文）", "premises": []},
         "claims": [
-            {"id": "C1", "text": "TODO: C0 を支える主張", "type": "judgement", "supports": "C0", "premises": ["F1"]}
+            {"id": "C1", "text": "TODO: C0 を支える主張", "type": "judgement",
+             "form": "TODO: capability（能力の文）か comparison（比較の文）", "supports": "C0", "premises": ["F1"]}
         ],
         "facts": [
             {"id": "F1", "statement": "TODO: 主張の根拠になる事実（検証できる形で）", "source_hint": "TODO: どこで確かめられそうか"}
@@ -107,94 +107,151 @@ def facts_template(ws: Workspace) -> dict:
     }
 
 
-def _ident(s: str) -> str:
-    return re.sub(r"[^A-Za-z0-9_]", "_", s)
-
-
 def _doc(s: str) -> str:
     return s.replace("-/", "- /").replace("\n", " ").strip()
 
 
-def lean_template(ws: Workspace) -> str:
+def lean_namespace(ws: Workspace) -> str:
+    """slug から Lean の名前空間を作る（wiki-search → WikiSearch）。"""
+    name = "".join(part[:1].upper() + part[1:] for part in re.split(r"[^A-Za-z0-9]+", ws.slug) if part)
+    return name if name[:1].isalpha() else "Doc" + name
+
+
+def _claims(ws: Workspace) -> list[dict]:
     claims = ws.read_json("05-claims.json") or {}
-    facts_doc = ws.read_json("06-facts.json") or {}
-    status = {f.get("id"): f for f in facts_doc.get("facts") or []}
     main = dict(claims.get("main_claim") or {})
     main.setdefault("id", "C0")
-    all_claims = [main] + list(claims.get("claims") or [])
-    facts = claims.get("facts") or []
-    by_id = {c["id"]: c for c in all_claims}
+    return [main] + list(claims.get("claims") or [])
 
-    # 主張の前提: premises に加えて、supports で自分を支えている下位の主張も前提にする
-    premises: dict[str, list[str]] = {c["id"]: list(c.get("premises") or []) for c in all_claims}
-    for c in all_claims[1:]:
-        sup = c.get("supports")
-        if sup in premises and c["id"] not in premises[sup]:
-            premises[sup].append(c["id"])
 
-    # 依存順に並べる（前提になる主張を先に証明する）
-    order: list[str] = []
-    seen: set[str] = set()
+WRITER_PROMISES = """## 書き方の約束（ガイド `stages/07-logic.md` の「Writer の約束」の要約）
 
-    def visit(cid: str, stack: tuple = ()) -> None:
-        if cid in seen or cid in stack:
-            return
-        for p in premises.get(cid, []):
-            if p in by_id:
-                visit(p, stack + (cid,))
-        seen.add(cid)
-        order.append(cid)
+- `def` は計算の手順だけに使う。現実についての判断は、宣言（中身を決めない `axiom`）と関係公理（型が命題の `axiom`）に分ける。
+- 判断を、定理の引数、宣言の型、比較相手の定義、計算の def の docstring に置かない。
+- 両方式の式に現れる量は、方式を引数に取る。「同じとみなす」なら【仮定】の関係公理にし、理由と向きを書く。
+- 論証に必要な関係は、確信度が低くても省かない。要ファクトを付ける。
+- 関係公理の型の最上位と ∀ の直下に ∧ を置かない（原子命題ごとに公理を分ける）。
+- 関係公理の docstring の先頭に種類を書く: 【自明】（論拠）、【実験】（@support）、【経験則】（@support・@confidence・論拠・弱い点）、【仮定】（同上と「要ファクト:」）。
+- 主張を示す定理に `@claim C…` を付ける。主張より強い定理は `@beyond C…`、比べる相手を確かめる定理は `@baseline`。
+- 不利な結論も定理として導く。有利な向きの仮定を経由しない経路を選ぶ。
+- 検査の警告を消すために、ラベルを変えたり、公理を省いたりしない。
+- `@reviewer`・`@against`・`@restates` は Reviewer だけが付ける。
+"""
 
-    for c in all_claims:
-        visit(c["id"])
 
-    title = (ws.load().get("title") or ws.slug)
-    L = [
-        "/-!",
-        f"# 論証構造: {_doc(title)}",
-        "",
-        "cyrus が 05-claims.json と 06-facts.json から作った雛形です。",
-        "- 事実（fact_）の確からしさは 06-facts.json の status から自動で決まります。",
-        "- 推論規則（rule_）には `@confidence 0〜1` と、その推論が成り立つ理由を書いてください。",
-        "- 隠れた前提に気づいたら assume_ 公理として明示し、確からしさを付けてください。",
-        "- 主張（P_C…）そのものを公理にしてはいけません。theorem claim_… として導きます。",
-        "-/",
-        "",
-        "-- ========== 命題 ==========",
-    ]
-    for f in facts:
-        L.append(f"/-- {f['id']}: {_doc(f.get('statement', ''))} -/")
-        L.append(f"axiom P_{_ident(f['id'])} : Prop")
-    for c in all_claims:
-        L.append(f"/-- {c['id']}: {_doc(c.get('text', ''))} -/")
-        L.append(f"axiom P_{_ident(c['id'])} : Prop")
-    L += ["", "-- ========== 事実（Fact Verification の結果） =========="]
-    for f in facts:
-        st = status.get(f["id"], {}).get("status", "unverified")
-        if st == "refuted":
-            L.append(f"-- {f['id']} は反証されたため公理にしない（status=refuted）")
-            continue
-        conf = leancheck.fact_confidence(status.get(f["id"], {"status": st}))
-        L.append(f"/-- @fact {f['id']} status={st} confidence={conf} -/")
-        L.append(f"axiom fact_{_ident(f['id'])} : P_{_ident(f['id'])}")
-    L += ["", "-- ========== 推論規則と主張 =========="]
-    for cid in order:
-        prem = [p for p in premises.get(cid, []) if p in by_id or p in {f['id'] for f in facts}]
-        if not prem:
-            L.append(f"-- {cid}: 前提がありません。05-claims.json の premises を見直してください。")
-            L.append(f"theorem claim_{_ident(cid)} : P_{_ident(cid)} := sorry")
-            L.append("")
-            continue
-        ante = " ∧ ".join(f"P_{_ident(p)}" for p in prem)
-        proofs = []
-        for p in prem:
-            proofs.append(f"claim_{_ident(p)}" if p in by_id else f"fact_{_ident(p)}")
-        arg = proofs[0] if len(proofs) == 1 else "⟨" + ", ".join(proofs) + "⟩"
-        L.append(f"/-- @confidence TODO {cid} を導く論拠: TODO（なぜ前提から結論が言えるのか） -/")
-        L.append(f"axiom rule_{_ident(cid)} : {ante} → P_{_ident(cid)}")
-        L.append(f"theorem claim_{_ident(cid)} : P_{_ident(cid)} := rule_{_ident(cid)} {arg}")
-        L.append("")
-    return "\n".join(L).rstrip() + "\n"
+def argument_template(ws: Workspace) -> str:
+    ns = lean_namespace(ws)
+    title = _doc(ws.load().get("title") or ws.slug)
+    rows = "\n".join(f"| {c.get('id')} | {_doc(c.get('text', ''))} | TODO | TODO |" for c in _claims(ws))
+    return f"""/-!
+# 論証のモデル: {title}
+
+設計書: `07-logic/model-plan.md`。主張: `05-claims.json`。事実: `06-facts.json`。
+
+{WRITER_PROMISES}
+## 主張と定理の対応
+
+種類: [決定論] Prop の世界、[確率] 確率・期待値の比較、[件数] 件数の比較、[不利] 書き手の結論に不利な定理。
+
+| 主張 | 主張の文 | 定理 | 種類 |
+|---|---|---|---|
+{rows}
+
+## 設計書（model-plan.md）との違い
+
+TODO: 設計書と違う書き方をしたところと、その理由。なければ「なし」。
+-/
+
+namespace {ns}
+
+-- 公理で宣言した関数に依存する定義は実行できないので、すべて計算不能として扱う
+noncomputable section
+
+/-! ## §1 帰納型（定義） -/
+
+/-! ## §2 宣言（中身を決めない型・関数・定数） -/
+
+/-! ## §3 計算の def（手順だけ。判断を入れない） -/
+
+/-! ## §4 関係公理 -/
+
+/-! ## §5 主張の定理 -/
+
+end
+
+end {ns}
+"""
+
+
+def model_template(ws: Workspace) -> str:
+    ns = lean_namespace(ws)
+    return f"""/-!
+# 証人: {_doc(ws.load().get("title") or ws.slug)}
+
+`Argument.lean` のすべての `axiom` を、同じ名前・同じ型の具体的な `def` / `theorem` に差し替えた写し。公理系が無矛盾であることの証拠。
+Writer が `Argument.lean` を書き終えてから作る。axiom 以外の行は、`Argument.lean` と同じ順で残す。
+`instance`・`attribute`・`open`・`set_option` を足さない。証人の世界で、関係公理の結論が空回りしないようにする
+（前提が実際に成り立つ例を持たせる）。
+
+書き方: Argument.lean を写してから、axiom を1つずつ定義に差し替える。
+-/
+
+namespace {ns}
+
+noncomputable section
+
+end
+
+end {ns}
+"""
+
+
+def model_plan_template(ws: Workspace) -> str:
+    rows = "\n".join(f"| {c.get('id')} | {_doc(c.get('text', ''))} | TODO | TODO | TODO |" for c in _claims(ws))
+    return f"""# 論証の設計書: {_doc(ws.load().get("title") or ws.slug)}
+
+Logical Model Planner が書く。Lean Writer はこれに従って `Argument.lean` と `Model.lean` を書く。
+
+## 1. 主張の形と論証の深さ
+
+| 主張 | 主張の文 | 形（能力の文／比較の文） | 論証の世界（決定論／確率・件数） | 理由 |
+|---|---|---|---|---|
+{rows}
+
+比較の文の主張があるときだけ、確率の世界（層・確率・「同じとみなす」判断）と失敗の台帳（`ledger.json`）を作る。
+
+## 2. コンポーネント（宣言）
+
+| 名前 | 型 | 何を表すか | 方式を引数に取るか |
+|---|---|---|---|
+| TODO | | | |
+
+## 3. 関係公理（原子命題ごと）
+
+命題は日常語で書く。式に近い書き方（例: 失われる時間 ≥ 費用）はよいが、Lean の構文は書かない（それは Writer の仕事）。
+
+| 名前 | 種類 | 命題 | 支える事実 | 確信度の案 | 論拠 | 弱い点 | 要ファクト |
+|---|---|---|---|---|---|---|---|
+| TODO | 【自明】【実験】【経験則】【仮定】 | | F… | | | | |
+
+## 4. 「同じとみなす」置き方
+
+比較の文がなければ「比較なし」と書く。
+
+| 公理 | 何を同じとみなすか | 理由 | どちらの方式に有利な向きか | 弱い点 |
+|---|---|---|---|---|
+| TODO | | | | |
+
+## 5. 主張の項ごとの定理の計画
+
+| 主張 | 項 | 定理の名前 | 使う判断（関係公理） | 種類 |
+|---|---|---|---|---|
+| TODO | | | | |
+
+## 6. 比べる相手と、予想される不利な結論
+
+TODO: 比べる相手（現実の相手にする）と、導くべき不利な結論。比較の文がなければ、比べる相手は「比較なし」とし、主張が成り立たない場合や条件（不利な結論）だけを書く。
+"""
 
 
 def structure_template(ws: Workspace) -> dict:
@@ -280,7 +337,9 @@ def scaffold(ws: Workspace, key: str, force: bool = False) -> str:
         "analysis": ("04-analysis.md", lambda: ANALYSIS_MD),
         "claims": ("05-claims.json", lambda: _dump(claims_template())),
         "facts": ("06-facts.json", lambda: _dump(facts_template(ws))),
-        "logic": ("07-logic/Argument.lean", lambda: lean_template(ws)),
+        "logic": [("07-logic/Argument.lean", lambda: argument_template(ws)),
+                  ("07-logic/Model.lean", lambda: model_template(ws)),
+                  ("07-logic/model-plan.md", lambda: model_plan_template(ws))],
         "structure": ("08-structure.json", lambda: _dump(structure_template(ws))),
         "storyline": ("09-storyline.json", lambda: _dump(storyline_template(ws))),
         "detail": ("10-detail.json", lambda: _dump(detail_template(ws))),
@@ -288,10 +347,14 @@ def scaffold(ws: Workspace, key: str, force: bool = False) -> str:
         "cogload": ("12-cogload.json", lambda: _dump(cogload_template())),
         "wording": ("final.md", lambda: ws.path("draft.md").read_text(encoding="utf-8") if ws.path("draft.md").exists() else ""),
     }
-    rel, make = targets[key]
-    p = ws.path(rel)
-    if p.exists() and not force:
-        return f"{rel} はすでにあります（上書きするなら --force）。"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(make(), encoding="utf-8")
-    return f"{rel} を作りました。"
+    entries = targets[key] if isinstance(targets[key], list) else [targets[key]]
+    msgs = []
+    for rel, make in entries:
+        p = ws.path(rel)
+        if p.exists() and not force:
+            msgs.append(f"{rel} はすでにあります（上書きするなら --force）。")
+            continue
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(make(), encoding="utf-8")
+        msgs.append(f"{rel} を作りました。")
+    return "\n".join(msgs)

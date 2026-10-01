@@ -1,0 +1,2268 @@
+{
+  "claims": {
+    "C0": {
+      "text": "社内Wikiの検索を全文検索エンジンに置き換えるため、来期予算で300万円を承認してほしい",
+      "confidence": 0.05,
+      "theorems": [
+        "claim_C0_approvable"
+      ],
+      "weakest_link": "approvable_of_net",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "approvable_of_net",
+        "cost_le_estimate",
+        "current_not_incremental",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraNotYet_tuned_ge",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "extraOther_tuned_ge",
+        "found_full_le",
+        "found_tuned_ge",
+        "fullText_complete",
+        "gain_ge_wage",
+        "noHit_current_le",
+        "noHit_full_le",
+        "noHit_tuned_ge",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "overlook_tuned_ge",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "sameDay_tuned_ge",
+        "searches_current_ge",
+        "searches_full_le",
+        "searches_tuned_ge",
+        "tuned_no_daytime_of_rebuild",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "decisive_atoms": 30,
+      "path_atoms": 3,
+      "decisive_axioms": [
+        "approvable_of_net",
+        "cost_le_estimate",
+        "current_not_incremental",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraNotYet_tuned_ge",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "extraOther_tuned_ge",
+        "found_full_le",
+        "found_tuned_ge",
+        "fullText_complete",
+        "gain_ge_wage",
+        "noHit_current_le",
+        "noHit_full_le",
+        "noHit_tuned_ge",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "overlook_tuned_ge",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "sameDay_tuned_ge",
+        "searches_current_ge",
+        "searches_full_le",
+        "searches_tuned_ge",
+        "tuned_no_daytime_of_rebuild",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "hedge": {
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
+      }
+    },
+    "C1": {
+      "text": "いまの検索では、社員が探し物に多くの時間を使っている",
+      "confidence": 0.05,
+      "theorems": [
+        "claim_C1_many"
+      ],
+      "weakest_link": "many_threshold_le",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "many_threshold_le"
+      ],
+      "decisive_atoms": 1,
+      "path_atoms": 1,
+      "decisive_axioms": [
+        "many_threshold_le"
+      ],
+      "hedge": {
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
+      }
+    },
+    "C2": {
+      "text": "置き換えれば、書いた記事がすぐ検索に出るようになる",
+      "confidence": 0.05,
+      "theorems": [
+        "claim_C2_soon",
+        "claim_C2_faster"
+      ],
+      "weakest_link": "prodMaxDelay_le_test",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "prodMaxDelay_le_test"
+      ],
+      "decisive_atoms": 1,
+      "path_atoms": 2,
+      "decisive_axioms": [
+        "prodMaxDelay_le_test"
+      ],
+      "hedge": {
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
+      }
+    },
+    "C3": {
+      "text": "費用は、失われている時間に比べて小さい",
+      "confidence": 0.05,
+      "theorems": [
+        "claim_C3_saved",
+        "claim_C3_lost"
+      ],
+      "weakest_link": "cost_le_estimate",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "cost_le_estimate",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "found_full_le",
+        "fullText_complete",
+        "noHit_current_le",
+        "noHit_full_le",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "searches_current_ge",
+        "searches_full_le",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "decisive_atoms": 19,
+      "path_atoms": 4,
+      "decisive_axioms": [
+        "cost_le_estimate",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "found_full_le",
+        "fullText_complete",
+        "noHit_current_le",
+        "noHit_full_le",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "searches_current_ge",
+        "searches_full_le",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "hedge": {
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
+      }
+    }
+  },
+  "theorems": {
+    "claim_C3_saved": {
+      "full_name": "WikiSearch.claim_C3_saved",
+      "line": 1006,
+      "claims": [
+        "C3"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "beneficiaries_ge",
+        "cost_le_estimate",
+        "current_no_daytime",
+        "estimate_eq",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "fullText_complete",
+        "miss_compose",
+        "noHit_current_le",
+        "noHit_full_le",
+        "notYet_ge_sameDay_stale",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_current_ge",
+        "searches_full_le",
+        "stale_of_noDaytime",
+        "testDelay_le_five",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "weakest": [
+        {
+          "axiom": "cost_le_estimate",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "extraNotYet_current_ge",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "extraNotYet_full_le",
+          "confidence": 0.05
+        }
+      ]
+    },
+    "claim_C3_lost": {
+      "full_name": "WikiSearch.claim_C3_lost",
+      "line": 1017,
+      "claims": [
+        "C3"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "beneficiaries_ge",
+        "cost_le_estimate",
+        "current_no_daytime",
+        "estimate_eq",
+        "extraNotYet_current_ge",
+        "extraOther_nonneg",
+        "miss_compose",
+        "notYet_ge_sameDay_stale",
+        "sameDay_current_ge",
+        "searches_current_ge",
+        "stale_of_noDaytime",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "weakest": [
+        {
+          "axiom": "cost_le_estimate",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "extraNotYet_current_ge",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "extraOther_nonneg",
+          "confidence": 0.05
+        }
+      ]
+    },
+    "claim_C0_approvable": {
+      "full_name": "WikiSearch.claim_C0_approvable",
+      "line": 1029,
+      "claims": [
+        "C0"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "approvable_of_net",
+        "beneficiaries_ge",
+        "cost_le_estimate",
+        "current_not_incremental",
+        "estimate_eq",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraNotYet_tuned_ge",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "extraOther_tuned_ge",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "found_tuned_ge",
+        "fullText_complete",
+        "gain_ge_wage",
+        "miss_compose",
+        "noHit_current_le",
+        "noHit_full_le",
+        "noHit_tuned_ge",
+        "notYet_ge_sameDay_stale",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "overlook_tuned_ge",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "sameDay_tuned_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_current_ge",
+        "searches_full_le",
+        "searches_tuned_ge",
+        "stale_of_noDaytime",
+        "testDelay_le_five",
+        "tuned_no_daytime_of_rebuild",
+        "wage_ge",
+        "workDays_ge"
+      ],
+      "weakest": [
+        {
+          "axiom": "approvable_of_net",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "cost_le_estimate",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "current_not_incremental",
+          "confidence": 0.05
+        }
+      ]
+    },
+    "claim_C1_many": {
+      "full_name": "WikiSearch.claim_C1_many",
+      "line": 1043,
+      "claims": [
+        "C1"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "many_threshold_le",
+        "searchTime_current_eq"
+      ],
+      "weakest": [
+        {
+          "axiom": "many_threshold_le",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "searchTime_current_eq",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "claim_C2_soon": {
+      "full_name": "WikiSearch.claim_C2_soon",
+      "line": 1048,
+      "claims": [
+        "C2"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "prodMaxDelay_le_test",
+        "testDelay_le_five"
+      ],
+      "weakest": [
+        {
+          "axiom": "prodMaxDelay_le_test",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "testDelay_le_five",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "claim_C2_faster": {
+      "full_name": "WikiSearch.claim_C2_faster",
+      "line": 1054,
+      "claims": [
+        "C2"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_no_daytime",
+        "maxDelay_of_noDaytime",
+        "prodMaxDelay_le_test",
+        "testDelay_le_five"
+      ],
+      "weakest": [
+        {
+          "axiom": "prodMaxDelay_le_test",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "current_no_daytime",
+          "confidence": 0.3
+        },
+        {
+          "axiom": "testDelay_le_five",
+          "confidence": 0.95
+        }
+      ]
+    },
+    "baseline_lost_le_survey": {
+      "full_name": "WikiSearch.baseline_lost_le_survey",
+      "line": 1063,
+      "claims": [],
+      "beyond": [],
+      "baseline": true,
+      "confidence": 0.95,
+      "depends_on": [
+        "foundMinutes_nonneg",
+        "searchTime_current_eq",
+        "search_decomp",
+        "searchesPerDay_nonneg"
+      ],
+      "weakest": [
+        {
+          "axiom": "searchTime_current_eq",
+          "confidence": 0.95
+        },
+        {
+          "axiom": "foundMinutes_nonneg",
+          "confidence": 1.0
+        },
+        {
+          "axiom": "search_decomp",
+          "confidence": 1.0
+        }
+      ]
+    }
+  },
+  "other_theorems": {
+    "rat_mul_le_mul": {
+      "full_name": "WikiSearch.rat_mul_le_mul",
+      "line": 725,
+      "confidence": 1.0,
+      "depends_on": []
+    },
+    "missAfterIndex_nonneg": {
+      "full_name": "WikiSearch.missAfterIndex_nonneg",
+      "line": 732,
+      "confidence": 1.0,
+      "depends_on": []
+    },
+    "miss_sub_notYet": {
+      "full_name": "WikiSearch.miss_sub_notYet",
+      "line": 744,
+      "confidence": 1.0,
+      "depends_on": [
+        "miss_compose"
+      ]
+    },
+    "search_layers": {
+      "full_name": "WikiSearch.search_layers",
+      "line": 753,
+      "confidence": 1.0,
+      "depends_on": [
+        "miss_compose",
+        "search_decomp"
+      ]
+    },
+    "notYet_current_ge": {
+      "full_name": "WikiSearch.notYet_current_ge",
+      "line": 762,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_no_daytime",
+        "notYet_ge_sameDay_stale",
+        "sameDay_current_ge",
+        "stale_of_noDaytime"
+      ]
+    },
+    "notYet_tuned_ge": {
+      "full_name": "WikiSearch.notYet_tuned_ge",
+      "line": 771,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_not_incremental",
+        "notYet_ge_sameDay_stale",
+        "sameDay_current_ge",
+        "sameDay_tuned_ge",
+        "stale_of_noDaytime",
+        "tuned_no_daytime_of_rebuild"
+      ]
+    },
+    "notYet_fullText_le": {
+      "full_name": "WikiSearch.notYet_fullText_le",
+      "line": 781,
+      "confidence": 0.05,
+      "depends_on": [
+        "fullText_complete",
+        "notYet_le_of_maxFast",
+        "prodMaxDelay_le_test",
+        "testDelay_le_five"
+      ]
+    },
+    "lost_ge": {
+      "full_name": "WikiSearch.lost_ge",
+      "line": 787,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_no_daytime",
+        "extraNotYet_current_ge",
+        "extraOther_nonneg",
+        "miss_compose",
+        "notYet_ge_sameDay_stale",
+        "sameDay_current_ge",
+        "searches_current_ge",
+        "stale_of_noDaytime"
+      ]
+    },
+    "saved_ge_gap": {
+      "full_name": "WikiSearch.saved_ge_gap",
+      "line": 810,
+      "confidence": 0.05,
+      "depends_on": [
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraOther_full_le",
+        "extraOther_nonneg",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "miss_compose",
+        "noHit_full_le",
+        "overlook_full_le",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_full_le"
+      ]
+    },
+    "saved_ge": {
+      "full_name": "WikiSearch.saved_ge",
+      "line": 866,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_no_daytime",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "fullText_complete",
+        "miss_compose",
+        "noHit_current_le",
+        "noHit_full_le",
+        "notYet_ge_sameDay_stale",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_current_ge",
+        "searches_full_le",
+        "stale_of_noDaytime",
+        "testDelay_le_five"
+      ]
+    },
+    "savedOverTuned_ge_gap": {
+      "full_name": "WikiSearch.savedOverTuned_ge_gap",
+      "line": 901,
+      "confidence": 0.05,
+      "depends_on": [
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraNotYet_tuned_ge",
+        "extraOther_full_le",
+        "extraOther_nonneg",
+        "extraOther_tuned_ge",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "found_tuned_ge",
+        "miss_compose",
+        "noHit_full_le",
+        "noHit_tuned_ge",
+        "overlook_full_le",
+        "overlook_tuned_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_full_le",
+        "searches_tuned_ge"
+      ]
+    },
+    "savedOverTuned_ge": {
+      "full_name": "WikiSearch.savedOverTuned_ge",
+      "line": 960,
+      "confidence": 0.05,
+      "depends_on": [
+        "current_not_incremental",
+        "extraNotYet_current_ge",
+        "extraNotYet_full_le",
+        "extraNotYet_tuned_ge",
+        "extraOther_full_le",
+        "extraOther_le_notYet",
+        "extraOther_nonneg",
+        "extraOther_tuned_ge",
+        "foundMinutes_nonneg",
+        "found_full_le",
+        "found_tuned_ge",
+        "fullText_complete",
+        "miss_compose",
+        "noHit_current_le",
+        "noHit_full_le",
+        "noHit_tuned_ge",
+        "notYet_ge_sameDay_stale",
+        "notYet_le_of_maxFast",
+        "overlook_current_le",
+        "overlook_full_le",
+        "overlook_tuned_ge",
+        "prodMaxDelay_le_test",
+        "sameDay_current_ge",
+        "sameDay_tuned_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_current_ge",
+        "searches_full_le",
+        "searches_tuned_ge",
+        "stale_of_noDaytime",
+        "testDelay_le_five",
+        "tuned_no_daytime_of_rebuild"
+      ]
+    },
+    "yenPerDailyMinute_ge": {
+      "full_name": "WikiSearch.yenPerDailyMinute_ge",
+      "line": 993,
+      "confidence": 0.05,
+      "depends_on": [
+        "beneficiaries_ge",
+        "wage_ge",
+        "workDays_ge"
+      ]
+    },
+    "unfav_saved_le_survey": {
+      "full_name": "WikiSearch.unfav_saved_le_survey",
+      "line": 1073,
+      "confidence": 0.95,
+      "depends_on": [
+        "searchMinutes_nonneg",
+        "searchTime_current_eq"
+      ]
+    },
+    "unfav_saved_le_gap": {
+      "full_name": "WikiSearch.unfav_saved_le_gap",
+      "line": 1082,
+      "confidence": 0.05,
+      "depends_on": [
+        "extraNotYet_full_ge",
+        "extraNotYet_nonneg",
+        "extraOther_full_ge",
+        "extraOther_nonneg",
+        "foundMinutes_nonneg",
+        "found_full_ge",
+        "miss_compose",
+        "noHit_full_ge",
+        "overlook_full_ge",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_full_ge"
+      ]
+    },
+    "unfav_savedOverTuned_le_gap": {
+      "full_name": "WikiSearch.unfav_savedOverTuned_le_gap",
+      "line": 1140,
+      "confidence": 0.05,
+      "depends_on": [
+        "extraNotYet_full_ge",
+        "extraNotYet_nonneg",
+        "extraNotYet_tuned_le",
+        "extraOther_full_ge",
+        "extraOther_nonneg",
+        "extraOther_tuned_le",
+        "foundMinutes_nonneg",
+        "found_full_ge",
+        "found_tuned_le",
+        "miss_compose",
+        "noHit_full_ge",
+        "noHit_tuned_le",
+        "overlook_full_ge",
+        "overlook_tuned_le",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_full_ge",
+        "searches_tuned_le"
+      ]
+    },
+    "unfav_saved_le_lost": {
+      "full_name": "WikiSearch.unfav_saved_le_lost",
+      "line": 1198,
+      "confidence": 0.05,
+      "depends_on": [
+        "extraNotYet_full_ge",
+        "extraNotYet_nonneg",
+        "extraOther_full_ge",
+        "extraOther_nonneg",
+        "foundMinutes_nonneg",
+        "found_full_ge",
+        "miss_compose",
+        "search_decomp",
+        "searchesPerDay_nonneg",
+        "searches_full_ge"
+      ]
+    }
+  },
+  "axioms": {
+    "searchTime_current_eq": {
+      "full_name": "WikiSearch.searchTime_current_eq",
+      "line": 231,
+      "kind": "実験",
+      "support": [
+        "F1"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "testDelay_le_five": {
+      "full_name": "WikiSearch.testDelay_le_five",
+      "line": 237,
+      "kind": "実験",
+      "support": [
+        "F3"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "estimate_eq": {
+      "full_name": "WikiSearch.estimate_eq",
+      "line": 243,
+      "kind": "実験",
+      "support": [
+        "F4"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "current_no_daytime": {
+      "full_name": "WikiSearch.current_no_daytime",
+      "line": 254,
+      "kind": "経験則",
+      "support": [
+        "F2"
+      ],
+      "against": [],
+      "proposal": 0.3,
+      "reviewer": [],
+      "confidence": 0.3,
+      "atoms": 1
+    },
+    "beneficiaries_ge": {
+      "full_name": "WikiSearch.beneficiaries_ge",
+      "line": 262,
+      "kind": "経験則",
+      "support": [
+        "F1"
+      ],
+      "against": [],
+      "proposal": 0.9,
+      "reviewer": [],
+      "confidence": 0.9,
+      "atoms": 1
+    },
+    "search_decomp": {
+      "full_name": "WikiSearch.search_decomp",
+      "line": 268,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "searchMinutes_nonneg": {
+      "full_name": "WikiSearch.searchMinutes_nonneg",
+      "line": 274,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "foundMinutes_nonneg": {
+      "full_name": "WikiSearch.foundMinutes_nonneg",
+      "line": 278,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "searchesPerDay_nonneg": {
+      "full_name": "WikiSearch.searchesPerDay_nonneg",
+      "line": 282,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "miss_compose": {
+      "full_name": "WikiSearch.miss_compose",
+      "line": 286,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "maxDelay_of_noDaytime": {
+      "full_name": "WikiSearch.maxDelay_of_noDaytime",
+      "line": 291,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "stale_of_noDaytime": {
+      "full_name": "WikiSearch.stale_of_noDaytime",
+      "line": 295,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "notYet_ge_sameDay_stale": {
+      "full_name": "WikiSearch.notYet_ge_sameDay_stale",
+      "line": 299,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "prodMaxDelay_le_test": {
+      "full_name": "WikiSearch.prodMaxDelay_le_test",
+      "line": 310,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "sameDay_current_ge": {
+      "full_name": "WikiSearch.sameDay_current_ge",
+      "line": 319,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "sameDay_tuned_ge": {
+      "full_name": "WikiSearch.sameDay_tuned_ge",
+      "line": 328,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "notYet_le_of_maxFast": {
+      "full_name": "WikiSearch.notYet_le_of_maxFast",
+      "line": 337,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "fullText_complete": {
+      "full_name": "WikiSearch.fullText_complete",
+      "line": 346,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "current_not_incremental": {
+      "full_name": "WikiSearch.current_not_incremental",
+      "line": 357,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "tuned_no_daytime_of_rebuild": {
+      "full_name": "WikiSearch.tuned_no_daytime_of_rebuild",
+      "line": 366,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "noHit_current_le": {
+      "full_name": "WikiSearch.noHit_current_le",
+      "line": 377,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "overlook_current_le": {
+      "full_name": "WikiSearch.overlook_current_le",
+      "line": 386,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "noHit_full_le": {
+      "full_name": "WikiSearch.noHit_full_le",
+      "line": 397,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "overlook_full_le": {
+      "full_name": "WikiSearch.overlook_full_le",
+      "line": 406,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "noHit_full_ge": {
+      "full_name": "WikiSearch.noHit_full_ge",
+      "line": 417,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "overlook_full_ge": {
+      "full_name": "WikiSearch.overlook_full_ge",
+      "line": 426,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "searches_current_ge": {
+      "full_name": "WikiSearch.searches_current_ge",
+      "line": 437,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_current_ge": {
+      "full_name": "WikiSearch.extraNotYet_current_ge",
+      "line": 446,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_nonneg": {
+      "full_name": "WikiSearch.extraNotYet_nonneg",
+      "line": 455,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_nonneg": {
+      "full_name": "WikiSearch.extraOther_nonneg",
+      "line": 464,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_le_notYet": {
+      "full_name": "WikiSearch.extraOther_le_notYet",
+      "line": 473,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "searches_full_le": {
+      "full_name": "WikiSearch.searches_full_le",
+      "line": 484,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "found_full_le": {
+      "full_name": "WikiSearch.found_full_le",
+      "line": 493,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_full_le": {
+      "full_name": "WikiSearch.extraNotYet_full_le",
+      "line": 502,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_full_le": {
+      "full_name": "WikiSearch.extraOther_full_le",
+      "line": 511,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "searches_full_ge": {
+      "full_name": "WikiSearch.searches_full_ge",
+      "line": 522,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "found_full_ge": {
+      "full_name": "WikiSearch.found_full_ge",
+      "line": 531,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_full_ge": {
+      "full_name": "WikiSearch.extraNotYet_full_ge",
+      "line": 540,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_full_ge": {
+      "full_name": "WikiSearch.extraOther_full_ge",
+      "line": 549,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "searches_tuned_ge": {
+      "full_name": "WikiSearch.searches_tuned_ge",
+      "line": 560,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "found_tuned_ge": {
+      "full_name": "WikiSearch.found_tuned_ge",
+      "line": 569,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_tuned_ge": {
+      "full_name": "WikiSearch.extraNotYet_tuned_ge",
+      "line": 578,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_tuned_ge": {
+      "full_name": "WikiSearch.extraOther_tuned_ge",
+      "line": 587,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "noHit_tuned_ge": {
+      "full_name": "WikiSearch.noHit_tuned_ge",
+      "line": 596,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "overlook_tuned_ge": {
+      "full_name": "WikiSearch.overlook_tuned_ge",
+      "line": 605,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "searches_tuned_le": {
+      "full_name": "WikiSearch.searches_tuned_le",
+      "line": 616,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "found_tuned_le": {
+      "full_name": "WikiSearch.found_tuned_le",
+      "line": 625,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraNotYet_tuned_le": {
+      "full_name": "WikiSearch.extraNotYet_tuned_le",
+      "line": 634,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "extraOther_tuned_le": {
+      "full_name": "WikiSearch.extraOther_tuned_le",
+      "line": 643,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "noHit_tuned_le": {
+      "full_name": "WikiSearch.noHit_tuned_le",
+      "line": 652,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "overlook_tuned_le": {
+      "full_name": "WikiSearch.overlook_tuned_le",
+      "line": 661,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "cost_le_estimate": {
+      "full_name": "WikiSearch.cost_le_estimate",
+      "line": 672,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "workDays_ge": {
+      "full_name": "WikiSearch.workDays_ge",
+      "line": 681,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "wage_ge": {
+      "full_name": "WikiSearch.wage_ge",
+      "line": 690,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "gain_ge_wage": {
+      "full_name": "WikiSearch.gain_ge_wage",
+      "line": 699,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "many_threshold_le": {
+      "full_name": "WikiSearch.many_threshold_le",
+      "line": 709,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "approvable_of_net": {
+      "full_name": "WikiSearch.approvable_of_net",
+      "line": 718,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    }
+  },
+  "counts": {
+    "axioms": 81,
+    "declarations": 24,
+    "relational": 57,
+    "by_kind": {
+      "実験": 3,
+      "経験則": 2,
+      "自明": 8,
+      "仮定": 44
+    },
+    "claim_theorems": 6,
+    "side_theorems": 1
+  },
+  "atoms": {
+    "total": 57,
+    "non_trivial": 49,
+    "by_kind": {
+      "自明": 8,
+      "実験": 3,
+      "経験則": 2,
+      "仮定": 44
+    },
+    "used_by_claims": 43,
+    "side_only": 0,
+    "unused": 14
+  },
+  "rework": [
+    {
+      "axiom": "current_no_daytime",
+      "line": 254,
+      "kind": "経験則",
+      "confidence": 0.3,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [
+        "F2"
+      ],
+      "against": [],
+      "claims": [
+        "C2",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "lost_ge",
+        "notYet_current_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "prodMaxDelay_le_test",
+      "line": 310,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C2",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_fullText_le",
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "sameDay_current_ge",
+      "line": 319,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "lost_ge",
+        "notYet_current_ge",
+        "notYet_tuned_ge",
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "sameDay_tuned_ge",
+      "line": 328,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_tuned_ge",
+        "savedOverTuned_ge"
+      ]
+    },
+    {
+      "axiom": "notYet_le_of_maxFast",
+      "line": 337,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_fullText_le",
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "fullText_complete",
+      "line": 346,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_fullText_le",
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "current_not_incremental",
+      "line": 357,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_tuned_ge",
+        "savedOverTuned_ge"
+      ]
+    },
+    {
+      "axiom": "tuned_no_daytime_of_rebuild",
+      "line": 366,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "notYet_tuned_ge",
+        "savedOverTuned_ge"
+      ]
+    },
+    {
+      "axiom": "noHit_current_le",
+      "line": 377,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "overlook_current_le",
+      "line": 386,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "noHit_full_le",
+      "line": 397,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "overlook_full_le",
+      "line": 406,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "noHit_full_ge",
+      "line": 417,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap"
+      ]
+    },
+    {
+      "axiom": "overlook_full_ge",
+      "line": 426,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap"
+      ]
+    },
+    {
+      "axiom": "searches_current_ge",
+      "line": 437,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "lost_ge",
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_current_ge",
+      "line": 446,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "lost_ge",
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_nonneg",
+      "line": 455,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "extraOther_nonneg",
+      "line": 464,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "lost_ge",
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap",
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "extraOther_le_notYet",
+      "line": 473,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "saved_ge"
+      ]
+    },
+    {
+      "axiom": "searches_full_le",
+      "line": 484,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "found_full_le",
+      "line": 493,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_full_le",
+      "line": 502,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "extraOther_full_le",
+      "line": 511,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap",
+        "saved_ge",
+        "saved_ge_gap"
+      ]
+    },
+    {
+      "axiom": "searches_full_ge",
+      "line": 522,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "found_full_ge",
+      "line": 531,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_full_ge",
+      "line": 540,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "extraOther_full_ge",
+      "line": 549,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap",
+        "unfav_saved_le_gap",
+        "unfav_saved_le_lost"
+      ]
+    },
+    {
+      "axiom": "searches_tuned_ge",
+      "line": 560,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "found_tuned_ge",
+      "line": 569,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_tuned_ge",
+      "line": 578,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "extraOther_tuned_ge",
+      "line": 587,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "noHit_tuned_ge",
+      "line": 596,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "overlook_tuned_ge",
+      "line": 605,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "savedOverTuned_ge",
+        "savedOverTuned_ge_gap"
+      ]
+    },
+    {
+      "axiom": "searches_tuned_le",
+      "line": 616,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "found_tuned_le",
+      "line": 625,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "extraNotYet_tuned_le",
+      "line": 634,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "extraOther_tuned_le",
+      "line": 643,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "noHit_tuned_le",
+      "line": 652,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "overlook_tuned_le",
+      "line": 661,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "unfav_savedOverTuned_le_gap"
+      ]
+    },
+    {
+      "axiom": "cost_le_estimate",
+      "line": 672,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "workDays_ge",
+      "line": 681,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "yenPerDailyMinute_ge"
+      ]
+    },
+    {
+      "axiom": "wage_ge",
+      "line": 690,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "yenPerDailyMinute_ge"
+      ]
+    },
+    {
+      "axiom": "gain_ge_wage",
+      "line": 699,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "many_threshold_le",
+      "line": 709,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C1"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "approvable_of_net",
+      "line": 718,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    }
+  ],
+  "witness": {
+    "exists": true,
+    "missing_lines": 0,
+    "compiled": true,
+    "nonstd": {},
+    "type_checked": 81
+  },
+  "gate_errors": 0,
+  "lean_exit_code": 0
+}
