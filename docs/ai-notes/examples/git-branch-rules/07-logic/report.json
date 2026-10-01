@@ -2,69 +2,54 @@
   "claims": {
     "C0": {
       "text": "変更は main に直接 push せず、作業ブランチを切り、プルリクエストを出し、1名以上の承認を受けてから、自分で squash merge して main に取り込む。",
-      "confidence": 0.6,
-      "joint_probability": 0.001,
-      "derivations": [
-        {
-          "theorem": "claim_C0",
-          "confidence": 0.6
-        }
+      "confidence": 0.05,
+      "theorems": [
+        "c0_team_flow"
       ],
-      "depends_on": [
-        "assume_A1",
-        "assume_A2",
-        "assume_A3",
-        "assume_A4",
-        "assume_A5",
-        "assume_A6",
-        "assume_A7",
-        "fact_F1",
-        "fact_F10",
-        "fact_F11",
-        "fact_F12",
-        "fact_F13",
-        "fact_F14",
-        "fact_F15",
-        "fact_F2",
-        "fact_F3",
-        "fact_F4",
-        "fact_F5",
-        "fact_F6",
-        "fact_F7",
-        "fact_F8",
-        "fact_F9",
-        "rule_C0",
-        "rule_C1",
-        "rule_C2",
-        "rule_C3",
-        "rule_C4",
-        "rule_C5"
+      "weakest_link": "approval_covers_content",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "approval_covers_content",
+        "approver_not_author",
+        "newcomer_can_commit",
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr",
+        "recipe_doable"
       ],
-      "weakest_link": "assume_A4",
-      "weakest_confidence": 0.6,
+      "decisive_atoms": 6,
+      "path_atoms": 28,
+      "decisive_axioms": [
+        "approval_covers_content",
+        "approver_not_author",
+        "newcomer_can_commit",
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr",
+        "recipe_doable"
+      ],
       "hedge": {
-        "level": "moderate",
-        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
       }
     },
     "C1": {
       "text": "main への直接 push は、チーム全員の作業を止めたり、未レビューの変更を本番に出しかけたりする危険がある。",
       "confidence": 0.6,
-      "joint_probability": 0.214,
-      "derivations": [
-        {
-          "theorem": "claim_C1",
-          "confidence": 0.6
-        }
+      "theorems": [
+        "c1_direct_push_can_stop_team",
+        "c1_direct_push_unreviewed_release"
       ],
-      "depends_on": [
-        "assume_A1",
-        "fact_F1",
-        "fact_F2",
-        "rule_C1"
-      ],
-      "weakest_link": "fact_F1",
+      "weakest_link": "incident_direct_push_stopped_team",
       "weakest_confidence": 0.6,
+      "weakest_links": [
+        "incident_direct_push_stopped_team",
+        "main_feeds_release"
+      ],
+      "decisive_atoms": 2,
+      "path_atoms": 0,
+      "decisive_axioms": [
+        "incident_direct_push_stopped_team",
+        "main_feeds_release"
+      ],
       "hedge": {
         "level": "moderate",
         "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
@@ -73,136 +58,1250 @@
     "C2": {
       "text": "直接 push は今月はまだ仕組みで止められないので、一人ひとりが流れを守る必要がある。",
       "confidence": 0.6,
-      "joint_probability": 0.103,
-      "derivations": [
-        {
-          "theorem": "claim_C2",
-          "confidence": 0.6
-        }
+      "theorems": [
+        "c2_only_self_stops_this_month"
       ],
-      "depends_on": [
-        "assume_A1",
-        "fact_F1",
-        "fact_F2",
-        "fact_F3",
-        "rule_C1",
-        "rule_C2"
-      ],
-      "weakest_link": "fact_F1",
+      "weakest_link": "broken_main_stops_team",
       "weakest_confidence": 0.6,
+      "weakest_links": [
+        "broken_main_stops_team",
+        "main_feeds_release",
+        "no_rejection_this_month",
+        "unrejected_push_lands"
+      ],
+      "decisive_atoms": 4,
+      "path_atoms": 0,
+      "decisive_axioms": [
+        "broken_main_stops_team",
+        "main_feeds_release",
+        "no_rejection_this_month",
+        "unrejected_push_lands"
+      ],
       "hedge": {
         "level": "moderate",
         "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
       }
     },
     "C3": {
-      "text": "この流れを守るかぎり、main に入る変更はすべて、マージ前にほかの人のレビューと承認を通る。",
-      "confidence": 0.6,
-      "joint_probability": 0.171,
-      "derivations": [
-        {
-          "theorem": "claim_C3",
-          "confidence": 0.6
-        }
+      "text": "この流れ（承認のあとに commit を足したら、もう一度レビューを頼むことを含む）を自分が守るかぎり、自分が main に入れる変更はすべて、マージ前にほかの人のレビューと承認を通る。",
+      "confidence": 0.05,
+      "theorems": [
+        "c3_own_changes_approved_by_other",
+        "c3_own_changes_reviewed_by_other"
       ],
-      "depends_on": [
-        "assume_A2",
-        "assume_A4",
-        "fact_F5",
-        "fact_F6",
-        "fact_F7",
-        "fact_F8",
-        "rule_C3"
+      "weakest_link": "approval_covers_content",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "approval_covers_content",
+        "approver_not_author"
       ],
-      "weakest_link": "assume_A4",
-      "weakest_confidence": 0.6,
+      "decisive_atoms": 2,
+      "path_atoms": 7,
+      "decisive_axioms": [
+        "approval_covers_content",
+        "approver_not_author"
+      ],
       "hedge": {
-        "level": "moderate",
-        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
       }
     },
     "C4": {
       "text": "コンフリクト（同じ箇所の変更の衝突）が起きなければ、社内の決まりに沿った手順で、新人でも最初から最後まで自分で進められる。",
-      "confidence": 0.6,
-      "joint_probability": 0.178,
-      "derivations": [
-        {
-          "theorem": "claim_C4",
-          "confidence": 0.6
-        }
+      "confidence": 0.05,
+      "theorems": [
+        "c4_flow_follows_rules",
+        "c4_newcomer_can_do_own_steps"
       ],
-      "depends_on": [
-        "assume_A3",
-        "fact_F10",
-        "fact_F11",
-        "fact_F12",
-        "fact_F13",
-        "fact_F14",
-        "fact_F15",
-        "fact_F9",
-        "rule_C4"
+      "weakest_link": "newcomer_can_commit",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "newcomer_can_commit",
+        "recipe_doable"
       ],
-      "weakest_link": "fact_F11",
-      "weakest_confidence": 0.6,
+      "decisive_atoms": 2,
+      "path_atoms": 13,
+      "decisive_axioms": [
+        "newcomer_can_commit",
+        "recipe_doable"
+      ],
       "hedge": {
-        "level": "moderate",
-        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
       }
     },
     "C5": {
       "text": "来月、仕組みで直接 push が拒否されるようになっても、この流れを知っておく必要がある。",
-      "confidence": 0.6,
-      "joint_probability": 0.342,
-      "derivations": [
-        {
-          "theorem": "claim_C5",
-          "confidence": 0.6
-        }
+      "confidence": 0.05,
+      "theorems": [
+        "c5_only_pr_route_when_protected"
       ],
-      "depends_on": [
-        "assume_A6",
-        "fact_F3",
-        "fact_F4",
-        "rule_C5"
+      "weakest_link": "newcomer_no_bypass",
+      "weakest_confidence": 0.05,
+      "weakest_links": [
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr"
       ],
-      "weakest_link": "fact_F3",
-      "weakest_confidence": 0.6,
+      "decisive_atoms": 2,
+      "path_atoms": 3,
+      "decisive_axioms": [
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr"
+      ],
       "hedge": {
-        "level": "moderate",
-        "guidance": "根拠を添えて控えめに言う（〜と考えられます／〜の傾向があります）"
+        "level": "hypothesis",
+        "guidance": "主張ではなく仮説・未確認事項として明示する"
       }
     }
   },
-  "axioms": {
-    "fact_F1": 0.6,
-    "fact_F2": 0.6,
-    "fact_F3": 0.6,
-    "fact_F4": 0.95,
-    "fact_F5": 0.95,
-    "fact_F6": 0.95,
-    "fact_F7": 0.6,
-    "fact_F8": 0.95,
-    "fact_F9": 0.6,
-    "fact_F10": 0.95,
-    "fact_F11": 0.6,
-    "fact_F12": 0.95,
-    "fact_F13": 0.95,
-    "fact_F14": 0.95,
-    "fact_F15": 0.95,
-    "assume_A1": 0.85,
-    "assume_A2": 0.65,
-    "assume_A3": 0.8,
-    "assume_A4": 0.6,
-    "assume_A5": 0.65,
-    "assume_A6": 0.8,
-    "assume_A7": 0.9,
-    "rule_C1": 0.7,
-    "rule_C2": 0.8,
-    "rule_C3": 0.85,
-    "rule_C4": 0.8,
-    "rule_C5": 0.75,
-    "rule_C0": 0.8
+  "theorems": {
+    "c1_direct_push_can_stop_team": {
+      "full_name": "GitBranchRules.c1_direct_push_can_stop_team",
+      "line": 567,
+      "claims": [
+        "C1"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.6,
+      "depends_on": [
+        "incident_direct_push_stopped_team"
+      ],
+      "weakest": [
+        {
+          "axiom": "incident_direct_push_stopped_team",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "c1_direct_push_unreviewed_release": {
+      "full_name": "GitBranchRules.c1_direct_push_unreviewed_release",
+      "line": 572,
+      "claims": [
+        "C1"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.6,
+      "depends_on": [
+        "bringing_enters_main",
+        "direct_write_skips_pr",
+        "main_feeds_release"
+      ],
+      "weakest": [
+        {
+          "axiom": "main_feeds_release",
+          "confidence": 0.6
+        },
+        {
+          "axiom": "bringing_enters_main",
+          "confidence": 1.0
+        },
+        {
+          "axiom": "direct_write_skips_pr",
+          "confidence": 1.0
+        }
+      ]
+    },
+    "c2_only_self_stops_this_month": {
+      "full_name": "GitBranchRules.c2_only_self_stops_this_month",
+      "line": 581,
+      "claims": [
+        "C2"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.6,
+      "depends_on": [
+        "bringing_enters_main",
+        "broken_main_stops_team",
+        "direct_write_skips_pr",
+        "main_feeds_release",
+        "no_rejection_this_month",
+        "unrejected_push_lands"
+      ],
+      "weakest": [
+        {
+          "axiom": "broken_main_stops_team",
+          "confidence": 0.6
+        },
+        {
+          "axiom": "main_feeds_release",
+          "confidence": 0.6
+        },
+        {
+          "axiom": "no_rejection_this_month",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "c3_own_changes_approved_by_other": {
+      "full_name": "GitBranchRules.c3_own_changes_approved_by_other",
+      "line": 609,
+      "claims": [
+        "C3"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "approve_keeps_main",
+        "approver_not_author",
+        "bringing_changes_main",
+        "bringing_needs_doing",
+        "commit_keeps_main",
+        "create_branch_keeps_main",
+        "merge_content_origin",
+        "open_pr_keeps_main",
+        "push_branch_keeps_main",
+        "push_fix_keeps_main",
+        "request_review_keeps_main",
+        "squash_content_from_pr",
+        "update_main_keeps_main"
+      ],
+      "weakest": [
+        {
+          "axiom": "approver_not_author",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "approve_keeps_main",
+          "confidence": 0.8
+        },
+        {
+          "axiom": "merge_content_origin",
+          "confidence": 0.8
+        }
+      ]
+    },
+    "c3_own_changes_reviewed_by_other": {
+      "full_name": "GitBranchRules.c3_own_changes_reviewed_by_other",
+      "line": 629,
+      "claims": [
+        "C3"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "approval_covers_content",
+        "approve_keeps_main",
+        "approver_not_author",
+        "bringing_changes_main",
+        "bringing_needs_doing",
+        "commit_keeps_main",
+        "create_branch_keeps_main",
+        "merge_content_origin",
+        "open_pr_keeps_main",
+        "push_branch_keeps_main",
+        "push_fix_keeps_main",
+        "request_review_keeps_main",
+        "squash_content_from_pr",
+        "update_main_keeps_main"
+      ],
+      "weakest": [
+        {
+          "axiom": "approval_covers_content",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "approver_not_author",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "approve_keeps_main",
+          "confidence": 0.8
+        }
+      ]
+    },
+    "c4_flow_follows_rules": {
+      "full_name": "GitBranchRules.c4_flow_follows_rules",
+      "line": 639,
+      "claims": [
+        "C4"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.6,
+      "depends_on": [
+        "rule_merge_method",
+        "rule_merger",
+        "rule_min_approvals",
+        "rule_prefix_feature",
+        "rule_prefix_fix"
+      ],
+      "weakest": [
+        {
+          "axiom": "rule_merge_method",
+          "confidence": 0.6
+        },
+        {
+          "axiom": "rule_merger",
+          "confidence": 0.6
+        },
+        {
+          "axiom": "rule_min_approvals",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "c4_newcomer_can_do_own_steps": {
+      "full_name": "GitBranchRules.c4_newcomer_can_do_own_steps",
+      "line": 655,
+      "claims": [
+        "C4"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "newcomer_can_commit",
+        "newcomer_can_write",
+        "recipe_create_branch",
+        "recipe_doable",
+        "recipe_open_pr",
+        "recipe_push_branch",
+        "recipe_push_fix",
+        "recipe_request_review",
+        "recipe_squash_merge",
+        "recipe_update_main"
+      ],
+      "weakest": [
+        {
+          "axiom": "newcomer_can_commit",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "recipe_doable",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "newcomer_can_write",
+          "confidence": 0.6
+        }
+      ]
+    },
+    "c5_only_pr_route_when_protected": {
+      "full_name": "GitBranchRules.c5_only_pr_route_when_protected",
+      "line": 674,
+      "claims": [
+        "C5"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr",
+        "pr_needs_work_branch",
+        "protection_only_approved_pr",
+        "protection_rejects_push"
+      ],
+      "weakest": [
+        {
+          "axiom": "newcomer_no_bypass",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "next_month_block_requires_pr",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "protection_only_approved_pr",
+          "confidence": 0.75
+        }
+      ]
+    },
+    "c0_team_flow": {
+      "full_name": "GitBranchRules.c0_team_flow",
+      "line": 688,
+      "claims": [
+        "C0"
+      ],
+      "beyond": [],
+      "baseline": false,
+      "confidence": 0.05,
+      "depends_on": [
+        "approval_covers_content",
+        "approve_keeps_main",
+        "approver_not_author",
+        "bringing_changes_main",
+        "bringing_enters_main",
+        "bringing_needs_doing",
+        "broken_main_stops_team",
+        "commit_keeps_main",
+        "create_branch_keeps_main",
+        "direct_write_skips_pr",
+        "incident_direct_push_stopped_team",
+        "main_feeds_release",
+        "merge_content_origin",
+        "newcomer_can_commit",
+        "newcomer_can_write",
+        "newcomer_no_bypass",
+        "next_month_block_requires_pr",
+        "no_rejection_this_month",
+        "open_pr_keeps_main",
+        "pr_needs_work_branch",
+        "protection_only_approved_pr",
+        "protection_rejects_push",
+        "push_branch_keeps_main",
+        "push_fix_keeps_main",
+        "recipe_create_branch",
+        "recipe_doable",
+        "recipe_open_pr",
+        "recipe_push_branch",
+        "recipe_push_fix",
+        "recipe_request_review",
+        "recipe_squash_merge",
+        "recipe_update_main",
+        "request_review_keeps_main",
+        "rule_merge_method",
+        "rule_merger",
+        "rule_min_approvals",
+        "rule_prefix_feature",
+        "rule_prefix_fix",
+        "squash_content_from_pr",
+        "unrejected_push_lands",
+        "update_main_keeps_main"
+      ],
+      "weakest": [
+        {
+          "axiom": "approval_covers_content",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "approver_not_author",
+          "confidence": 0.05
+        },
+        {
+          "axiom": "newcomer_can_commit",
+          "confidence": 0.05
+        }
+      ]
+    }
   },
-  "lean_exit_code": 0,
-  "lean_output": "'claim_C1' depends on axioms: [P_A1, P_C1, P_F1, P_F2, assume_A1, fact_F1, fact_F2, rule_C1]\n'claim_C2' depends on axioms: [P_A1,\n P_C1,\n P_C2,\n P_F1,\n P_F2,\n P_F3,\n assume_A1,\n fact_F1,\n fact_F2,\n fact_F3,\n rule_C1,\n rule_C2]\n'claim_C3' depends on axioms: [P_A2,\n P_A4,\n P_C3,\n P_F5,\n P_F6,\n P_F7,\n P_F8,\n assume_A2,\n assume_A4,\n fact_F5,\n fact_F6,\n fact_F7,\n fact_F8,\n rule_C3]\n'claim_C4' depends on axioms: [P_A3,\n P_C4,\n P_F10,\n P_F11,\n P_F12,\n P_F13,\n P_F14,\n P_F15,\n P_F9,\n assume_A3,\n fact_F10,\n fact_F11,\n fact_F12,\n fact_F13,\n fact_F14,\n fact_F15,\n fact_F9,\n rule_C4]\n'claim_C5' depends on axioms: [P_A6, P_C5, P_F3, P_F4, assume_A6, fact_F3, fact_F4, rule_C5]\n'claim_C0' depends on axioms: [P_A1,\n P_A2,\n P_A3,\n P_A4,\n P_A5,\n P_A6,\n P_A7,\n P_C0,\n P_C1,\n P_C2,\n P_C3,\n P_C4,\n P_C5,\n P_F1,\n P_F10,\n P_F11,\n P_F12,\n P_F13,\n P_F14,\n P_F15,\n P_F2,\n P_F3,\n P_F4,\n P_F5,\n P_F6,\n P_F7,\n P_F8,\n P_F9,\n assume_A1,\n assume_A2,\n assume_A3,\n assume_A4,\n assume_A5,\n assume_A6,\n assume_A7,\n fact_F1,\n fact_F10,\n fact_F11,\n fact_F12,\n fact_F13,\n fact_F14,\n fact_F15,\n fact_F2,\n fact_F3,\n fact_F4,\n fact_F5,\n fact_F6,\n fact_F7,\n fact_F8,\n fact_F9,\n rule_C0,\n rule_C1,\n rule_C2,\n rule_C3,\n rule_C4,\n rule_C5]"
+  "other_theorems": {
+    "flow_changes_main_only_by_merge": {
+      "full_name": "GitBranchRules.flow_changes_main_only_by_merge",
+      "line": 592,
+      "unfavorable": false,
+      "confidence": 0.8,
+      "depends_on": [
+        "approve_keeps_main",
+        "commit_keeps_main",
+        "create_branch_keeps_main",
+        "open_pr_keeps_main",
+        "push_branch_keeps_main",
+        "push_fix_keeps_main",
+        "request_review_keeps_main",
+        "update_main_keeps_main"
+      ]
+    },
+    "u1_push_after_approval_unseen": {
+      "full_name": "GitBranchRules.u1_push_after_approval_unseen",
+      "line": 713,
+      "unfavorable": true,
+      "confidence": 0.95,
+      "depends_on": [
+        "push_joins_pr",
+        "pushed_after_not_seen",
+        "squash_brings_all_pr"
+      ]
+    },
+    "u2_reviewed_change_can_stop_team": {
+      "full_name": "GitBranchRules.u2_reviewed_change_can_stop_team",
+      "line": 720,
+      "unfavorable": true,
+      "confidence": 0.05,
+      "depends_on": [
+        "approved_change_can_break",
+        "bringing_enters_main",
+        "broken_main_stops_team"
+      ]
+    },
+    "u3_merge_needs_another_person": {
+      "full_name": "GitBranchRules.u3_merge_needs_another_person",
+      "line": 726,
+      "unfavorable": true,
+      "confidence": 0.05,
+      "depends_on": [
+        "approver_not_author"
+      ]
+    },
+    "u4_bypasser_still_unblocked": {
+      "full_name": "GitBranchRules.u4_bypasser_still_unblocked",
+      "line": 738,
+      "unfavorable": true,
+      "confidence": 0.6,
+      "depends_on": [
+        "bypass_exempt_by_default",
+        "unrejected_push_lands"
+      ]
+    },
+    "u5_nonfollower_unreviewed_entry": {
+      "full_name": "GitBranchRules.u5_nonfollower_unreviewed_entry",
+      "line": 745,
+      "unfavorable": true,
+      "confidence": 0.6,
+      "depends_on": [
+        "bringing_needs_doing",
+        "direct_write_skips_pr",
+        "incident_direct_push_stopped_team"
+      ]
+    }
+  },
+  "axioms": {
+    "incident_direct_push_stopped_team": {
+      "full_name": "GitBranchRules.incident_direct_push_stopped_team",
+      "line": 271,
+      "kind": "実験",
+      "support": [
+        "F1"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "direct_write_skips_pr": {
+      "full_name": "GitBranchRules.direct_write_skips_pr",
+      "line": 275,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "bringing_enters_main": {
+      "full_name": "GitBranchRules.bringing_enters_main",
+      "line": 279,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "main_feeds_release": {
+      "full_name": "GitBranchRules.main_feeds_release",
+      "line": 286,
+      "kind": "経験則",
+      "support": [
+        "F2"
+      ],
+      "against": [],
+      "proposal": 0.6,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "broken_main_stops_team": {
+      "full_name": "GitBranchRules.broken_main_stops_team",
+      "line": 293,
+      "kind": "経験則",
+      "support": [
+        "F1"
+      ],
+      "against": [],
+      "proposal": 0.6,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "no_rejection_this_month": {
+      "full_name": "GitBranchRules.no_rejection_this_month",
+      "line": 299,
+      "kind": "実験",
+      "support": [
+        "F3"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "unrejected_push_lands": {
+      "full_name": "GitBranchRules.unrejected_push_lands",
+      "line": 306,
+      "kind": "経験則",
+      "support": [
+        "F1",
+        "F2"
+      ],
+      "against": [],
+      "proposal": 0.6,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "bringing_needs_doing": {
+      "full_name": "GitBranchRules.bringing_needs_doing",
+      "line": 312,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "bringing_changes_main": {
+      "full_name": "GitBranchRules.bringing_changes_main",
+      "line": 316,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "update_main_keeps_main": {
+      "full_name": "GitBranchRules.update_main_keeps_main",
+      "line": 320,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "create_branch_keeps_main": {
+      "full_name": "GitBranchRules.create_branch_keeps_main",
+      "line": 324,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "commit_keeps_main": {
+      "full_name": "GitBranchRules.commit_keeps_main",
+      "line": 330,
+      "kind": "実験",
+      "support": [
+        "F5"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "push_branch_keeps_main": {
+      "full_name": "GitBranchRules.push_branch_keeps_main",
+      "line": 337,
+      "kind": "経験則",
+      "support": [
+        "F5",
+        "F13"
+      ],
+      "against": [],
+      "proposal": 0.9,
+      "reviewer": [],
+      "confidence": 0.9,
+      "atoms": 1
+    },
+    "open_pr_keeps_main": {
+      "full_name": "GitBranchRules.open_pr_keeps_main",
+      "line": 342,
+      "kind": "実験",
+      "support": [
+        "F6"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "request_review_keeps_main": {
+      "full_name": "GitBranchRules.request_review_keeps_main",
+      "line": 346,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "push_fix_keeps_main": {
+      "full_name": "GitBranchRules.push_fix_keeps_main",
+      "line": 353,
+      "kind": "経験則",
+      "support": [
+        "F8",
+        "F13"
+      ],
+      "against": [],
+      "proposal": 0.9,
+      "reviewer": [],
+      "confidence": 0.9,
+      "atoms": 1
+    },
+    "approve_keeps_main": {
+      "full_name": "GitBranchRules.approve_keeps_main",
+      "line": 360,
+      "kind": "経験則",
+      "support": [
+        "F6"
+      ],
+      "against": [],
+      "proposal": 0.8,
+      "reviewer": [],
+      "confidence": 0.8,
+      "atoms": 1
+    },
+    "squash_content_from_pr": {
+      "full_name": "GitBranchRules.squash_content_from_pr",
+      "line": 365,
+      "kind": "実験",
+      "support": [
+        "F12"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "merge_content_origin": {
+      "full_name": "GitBranchRules.merge_content_origin",
+      "line": 372,
+      "kind": "経験則",
+      "support": [
+        "F6",
+        "F8"
+      ],
+      "against": [],
+      "proposal": 0.8,
+      "reviewer": [],
+      "confidence": 0.8,
+      "atoms": 1
+    },
+    "approval_covers_content": {
+      "full_name": "GitBranchRules.approval_covers_content",
+      "line": 381,
+      "kind": "経験則",
+      "support": [
+        "F6"
+      ],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [
+        {
+          "value": 0.05,
+          "original": 0.7,
+          "reason": "F6 が述べるのは「プルリクエストは、マージの前に変更を話し合い、レビューできる機能」ということだけで、承認した人が中身を見たうえで承認しているか（社内での承認の出し方）は述べていない。この公理が言う人の振る舞いを支える事実がない。"
+        }
+      ],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "approver_not_author": {
+      "full_name": "GitBranchRules.approver_not_author",
+      "line": 389,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "push_joins_pr": {
+      "full_name": "GitBranchRules.push_joins_pr",
+      "line": 397,
+      "kind": "実験",
+      "support": [
+        "F8"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "squash_brings_all_pr": {
+      "full_name": "GitBranchRules.squash_brings_all_pr",
+      "line": 402,
+      "kind": "実験",
+      "support": [
+        "F12"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "pushed_after_not_seen": {
+      "full_name": "GitBranchRules.pushed_after_not_seen",
+      "line": 406,
+      "kind": "自明",
+      "support": [],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 1.0,
+      "atoms": 1
+    },
+    "approved_change_can_break": {
+      "full_name": "GitBranchRules.approved_change_can_break",
+      "line": 416,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "rule_min_approvals": {
+      "full_name": "GitBranchRules.rule_min_approvals",
+      "line": 424,
+      "kind": "実験",
+      "support": [
+        "F7"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "rule_merge_method": {
+      "full_name": "GitBranchRules.rule_merge_method",
+      "line": 430,
+      "kind": "実験",
+      "support": [
+        "F11"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "rule_merger": {
+      "full_name": "GitBranchRules.rule_merger",
+      "line": 436,
+      "kind": "実験",
+      "support": [
+        "F11"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "rule_prefix_feature": {
+      "full_name": "GitBranchRules.rule_prefix_feature",
+      "line": 442,
+      "kind": "実験",
+      "support": [
+        "F9"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "rule_prefix_fix": {
+      "full_name": "GitBranchRules.rule_prefix_fix",
+      "line": 448,
+      "kind": "実験",
+      "support": [
+        "F9"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "recipe_update_main": {
+      "full_name": "GitBranchRules.recipe_update_main",
+      "line": 456,
+      "kind": "実験",
+      "support": [
+        "F15"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_create_branch": {
+      "full_name": "GitBranchRules.recipe_create_branch",
+      "line": 462,
+      "kind": "実験",
+      "support": [
+        "F10"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_push_branch": {
+      "full_name": "GitBranchRules.recipe_push_branch",
+      "line": 468,
+      "kind": "実験",
+      "support": [
+        "F13"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_open_pr": {
+      "full_name": "GitBranchRules.recipe_open_pr",
+      "line": 473,
+      "kind": "実験",
+      "support": [
+        "F14"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_request_review": {
+      "full_name": "GitBranchRules.recipe_request_review",
+      "line": 478,
+      "kind": "実験",
+      "support": [
+        "F14"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_push_fix": {
+      "full_name": "GitBranchRules.recipe_push_fix",
+      "line": 483,
+      "kind": "実験",
+      "support": [
+        "F8"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "recipe_squash_merge": {
+      "full_name": "GitBranchRules.recipe_squash_merge",
+      "line": 489,
+      "kind": "実験",
+      "support": [
+        "F12"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "newcomer_can_commit": {
+      "full_name": "GitBranchRules.newcomer_can_commit",
+      "line": 497,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "newcomer_can_write": {
+      "full_name": "GitBranchRules.newcomer_can_write",
+      "line": 504,
+      "kind": "経験則",
+      "support": [
+        "F1",
+        "F2"
+      ],
+      "against": [],
+      "proposal": 0.6,
+      "reviewer": [],
+      "confidence": 0.6,
+      "atoms": 1
+    },
+    "recipe_doable": {
+      "full_name": "GitBranchRules.recipe_doable",
+      "line": 512,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "protection_rejects_push": {
+      "full_name": "GitBranchRules.protection_rejects_push",
+      "line": 522,
+      "kind": "実験",
+      "support": [
+        "F4"
+      ],
+      "against": [],
+      "proposal": 0.75,
+      "reviewer": [
+        {
+          "value": 0.75,
+          "original": 0.95,
+          "reason": "F4 は、初期設定で制限が効かないのは「リポジトリの管理者など」と述べ、除かれるのは管理者だけではない（バイパスの権限を持つ役割など）。公理の「管理者でない人は、だれでも拒否される」は F4 より強く、F4 は一部しか支えない（partially_verified 相当の値にした）。元の案は、書き手の案がない実験の公理なので、CLI が計算した値。"
+        }
+      ],
+      "confidence": 0.75,
+      "atoms": 1
+    },
+    "protection_only_approved_pr": {
+      "full_name": "GitBranchRules.protection_only_approved_pr",
+      "line": 530,
+      "kind": "実験",
+      "support": [
+        "F4"
+      ],
+      "against": [],
+      "proposal": 0.75,
+      "reviewer": [
+        {
+          "value": 0.75,
+          "original": 0.95,
+          "reason": "F4 は、初期設定で制限が効かないのは「リポジトリの管理者など」と述べ、除かれるのは管理者だけではない（バイパスの権限を持つ役割など）。公理の「管理者でない人が入れる変更は、どれも承認を得たプルリクエストを通る」は F4 より強く、F4 は一部しか支えない（partially_verified 相当の値にした）。元の案は、書き手の案がない実験の公理なので、CLI が計算した値。"
+        }
+      ],
+      "confidence": 0.75,
+      "atoms": 1
+    },
+    "pr_needs_work_branch": {
+      "full_name": "GitBranchRules.pr_needs_work_branch",
+      "line": 535,
+      "kind": "実験",
+      "support": [
+        "F6"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    },
+    "newcomer_no_bypass": {
+      "full_name": "GitBranchRules.newcomer_no_bypass",
+      "line": 543,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "next_month_block_requires_pr": {
+      "full_name": "GitBranchRules.next_month_block_requires_pr",
+      "line": 551,
+      "kind": "仮定",
+      "support": [],
+      "against": [],
+      "proposal": 0.05,
+      "reviewer": [],
+      "confidence": 0.05,
+      "atoms": 1
+    },
+    "bypass_exempt_by_default": {
+      "full_name": "GitBranchRules.bypass_exempt_by_default",
+      "line": 559,
+      "kind": "実験",
+      "support": [
+        "F4"
+      ],
+      "against": [],
+      "proposal": null,
+      "reviewer": [],
+      "confidence": 0.95,
+      "atoms": 1
+    }
+  },
+  "counts": {
+    "axioms": 80,
+    "declarations": 34,
+    "relational": 46,
+    "by_kind": {
+      "実験": 23,
+      "自明": 8,
+      "経験則": 9,
+      "仮定": 6
+    },
+    "claim_theorems": 9,
+    "side_theorems": 0
+  },
+  "atoms": {
+    "total": 46,
+    "non_trivial": 38,
+    "by_kind": {
+      "自明": 8,
+      "実験": 23,
+      "経験則": 9,
+      "仮定": 6
+    },
+    "used_by_claims": 41,
+    "side_only": 0,
+    "unused": 5
+  },
+  "rework": [
+    {
+      "axiom": "approval_covers_content",
+      "line": 381,
+      "kind": "経験則",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [
+        "F6"
+      ],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "approver_not_author",
+      "line": 389,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C3"
+      ],
+      "side_theorems": [],
+      "other_theorems": [
+        "u3_merge_needs_another_person"
+      ]
+    },
+    {
+      "axiom": "approved_change_can_break",
+      "line": 416,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [],
+      "side_theorems": [],
+      "other_theorems": [
+        "u2_reviewed_change_can_stop_team"
+      ]
+    },
+    {
+      "axiom": "newcomer_can_commit",
+      "line": 497,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C4"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "recipe_doable",
+      "line": 512,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C4"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "newcomer_no_bypass",
+      "line": 543,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C5"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    },
+    {
+      "axiom": "next_month_block_requires_pr",
+      "line": 551,
+      "kind": "仮定",
+      "confidence": 0.05,
+      "reasons": [
+        "low_confidence"
+      ],
+      "support": [],
+      "against": [],
+      "claims": [
+        "C0",
+        "C5"
+      ],
+      "side_theorems": [],
+      "other_theorems": []
+    }
+  ],
+  "witness": {
+    "exists": true,
+    "missing_lines": 0,
+    "compiled": true,
+    "nonstd": {},
+    "type_checked": 80
+  },
+  "gate_errors": 0,
+  "lean_exit_code": 0
 }

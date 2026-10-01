@@ -5,3 +5,6 @@ apm_modules/
 # Python
 __pycache__/
 *.pyc
+
+# 公開しない題材（オーナーの別の文書の論証。手元でだけ PrivateSubjectTest に使う）
+tests/fixtures/private-subject/

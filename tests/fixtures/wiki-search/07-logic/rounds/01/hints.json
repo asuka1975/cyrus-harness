@@ -1,0 +1,32 @@
+{
+  "hints": [
+    {
+      "kind": "used_only_by_unmarked_theorems",
+      "target": "searchMinutes_nonneg",
+      "line": 205,
+      "detail": {
+        "kind": "自明"
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "prodDelay_le_test",
+      "line": 219,
+      "detail": {
+        "facts": [
+          "F3"
+        ]
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "notYet_ge_of_slow",
+      "line": 228,
+      "detail": {
+        "facts": [
+          "F2"
+        ]
+      }
+    }
+  ]
+}

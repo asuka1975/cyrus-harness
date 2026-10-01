@@ -1,0 +1,136 @@
+{
+  "hints": [
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "searchMinutes_nonneg",
+      "line": 274,
+      "detail": {
+        "kind": "自明"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "noHit_full_ge",
+      "line": 417,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "overlook_full_ge",
+      "line": 426,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraNotYet_nonneg",
+      "line": 455,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "searches_full_ge",
+      "line": 522,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "found_full_ge",
+      "line": 531,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraNotYet_full_ge",
+      "line": 540,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraOther_full_ge",
+      "line": 549,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "searches_tuned_le",
+      "line": 616,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "found_tuned_le",
+      "line": 625,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraNotYet_tuned_le",
+      "line": 634,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraOther_tuned_le",
+      "line": 643,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "noHit_tuned_le",
+      "line": 652,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "overlook_tuned_le",
+      "line": 661,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "prodMaxDelay_le_test",
+      "line": 310,
+      "detail": {
+        "facts": [
+          "F3"
+        ]
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "sameDay_current_ge",
+      "line": 319,
+      "detail": {
+        "facts": [
+          "F2"
+        ]
+      }
+    }
+  ]
+}

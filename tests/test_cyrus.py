@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -21,7 +22,7 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "wiki-search"
 sys.path.insert(0, str(SCRIPTS))
 sys.dont_write_bytecode = True  # .apm/ に __pycache__ を作らない（apm install がそれを .claude/ に写してしまうため）
 
-from cyruslib import agyreader, jatext, leancheck, lint, skim, visual, wording  # noqa: E402
+from cyruslib import agyreader, jatext, leancheck, leansrc, lint, logicround, skim, visual, wording  # noqa: E402
 from cyruslib.reader import build_profile  # noqa: E402
 
 HAS_LEAN = leancheck.find_lean() is not None
@@ -32,8 +33,11 @@ except ImportError:
     HAS_VISUAL = False
 FAKE_AGY = Path(__file__).resolve().parent / "fakes" / "fake_agy.py"
 
+MINI = Path(__file__).resolve().parent / "fixtures" / "logic-mini"
+PRIVATE = Path(__file__).resolve().parent / "fixtures" / "private-subject"  # 公開しない題材（.gitignore）
+
 # ステージの成果物のほかに、完了条件の検査で参照されるファイル
-EXTRA_FILES = {"cogload": ["skim/visual/gemini-reader.json"]}
+EXTRA_FILES = {"logic": ["07-logic/Model.lean"], "cogload": ["skim/visual/gemini-reader.json"]}
 
 STAGE_FILES = [
     ("intent", "01-intent.md"),
@@ -217,6 +221,53 @@ class GateTest(CliCase):
         r = self.run_cli("check")
         self.assertIn("GT038", r.stdout)
 
+    def test_claim_form_required(self):
+        self.advance_through("claims")
+        data = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        del data["main_claim"]["form"]
+        data["claims"][0]["form"] = "比べる"
+        (self.doc / "05-claims.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertEqual(out.count("GT042"), 2)
+
+    def test_rework_fact_with_axioms_is_not_warned(self):
+        self.advance_through("facts")
+        data = json.loads((FIXTURE / "06-facts.json").read_text(encoding="utf-8"))
+        data["facts"].append({"id": "F5", "statement": "本番の記事数で計測しても5秒以内に検索に出た", "status": "verified",
+                              "method": "execution", "sources": [], "evidence": "本番相当の3万件で計測", "notes": "",
+                              "axioms": ["prodDelay_le_test"]})
+        data["facts"].append({"id": "F6", "statement": "どの公理のためでもない事実", "status": "verified", "method": "execution",
+                              "sources": [], "evidence": "x", "notes": ""})
+        (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("事実 F5 は 05-claims.json にありません", out)
+        self.assertIn("事実 F6 は 05-claims.json にありません", out)
+
+    def test_rework_coverage_after_back_from_logic(self):
+        self.advance_through("logic")
+        for rel in ("07-logic/Argument.lean", "07-logic/Model.lean"):
+            self.put(rel)
+        self.run_cli("lean")  # ステージ7の report.json（手戻りの一覧）を作る
+        self.assertEqual(self.run_cli("back", "facts", "--reason", "ステージ7の手戻り").returncode, 0)
+        report = json.loads((self.doc / "07-logic" / "report.json").read_text(encoding="utf-8"))
+        rework = [r["axiom"] for r in report["rework"]]
+        self.assertTrue(rework)
+        out = self.run_cli("check").stdout
+        self.assertIn("GT058", out)
+        data = json.loads((self.doc / "06-facts.json").read_text(encoding="utf-8"))
+        data["facts"].append({"id": "F5", "statement": "部会までに確かめられなかった", "status": "unverified",
+                              "method": "user", "sources": [], "notes": "情報システム部の返事が期限に間に合わなかった",
+                              "axioms": rework[1:]})
+        (self.doc / "07-logic" / "rejected.json").write_text(json.dumps(
+            {"rejected": [{"axiom": rework[0], "reason": "誤り", "facts": ["F5"], "rejected_at": "2026-10-01"}]},
+            ensure_ascii=False), encoding="utf-8")
+        data["facts"].append({"id": "F6", "statement": "x", "status": "verified", "method": "execution", "sources": [],
+                              "evidence": "x", "notes": "", "axioms": ["no_such_axiom"]})
+        (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT058", out)
+        self.assertIn("GT059", out)
+
     def test_refuted_fact_in_premises(self):
         self.advance_through("facts")
         data = json.loads((FIXTURE / "06-facts.json").read_text(encoding="utf-8"))
@@ -346,56 +397,460 @@ class VisionTest(CliCase):
 
 
 @unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")
-class LeanTest(CliCase):
-    def setUp(self):
-        super().setUp()
+class WikiSearchLogicTest(CliCase):
+    """fixtures/wiki-search の論証（3役で書いた新形式）が門を通ること。"""
+
+    def test_fixture_passes_gates(self):
         self.run_cli("new", "wiki-search", "--title", "テスト")
         self.advance_through("logic")
-
-    def test_scaffold_compiles_but_needs_confidence(self):
-        r = self.run_cli("lean")
-        self.assertEqual(r.returncode, 1)
-        self.assertIn("LG005", r.stdout)
-        self.assertNotIn("LG009", r.stdout)  # 雛形そのものは Lean として正しい
-
-    def test_fixture_confidence(self):
-        self.put("07-logic/Argument.lean")
-        r = self.run_cli("lean")
+        for rel in ("07-logic/Argument.lean", "07-logic/Model.lean"):
+            self.put(rel)
+        r = self.run_cli("check", "logic")
         self.assertEqual(r.returncode, 0, r.stdout)
         report = json.loads((self.doc / "07-logic" / "report.json").read_text(encoding="utf-8"))
-        self.assertAlmostEqual(report["claims"]["C2"]["confidence"], 0.7)  # 仮定 0.7 が最弱
-        self.assertEqual(report["claims"]["C0"]["weakest_link"], "fact_F4")
-        self.assertEqual(report["claims"]["C0"]["hedge"]["level"], "moderate")
+        self.assertEqual(set(report["claims"]), {"C0", "C1", "C2", "C3"})
+        self.assertNotIn("rule_", (FIXTURE / "07-logic" / "Argument.lean").read_text(encoding="utf-8"))
+        self.assertTrue(report["rework"])  # 証拠のない【仮定】が手戻りの一覧に出る
 
-    def _write(self, extra: str, replace: tuple[str, str] | None = None):
-        src = (FIXTURE / "07-logic" / "Argument.lean").read_text(encoding="utf-8")
-        if replace:
-            src = src.replace(*replace)
-        (self.doc / "07-logic" / "Argument.lean").write_text(src + extra, encoding="utf-8")
 
-    def test_claim_as_axiom_forbidden(self):
-        self._write("\n/-- @confidence 0.9 ずる -/\naxiom rule_cheat : P_C0\n")
-        self.assertIn("LG002", self.run_cli("lean").stdout)
+class LeanSourceTest(unittest.TestCase):
+    def test_parse_and_marks(self):
+        src = leansrc.parse((MINI / "07-logic" / "Argument.lean").read_text(encoding="utf-8"))
+        axioms = {d.name: d for d in src.by_kw("axiom")}
+        self.assertEqual(axioms["passes"].full, "Mini.passes")
+        self.assertEqual(leansrc.type_text(axioms["passes_consistent"]), "∀ s : Spec, passes s → ¬ contradictory s")
+        mk = leansrc.axiom_marks(axioms["doc_miss_pos"].doc)
+        self.assertEqual((mk.kind, mk.support, mk.confidence, mk.weak_point_facts), ("経験則", ["F2"], [0.8], ["F3"]))
+        mk = leansrc.axiom_marks(axioms["lean_le_doc"].doc)
+        self.assertEqual((mk.kind, mk.support, mk.needs_fact), ("仮定", [], True))
+        tm = leansrc.theorem_marks("@beyond C0 強い版")
+        self.assertEqual((tm.claims, tm.beyond), ([], ["C0"]))
 
-    def test_sorry_detected(self):
-        self._write("", ("theorem claim_C3 : P_C3 := rule_C3 ⟨fact_F4, fact_F1⟩", "theorem claim_C3 : P_C3 := sorry"))
-        r = self.run_cli("lean")
+    def test_comment_masking_and_binders(self):
+        text = "/-- 説明 -/\naxiom f (x : Nat) {y : Nat} : x ≤ y -- 行末のコメント\n/- axiom g : True -/\n"
+        src = leansrc.parse(text)
+        self.assertEqual([d.name for d in src.by_kw("axiom")], ["f"])
+        self.assertEqual(leansrc.type_text(src.decls[0]), "∀ (x : Nat) {y : Nat}, x ≤ y")
+        self.assertEqual(src.decls[0].doc, "説明")
+
+    def test_marks_only_at_line_start(self):
+        mk = leansrc.axiom_marks("【仮定】F3 は @support に足せる（文中の語）\n@support なし（F3 は別の話）\n@confidence 0.5\n要ファクト: x")
+        self.assertEqual((mk.support, mk.confidence), ([], [0.5]))
+        tm = leansrc.theorem_marks("[不利] この定理は @claim C1 を弱める（文中の語）")
+        self.assertEqual(tm.claims, [])
+
+    def test_reviewer_and_branch_ids(self):
+        mk = leansrc.axiom_marks("【経験則】\n@support F26a, F3\n@against F41\n@confidence 0.05\n"
+                                 "@reviewer 0.3 ← 0.6 理由: 1周目\n@reviewer 0.05 ← 0.3 理由: F26a は述べていない")
+        self.assertEqual((mk.support, mk.against), (["F3", "F26a"], ["F41"]))
+        self.assertEqual([(r.value, r.original) for r in mk.reviewer], [(0.3, 0.6), (0.05, 0.3)])
+
+
+@unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")
+class LogicGateTest(unittest.TestCase):
+    """小さな論証（fixtures/logic-mini）を1か所ずつ壊して、門が止まることを確かめる。"""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="cyrus-logic-"))
+        shutil.copytree(MINI, self.tmp, dirs_exist_ok=True)
+        self.arg = self.tmp / "07-logic" / "Argument.lean"
+        self.model = self.tmp / "07-logic" / "Model.lean"
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def edit(self, path: Path, old: str, new: str):
+        text = path.read_text(encoding="utf-8")
+        self.assertIn(old, text)
+        path.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+    def check(self):
+        issues, report = leancheck.check(self.tmp)
+        return issues, report
+
+    def errors(self, issues):
+        return [i for i in issues if i.severity == "error"]
+
+    def test_mini_passes_all_gates(self):
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [], "\n".join(i.format() for i in issues))
+        self.assertEqual({k: v["confidence"] for k, v in report["claims"].items()}, {"C0": 0.05, "C1": 0.95, "C2": 0.75})
+        self.assertEqual(report["axioms"]["lean_le_doc"]["confidence"], 0.05)   # @support のない【仮定】は案によらず 0.05
+        self.assertEqual(report["axioms"]["doc_miss_pos"]["confidence"], 0.75)  # 案 0.8 と partially_verified 0.75 の小さいほう
+        self.assertEqual(report["axioms"]["lean_miss_pos"]["confidence"], 0.05) # unverified の事実は 0.05
+        self.assertEqual([r["axiom"] for r in report["rework"]], ["lean_le_doc", "lean_miss_pos"])
+        self.assertEqual(report["witness"]["type_checked"], 8)
+        self.assertEqual(report["atoms"]["side_only"], 1)  # lean_miss_pos は @beyond の定理だけが使う
+        hints = json.loads((self.tmp / "07-logic" / "hints.json").read_text(encoding="utf-8"))["hints"]
+        self.assertIn(("proof_is_axiom", "claim_C0_not_worse"), {(h["kind"], h["target"]) for h in hints})
+        self.assertNotIn("hints", report)
+
+    def test_empty_inductive(self):
+        for p in (self.arg, self.model):
+            self.edit(p, "/-- 仕様。 -/", "/-- 空の型。 -/\ninductive Nothing : Type\n\n/-- 仕様。 -/")
+        self.assertIn("LG010", rules(self.errors(self.check()[0])))
+
+    def test_conjoined_axiom(self):
+        for p, body in ((self.arg, "axiom lean_miss_pos : 0 < missCount .lean"),
+                        (self.model, "theorem lean_miss_pos : 0 < missCount .lean := by decide")):
+            self.edit(p, body, body.replace("0 < missCount .lean", "0 < missCount .lean ∧ 0 < missCount .document"))
+        errs = self.errors(self.check()[0])
+        self.assertIn("LG007", rules(errs))
+
+    def test_conjunction_under_implication_is_one_atom(self):
+        extra = "\n/-- 【自明】通る仕様は通る。 -/\naxiom pass_pass : ∀ s : Spec, passes s → passes s ∧ passes s\n"
+        self.edit(self.arg, "\n/-- @claim C1", extra + "\n/-- @claim C1")
+        self.edit(self.model, "\n/-- @claim C1", extra.replace("axiom pass_pass : ∀ s : Spec, passes s → passes s ∧ passes s",
+                                                          "theorem pass_pass : ∀ s : Spec, passes s → passes s ∧ passes s :=\n  fun _ h => ⟨h, h⟩") + "\n/-- @claim C1")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [], "\n".join(i.format() for i in issues))
+        self.assertEqual(report["axioms"]["pass_pass"]["atoms"], 1)
+
+    def test_reviewer_must_match_confidence(self):
+        self.edit(self.arg, "@confidence 0.8\n", "@confidence 0.8\n@reviewer 0.3 ← 0.8 理由: F2 は1件だけ\n")
+        self.assertIn("LG008", rules(self.errors(self.check()[0])))
+        self.edit(self.arg, "@confidence 0.8\n", "@confidence 0.3\n")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [])  # Reviewer が docstring を書き換えても、証人は直さなくてよい
+        self.assertEqual(report["axioms"]["doc_miss_pos"]["confidence"], 0.3)
+        self.assertEqual(report["claims"]["C2"]["confidence"], 0.3)
+
+    def test_reviewer_lines_chain(self):
+        self.edit(self.arg, "@confidence 0.8\n", "@confidence 0.05\n@reviewer 0.3 ← 0.8 理由: 1周目\n@reviewer 0.05 ← 0.3 理由: 2周目\n")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [])
+        self.assertEqual(report["axioms"]["doc_miss_pos"]["confidence"], 0.05)
+        self.edit(self.arg, "@reviewer 0.05 ← 0.3", "@reviewer 0.05 ← 0.9")
+        self.assertIn("LG008", rules(self.errors(self.check()[0])))
+
+    def test_indented_declaration_is_rejected(self):
+        self.edit(self.arg, "axiom lean_miss_pos : 0 < missCount .lean", "  axiom lean_miss_pos : 0 < missCount .lean")
+        self.assertIn("LG012", rules(self.errors(self.check()[0])))
+
+    def test_without_namespace(self):
+        for p in (self.arg, self.model):
+            self.edit(p, "namespace Mini\n", "")
+            self.edit(p, "end Mini\n", "")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [], "\n".join(i.format() for i in issues))
+        self.assertEqual(report["claims"]["C1"]["confidence"], 0.95)
+
+    def test_reviewer_cannot_raise(self):
+        self.edit(self.arg, "@confidence 0.8\n", "@confidence 0.9\n@reviewer 0.9 ← 0.8 理由: 上げたい\n")
+        self.assertIn("LG008", rules(self.errors(self.check()[0])))
+
+    def test_rejected_axiom_reappears(self):
+        (self.tmp / "07-logic" / "rejected.json").write_text(json.dumps(
+            {"rejected": [{"axiom": "lean_miss_pos", "reason": "誤り", "facts": ["F3"], "rejected_at": "2026-10-01"}]},
+            ensure_ascii=False), encoding="utf-8")
+        self.assertIn("LG009", rules(self.errors(self.check()[0])))
+
+    def test_witness_type_mismatch(self):
+        self.edit(self.model, "theorem lean_le_doc : missCount .lean ≤ missCount .document := by decide",
+                  "theorem lean_le_doc : missCount .lean ≤ missCount .lean := Nat.le_refl _")
+        self.assertIn("LG024", rules(self.errors(self.check()[0])))
+
+    def test_witness_added_instance(self):
+        self.edit(self.model, "def passes", "instance : Inhabited Spec := ⟨true⟩\n\ndef passes")
+        self.assertIn("LG023", rules(self.errors(self.check()[0])))
+
+    def test_witness_leftover_axiom_and_sorry(self):
+        self.edit(self.model, "theorem lean_miss_pos : 0 < missCount .lean := by decide", "axiom lean_miss_pos : 0 < missCount .lean")
+        self.assertIn("LG021", rules(self.errors(self.check()[0])))
+        self.edit(self.model, "axiom lean_miss_pos : 0 < missCount .lean", "theorem lean_miss_pos : 0 < missCount .lean := sorry")
+        errs = rules(self.errors(self.check()[0]))
+        self.assertIn("LG001", errs)
+        self.assertIn("LG026", errs)
+
+    def test_witness_must_only_replace_axioms(self):
+        self.edit(self.model, "theorem claim_C2_doc_miss : 0 < missCount .document :=\n  doc_miss_pos",
+                  "theorem claim_C2_doc_miss : 0 < missCount .document := by decide")
+        self.assertIn("LG022", rules(self.errors(self.check()[0])))
+
+    def test_unknown_fact_id(self):
+        self.edit(self.arg, "@support F2", "@support F2, F9")
+        self.assertIn("LG004", rules(self.errors(self.check()[0])))
+        self.edit(self.arg, "@support F2, F9", "@support F2\n@against F10")
+        self.assertIn("LG004", rules(self.errors(self.check()[0])))
+
+    def test_against_goes_to_rework(self):
+        self.edit(self.arg, "@support F2\n", "@support F2\n@against F3\n")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [])
+        rw = {r["axiom"]: r for r in report["rework"]}
+        self.assertEqual(rw["doc_miss_pos"]["reasons"], ["against"])
+        self.assertEqual(rw["doc_miss_pos"]["claims"], ["C2"])
+
+    def test_form_of_relational_axioms(self):
+        self.edit(self.arg, "要ファクト: 両方式で、伝え間違えた要件の数を数える。", "")
+        self.edit(self.arg, "【実験】関門を通った", "関門を通った")
+        self.edit(self.arg, "@support F3\n@confidence 0.9\n", "@support F3\n")
+        errs = rules(self.errors(self.check()[0]))
+        self.assertTrue({"LG003", "LG005", "LG006"} <= errs, errs)
+
+    def test_banned_constructs_and_claim_coverage(self):
+        self.edit(self.arg, "theorem claim_C0_not_worse : missCount .lean ≤ missCount .document :=\n  lean_le_doc",
+                  "theorem claim_C0_not_worse : missCount .lean ≤ missCount .document := by\n  sorry")
+        self.edit(self.arg, "/-- @claim C2 [件数]", "/-- [件数]")
+        issues, report = self.check()
+        errs = rules(self.errors(issues))
+        self.assertIn("LG001", errs)
+        self.assertIn("LG011", errs)
+        self.assertEqual(report["claims"]["C0"]["confidence"], 0.0)  # 門でエラーでも値は出す
+        self.edit(self.arg, "by\n  sorry", "by\n  native_decide")
+        self.assertIn("LG001", rules(self.errors(self.check()[0])))
+
+    def test_weak_premises(self):
+        issues, report = self.check()
+        weak = {w["axiom"]: w for w in report["weak_premises"]}
+        self.assertEqual(set(weak), {"lean_le_doc", "doc_miss_pos"})  # C1（0.95）は言い切れるので出さない
+        self.assertEqual(weak["lean_le_doc"]["claims"], ["C0"])
+        self.assertIn("Lean 方式の伝え間違いは", weak["lean_le_doc"]["statement"])
+        self.assertIn("数える", weak["lean_le_doc"]["needs_fact"])
+        self.assertEqual(report["weak_premises"][0]["axiom"], "lean_le_doc")  # 確信度の低いほうが先
+
+    def test_ledger_empty_side_is_a_hint(self):
+        (self.tmp / "07-logic" / "ledger.json").write_text(json.dumps({
+            "methods": ["lean", "document"],
+            "rows": [{"layer": "決める", "failure": "取り違え", "quantity": "missCount",
+                      "cells": {"lean": {"what": "関門の外で取り違える", "axioms": ["lean_miss_pos"]}},
+                      "comparison": "Lean ≤ doc", "theorems": ["claim_C0_not_worse"]}]}, ensure_ascii=False), encoding="utf-8")
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [])
+        hints = json.loads((self.tmp / "07-logic" / "hints.json").read_text(encoding="utf-8"))["hints"]
+        h = [x for x in hints if x["kind"] == "ledger_empty_side"]
+        self.assertEqual(h[0]["detail"]["empty_methods"], ["document"])
+        (self.tmp / "07-logic" / "ledger.json").write_text("{\"rows\": 1}", encoding="utf-8")
+        self.assertIn("LG031", rules(self.check()[0]))
+
+    def test_compile_error(self):
+        self.edit(self.arg, "fun s h => passes_consistent s h", "fun s h => passes_consistent h s")
+        issues, report = self.check()
+        self.assertIn("LG002", rules(self.errors(issues)))
+        self.assertIn("C2", report["claims"])  # エラーがあっても計算できるものは出す
+
+
+@unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")
+class LogicScaffoldTest(CliCase):
+    def test_scaffold_makes_three_files_without_rule(self):
+        self.assertEqual(self.run_cli("new", "wiki-search", "--title", "テスト").returncode, 0)
+        for rel in ("05-claims.json", "06-facts.json"):
+            self.put(rel)
+        r = self.run_cli("scaffold", "logic")
+        self.assertIn("model-plan.md を作りました", r.stdout)
+        arg = (self.doc / "07-logic" / "Argument.lean").read_text(encoding="utf-8")
+        self.assertIn("namespace WikiSearch", arg)
+        self.assertNotIn("rule_", arg)
+        self.assertTrue((self.doc / "07-logic" / "Model.lean").exists())
+        r = self.run_cli("check", "logic")
         self.assertEqual(r.returncode, 1)
-        self.assertIn("LG001", r.stdout)
+        self.assertIn("LG011", r.stdout)       # 主張の定理がまだない
+        self.assertNotIn("LG002", r.stdout)    # 雛形そのものはコンパイルできる
 
-    def test_type_error_reported(self):
-        self._write("", ("rule_C1 ⟨fact_F1, fact_F2⟩", "rule_C1 ⟨fact_F2, fact_F1⟩"))
-        self.assertIn("LG009", self.run_cli("lean").stdout)
 
-    def test_independent_derivation_raises_confidence(self):
-        extra = ("\n/-- @confidence 0.9 当日の記事が見つからない問題は、他部署でも同じ置き換えで解消した -/\n"
-                 "axiom rule_C3_alt : P_C1 ∧ P_C2 → P_C3\n"
-                 "theorem claim_C3_via_experience : P_C3 := rule_C3_alt ⟨claim_C1, claim_C2⟩\n")
-        self._write(extra)
-        self.assertEqual(self.run_cli("lean").returncode, 0)
-        report = json.loads((self.doc / "07-logic" / "report.json").read_text(encoding="utf-8"))
-        self.assertAlmostEqual(report["claims"]["C3"]["confidence"], 0.7)
-        self.assertEqual(len(report["claims"]["C3"]["derivations"]), 2)
+@unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")
+class LogicRoundTest(CliCase):
+    def setUp(self):
+        super().setUp()
+        self.run_cli("new", "mini", "--title", "小さな論証")
+        self.doc = self.tmp / "documents" / "mini"
+        shutil.copytree(MINI, self.doc, dirs_exist_ok=True)
+        self.logic = self.doc / "07-logic"
+
+    def review(self, first_line: str):
+        (self.logic / "review.md").write_text(first_line + "\n\n## 指摘\n", encoding="utf-8")
+
+    def test_rounds_diff_and_stop(self):
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("LR001", r.stdout)  # review.md がない
+        self.review("判定: 条件付き合格（高 1・中 0・低 2）")
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 2, r.stdout)  # 続ける
+        rd = json.loads((self.logic / "rounds" / "01" / "round.json").read_text(encoding="utf-8"))
+        self.assertEqual((rd["high"], rd["stop"]), (1, False))
+        self.assertTrue((self.logic / "rounds" / "01" / "Argument.lean").exists())
+
+        # 2周目: Reviewer が doc_miss_pos を下げ、差分の設計書に1行
+        arg = self.logic / "Argument.lean"
+        arg.write_text(arg.read_text(encoding="utf-8").replace(
+            "@confidence 0.8\n", "@confidence 0.3\n@reviewer 0.3 ← 0.8 理由: F2 は1チームだけ\n"), encoding="utf-8")
+        (self.logic / "model-plan-delta.md").write_text(
+            "# 差分の設計書\n\n| # | 変更 |\n|---|---|\n| 1 | `doc_miss_pos` の論拠を直す |\n| 2 | `lean_le_doc` を分ける |\n",
+            encoding="utf-8")
+        r = self.run_cli("logic-round", "diff")
+        self.assertEqual(r.returncode, 0, r.stdout)
+        d = (self.logic / "diff.md").read_text(encoding="utf-8")
+        self.assertIn("| Argument.lean | `doc_miss_pos` | 変更（印） |", d)
+        self.assertIn("**当たっていない**", d)  # 2行目は変更がない
+        self.review("判定: 合格（高 0・中 0・低 1）")
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 0, r.stdout)  # 高0・上がった主張なし → 止める
+        self.assertIn("打ち切り", r.stdout)
+        self.assertTrue((self.logic / "rounds" / "02" / "diff.md").exists())
+        self.assertTrue((self.logic / "rounds" / "02" / "diff.patch").exists())
+        self.assertFalse((self.logic / "diff.md").exists())
+
+    def test_diff_flags_changed_axiom_keeping_reviewer(self):
+        self.review("判定: 条件付き合格（高 1・中 0・低 0）")
+        arg = self.logic / "Argument.lean"
+        arg.write_text(arg.read_text(encoding="utf-8").replace(
+            "@confidence 0.8\n", "@confidence 0.3\n@reviewer 0.3 ← 0.8 理由: F2 は1チームだけ\n"), encoding="utf-8")
+        self.run_cli("logic-round", "close")
+        self.assertIn("## 変更", (self.logic / "model-plan-delta.md").read_text(encoding="utf-8"))  # 次の周の雛形
+        for p in (arg, self.logic / "Model.lean"):
+            p.write_text(p.read_text(encoding="utf-8").replace("0 < missCount .document", "1 ≤ missCount .document"), encoding="utf-8")
+        self.assertEqual(self.run_cli("logic-round", "diff").returncode, 0)
+        d = (self.logic / "diff.md").read_text(encoding="utf-8")
+        section = d.split("命題（型）が変わったのに名前が同じ公理")[1].split("## ")[0]
+        self.assertIn("`doc_miss_pos`（`@reviewer` が残っている）", section)
+        self.assertTrue((self.logic / "diff.patch").exists())
+
+    def test_round_cap_resets_after_rework(self):
+        self.review("判定: 差し戻し（高 1・中 0・低 0）")
+        for _ in range(3):
+            r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 3)  # 3周で収まらない
+        st = json.loads((self.doc / "state.json").read_text(encoding="utf-8"))
+        st["stage"] = "logic"
+        (self.doc / "state.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        self.assertEqual(self.run_cli("back", "facts", "--reason", "ステージ7の手戻り").returncode, 0)
+        st = json.loads((self.doc / "state.json").read_text(encoding="utf-8"))
+        st["stage"] = "logic"  # ステージ6を終えて戻ってきた
+        (self.doc / "state.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 2, r.stdout)  # 新しいループの1周目なので、ユーザーに見せる段階ではない
+        self.assertIn("このループの 1 周目", r.stdout)
+
+    def test_raised_claim_continues_and_escalates(self):
+        self.review("判定: 条件付き合格（高 0・中 1・低 0）")
+        arg = self.logic / "Argument.lean"
+        original = arg.read_text(encoding="utf-8")
+        arg.write_text(original.replace("@confidence 0.8\n", "@confidence 0.5\n"), encoding="utf-8")
+        self.run_cli("logic-round", "close")        # 1周目: C2 = 0.5
+        arg.write_text(original, encoding="utf-8")   # 2周目: C2 = 0.75（上がった）
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("C2 0.5→0.75", r.stdout)
+        arg.write_text(original.replace("@support F2\n", "@support F1\n"), encoding="utf-8")  # 3周目: C2 = 0.8（また上がる）
+        r = self.run_cli("logic-round", "close")
+        self.assertEqual(r.returncode, 3)            # 3周で収まらない → ユーザーに見せる
+        self.assertIn("ユーザー", r.stdout)
+
+
+class HarnessConsistencyTest(unittest.TestCase):
+    """ガイド・エージェント定義・CLI の約束（印とファイル名）が食い違っていないこと。"""
+    APM = ROOT / ".apm"
+    MARKS = ["@support", "@confidence", "@against", "@reviewer", "@restates", "@claim", "@beyond", "@baseline", "要ファクト"]
+    FILES = ["model-plan.md", "model-plan-delta.md", "ledger.json", "Argument.lean", "Model.lean", "writer-note.md",
+             "review.md", "report.json", "hints.json", "rejected.json", "diff.md"]
+
+    def read(self, rel):
+        return (self.APM / rel).read_text(encoding="utf-8")
+
+    def test_guide_covers_marks_and_files(self):
+        guide = self.read("skills/cyrus/stages/07-logic.md")
+        for m in self.MARKS + self.FILES:
+            self.assertIn(m, guide, m)
+        self.assertNotIn("命題論理（∧, ∨, →, ¬）で十分", guide)
+        for f in logicround.ROUND_FILES:
+            self.assertIn(f, guide, f)
+
+    def test_agents_exist_and_follow_roles(self):
+        planner = self.read("agents/cyrus-logic-planner.agent.md")
+        writer = self.read("agents/cyrus-lean-writer.agent.md")
+        reviewer = self.read("agents/cyrus-logic-reviewer.agent.md")
+        self.assertFalse((self.APM / "agents" / "cyrus-logic-critic.agent.md").exists())
+        for m in ("@reviewer", "@against", "@restates", "hints.json", "review.md", "判定:"):
+            self.assertIn(m, reviewer, m)
+        for m in ("@claim", "@beyond", "@baseline", "writer-note.md", "Model.lean", "hints.json"):
+            self.assertIn(m, writer, m)
+        self.assertIn("読まないでください", writer)  # hints.json を Writer に見せない
+        for m in ("model-plan.md", "model-plan-delta.md", "ledger.json"):
+            self.assertIn(m, planner, m)
+        skill = self.read("skills/cyrus/SKILL.md")
+        for name in ("cyrus-logic-planner", "cyrus-lean-writer", "cyrus-logic-reviewer"):
+            self.assertIn(name, skill)
+            self.assertIn(name, self.read("skills/cyrus/stages/07-logic.md"))
+
+    def test_verdict_format_matches_cli(self):
+        reviewer = self.read("agents/cyrus-logic-reviewer.agent.md")
+        line = re.search(r"^判定: .*$", reviewer, re.M).group(0)
+        self.assertIsNotNone(logicround.VERDICT_RE.match(line))
+        guide = self.read("skills/cyrus/stages/07-logic.md")
+        self.assertIn("判定: 合格／条件付き合格／差し戻し（高 N・中 N・低 N）", guide)
+
+    def test_no_old_format_left(self):
+        for p in self.APM.rglob("*"):
+            if p.is_file() and p.suffix in (".md", ".py", ".json"):
+                t = p.read_text(encoding="utf-8")
+                self.assertNotIn("cyrus-logic-critic", t, p)
+                self.assertIsNone(re.search(r"\baxiom rule_|\bfact_F\d|claim_\w+_via_", t), p)
+
+    def test_owner_principles_are_verbatim(self):
+        text = self.read("skills/cyrus/references/owner-principles.md")
+        self.assertIn("## 1. オーナーの原則（原文）", text)
+        self.assertIn("「ちなみにconfidenceは単に「確信度」という意味だと思うので", text)
+        self.assertIn("根拠にしてよい資料の範囲", text)
+
+
+@unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")
+@unittest.skipUnless((PRIVATE / "expected.json").exists(),
+                     "非公開の題材 tests/fixtures/private-subject/ がないため省略（公開リポジトリには含めない）")
+class PrivateSubjectTest(CliCase):
+    """非公開の題材（大きな論証）で、検査の値が expected.json の期待値と一致すること。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.expected = json.loads((PRIVATE / "expected.json").read_text(encoding="utf-8"))
+        cls.dir = Path(tempfile.mkdtemp(prefix="cyrus-subject-"))
+        shutil.copytree(PRIVATE, cls.dir, dirs_exist_ok=True)
+        cls.issues, cls.report = leancheck.check(cls.dir)
+        cls.hints = json.loads((cls.dir / "07-logic" / "hints.json").read_text(encoding="utf-8"))["hints"]
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.dir, ignore_errors=True)
+
+    def test_gate_errors(self):
+        errs = [i for i in self.issues if i.severity == "error"]
+        self.assertEqual(sorted(rules(errs)), self.expected["error_rules"], "\n".join(i.format() for i in errs[:5]))
+        conj = [i.message.split(" ")[1] for i in errs if i.rule == "LG007"]
+        c = self.expected["conjoined"]
+        self.assertEqual(len(conj), c["count"])
+        self.assertEqual(sum(1 for n in conj if n.endswith(c["suffix"])), c["suffix_count"])
+
+    def test_witness_and_counts(self):
+        w = self.report["witness"]
+        self.assertTrue(w["compiled"])
+        self.assertEqual((w["missing_lines"], w["nonstd"], w["type_checked"]), (0, {}, self.expected["witness_type_checked"]))
+        self.assertEqual({k: self.report["counts"][k] for k in self.expected["counts"]}, self.expected["counts"])
+        self.assertEqual(self.report["atoms"]["non_trivial"], self.expected["atoms_non_trivial"])
+
+    def test_claim_confidences(self):
+        self.assertEqual({k: v["confidence"] for k, v in self.report["claims"].items()}, self.expected["claims"])
+
+    def test_rework_list(self):
+        self.assertEqual(sorted(r["axiom"] for r in self.report["rework"]), self.expected["rework"])
+
+    def test_hints_only_in_hints_json(self):
+        for e in self.expected["proof_is_axiom"]:
+            h = [x for x in self.hints if x["kind"] == "proof_is_axiom" and x["target"] == e["theorem"]]
+            self.assertEqual(h[0]["detail"]["axiom"], e["axiom"])
+            self.assertNotIn(e["theorem"], " ".join(i.message for i in self.issues))
+        self.assertNotIn("hints", self.report)
+
+    def test_cli_check_logic(self):
+        self.assertEqual(self.run_cli("new", "subject", "--title", "題材").returncode, 0)
+        shutil.copytree(PRIVATE, self.tmp / "documents" / "subject", dirs_exist_ok=True)
+        r = self.run_cli("check", "logic")
+        self.assertEqual(r.returncode, 1)
+        for rule in self.expected["error_rules"]:
+            self.assertIn(rule, r.stdout)
+        r = self.run_cli("lean")
+        main = next(iter(self.expected["claims"]))
+        self.assertIn(f"{main}: {self.expected['claims'][main]:.2f}", r.stdout)
+        self.assertIn("手戻りの一覧", r.stdout)
 
 
 @unittest.skipUnless(HAS_LEAN, "lean が見つからないため全ステージのテストを省略")

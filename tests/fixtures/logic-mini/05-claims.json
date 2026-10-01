@@ -1,0 +1,47 @@
+{
+  "main_claim": {
+    "id": "C0",
+    "text": "Lean 方式の伝え間違いは、ドキュメント方式より多くない",
+    "form": "comparison",
+    "premises": []
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "text": "関門を通った仕様は矛盾を含まない",
+      "form": "capability",
+      "type": "fact",
+      "supports": "C0",
+      "premises": [
+        "F1"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "ドキュメント方式では伝え間違いが起こる",
+      "form": "capability",
+      "type": "fact",
+      "supports": "C0",
+      "premises": [
+        "F2"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "F1",
+      "statement": "関門は矛盾する仕様を通さない",
+      "source_hint": "実行"
+    },
+    {
+      "id": "F2",
+      "statement": "承認で見落とした伝え間違いがある",
+      "source_hint": "記録"
+    },
+    {
+      "id": "F3",
+      "statement": "Lean 方式でも伝え間違いの報告がある",
+      "source_hint": "試用"
+    }
+  ]
+}

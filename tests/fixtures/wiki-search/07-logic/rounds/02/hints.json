@@ -1,0 +1,88 @@
+{
+  "hints": [
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "searchMinutes_nonneg",
+      "line": 261,
+      "detail": {
+        "kind": "自明"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "noHit_full_ge",
+      "line": 381,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "overlook_full_ge",
+      "line": 390,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraNotYet_nonneg",
+      "line": 418,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "searches_full_ge",
+      "line": 485,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "found_full_ge",
+      "line": 494,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraNotYet_full_ge",
+      "line": 503,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "used_only_by_unfavorable_theorems",
+      "target": "extraOther_full_ge",
+      "line": 512,
+      "detail": {
+        "kind": "仮定"
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "prodDelay_le_test",
+      "line": 285,
+      "detail": {
+        "facts": [
+          "F3"
+        ]
+      }
+    },
+    {
+      "kind": "weak_point_fact_not_supported",
+      "target": "notYet_ge_of_slow",
+      "line": 294,
+      "detail": {
+        "facts": [
+          "F2"
+        ]
+      }
+    }
+  ]
+}
