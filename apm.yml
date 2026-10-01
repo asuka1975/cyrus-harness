@@ -2,6 +2,7 @@ name: cyrus-harness
 version: 0.1.0
 description: インタビューしながら、読者の認知負荷がきわめて低い日本語ドキュメントを書き上げる半決定論的ハーネス（Claude Code 向け）
 author: asuka1975
+license: MIT
 targets:
 - claude
 dependencies:
