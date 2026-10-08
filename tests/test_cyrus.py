@@ -14,6 +14,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / ".apm" / "skills" / "cyrus" / "scripts"
@@ -22,7 +23,7 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "wiki-search"
 sys.path.insert(0, str(SCRIPTS))
 sys.dont_write_bytecode = True  # .apm/ に __pycache__ を作らない（apm install がそれを .claude/ に写してしまうため）
 
-from cyruslib import agyreader, jatext, leancheck, leansrc, lint, logicround, skim, visual, wording  # noqa: E402
+from cyruslib import jatext, leancheck, leansrc, lint, logicround, skim, visionreader, visual, wording  # noqa: E402
 from cyruslib.reader import build_profile  # noqa: E402
 
 HAS_LEAN = leancheck.find_lean() is not None
@@ -32,12 +33,13 @@ try:
 except ImportError:
     HAS_VISUAL = False
 FAKE_AGY = Path(__file__).resolve().parent / "fakes" / "fake_agy.py"
+FAKE_CLAUDE = Path(__file__).resolve().parent / "fakes" / "fake_claude.py"
 
 MINI = Path(__file__).resolve().parent / "fixtures" / "logic-mini"
 PRIVATE = Path(__file__).resolve().parent / "fixtures" / "private-subject"  # 公開しない題材（.gitignore）
 
 # ステージの成果物のほかに、完了条件の検査で参照されるファイル
-EXTRA_FILES = {"logic": ["07-logic/Model.lean"], "cogload": ["skim/visual/gemini-reader.json"]}
+EXTRA_FILES = {"logic": ["07-logic/Model.lean"], "cogload": ["skim/visual/reader-result.json"]}
 
 STAGE_FILES = [
     ("intent", "01-intent.md"),
@@ -295,20 +297,35 @@ class GateTest(CliCase):
     def test_visual_test_required_and_tied_to_draft(self):
         self.advance_through("cogload")
         self.put("12-cogload.json")
-        self.put("skim/visual/gemini-reader.json")
+        self.put("skim/visual/reader-result.json")
         self.assertEqual(self.run_cli("check").returncode, 0)
         data = json.loads((FIXTURE / "12-cogload.json").read_text(encoding="utf-8"))
         del data["visual_test"]
         (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         self.assertIn("GT140", self.run_cli("check").stdout)
         self.put("12-cogload.json")
-        (self.doc / "skim" / "visual" / "gemini-reader.json").unlink()
+        (self.doc / "skim" / "visual" / "reader-result.json").unlink()
         self.assertIn("GT142", self.run_cli("check").stdout)
+
+    def test_visual_test_skip_follows_reader_config(self):
+        self.advance_through("cogload")
+        data = json.loads((FIXTURE / "12-cogload.json").read_text(encoding="utf-8"))
+        data["visual_test"] = {"skipped_reason": "読み手のコマンドがない"}
+        (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        config = self.tmp / "cyrus.config.json"
+        config.write_text(json.dumps({"vision": {"reader": {"command": ["cyrus-no-such-reader"]}}}), encoding="utf-8")
+        r = self.run_cli("check")
+        self.assertEqual(r.returncode, 0, r.stdout)  # 読み手のコマンドがなければ省略できる
+        config.write_text("{", encoding="utf-8")
+        self.assertIn("GT148", self.run_cli("check").stdout)  # 設定の誤りで省略をすり抜けない
+        if HAS_VISUAL:
+            config.write_text(json.dumps({"vision": {"reader": {"command": [sys.executable]}}}), encoding="utf-8")
+            self.assertIn("GT141", self.run_cli("check").stdout)
 
     def test_skim_test_must_match_current_draft(self):
         self.advance_through("cogload")
         self.put("12-cogload.json")
-        self.put("skim/visual/gemini-reader.json")
+        self.put("skim/visual/reader-result.json")
         self.assertEqual(self.run_cli("check").returncode, 0)
         with open(self.doc / "draft.md", "a", encoding="utf-8") as f:
             f.write("\n追記した段落です。\n")
@@ -359,14 +376,151 @@ class VisualHtmlTest(unittest.TestCase):
         self.assertNotIn("mermaid.min.js", h)  # 図がなければ外部のライブラリを読まない
 
     def test_prompt_has_no_paths(self):
-        p = agyreader.build_prompt({"persona": {"role": "部長"}, "knowledge_level": "novice"}, ["page-01.png"], True, False)
+        p = visionreader.build_prompt({"persona": {"role": "部長"}, "knowledge_level": "novice"}, ["page-01.png"], True, False)
         self.assertIn("部長", p)
         self.assertNotIn("/", p.replace("／", ""))
 
 
+class VisionReaderConfigTest(unittest.TestCase):
+    """読み手のコマンドを cyrus.config.json で変えられること（Chrome がなくても試せる部分）。"""
+
+    RESULT = {
+        "reader_summary": "要約", "main_point": "要点", "requested_action": "不明", "sections": [],
+        "confusing_points": [], "visual_notes": {"stood_out": [], "missed_or_hidden": [], "layout_issues": []},
+    }
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="cyrus-test-"))
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        patcher = mock.patch.dict(os.environ, {"CYRUS_ROOT": str(self.tmp)})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        for k in ("CYRUS_CONFIG", "CYRUS_AGY", "CYRUS_AGY_MODEL", "CLAUDE_PROJECT_DIR"):
+            os.environ.pop(k, None)
+
+    def write_config(self, reader):
+        (self.tmp / "cyrus.config.json").write_text(json.dumps({"vision": {"reader": reader}}, ensure_ascii=False),
+                                                     encoding="utf-8")
+
+    def pages(self):
+        d = self.tmp / "images"
+        d.mkdir()
+        for name in ("page-01.png", "page-02.png"):
+            (d / name).write_bytes(b"\x89PNG\r\n\x1a\n")
+        return sorted(d.iterdir())
+
+    def test_default_is_agy(self):
+        cfg = visionreader.load_config()
+        self.assertIsNone(cfg.source)
+        self.assertEqual(cfg.command[0], "agy")
+        self.assertEqual(cfg.command[cfg.command.index("--mode") + 1], "plan")
+        self.assertEqual(cfg.model, visionreader.DEFAULT_MODEL)
+
+    def test_without_command_keeps_agy(self):
+        self.write_config({"model": "gemini-x", "env": {"HTTPS_PROXY": "http://proxy:8080"}})
+        cfg = visionreader.load_config()
+        self.assertEqual(cfg.command[0], "agy")
+        self.assertEqual((cfg.model, cfg.env), ("gemini-x", {"HTTPS_PROXY": "http://proxy:8080"}))
+
+    def test_command_and_env_from_config(self):
+        log = self.tmp / "reader.json"
+        os.environ["CYRUS_TEST_HOME"] = "/home/someone"
+        os.environ["FAKE_READER_DROP"] = "外から来た値"
+        self.write_config({
+            "name": "偽の Claude Code",
+            "command": [sys.executable, str(FAKE_CLAUDE), "-p", "--output-format", "json", "--permission-mode", "plan"],
+            "env": {"FAKE_READER_LOG": str(log), "FAKE_READER_TOKEN": "${CYRUS_TEST_HOME}/token",
+                    "FAKE_READER_DROP": None},
+        })
+        out = visionreader.run(self.pages(), None, {"persona": {"role": "部長"}})
+        called = json.loads(log.read_text(encoding="utf-8"))
+        self.assertEqual(called["problems"], [])
+        self.assertEqual(called["env"], {"FAKE_READER_TOKEN": "/home/someone/token", "FAKE_READER_DROP": None})
+        self.assertIn("JSON スキーマ", called["prompt"])  # スキーマを渡さないコマンドには、回答の形をプロンプトで伝える
+        self.assertEqual((out["reader"], out["model"]), ("偽の Claude Code", None))
+        self.assertEqual(out["result"]["requested_action"], "予算の承認")
+        self.assertEqual(out["meta"]["usage"], {"output_tokens": 1})
+
+    def test_placeholders_and_model_override(self):
+        log = self.tmp / "reader.json"
+        self.write_config({
+            "command": [sys.executable, str(FAKE_CLAUDE), "-p", "--json-schema", "{schema}", "--model", "{model}",
+                        "--permission-mode", "plan"],
+            "model": "sonnet",
+            "env": {"FAKE_READER_LOG": str(log)},
+        })
+        out = visionreader.run(self.pages(), None, None, model="opus")
+        args = json.loads(log.read_text(encoding="utf-8"))["args"]
+        self.assertEqual(args[args.index("--model") + 1], "opus")  # --model が設定ファイルより優先
+        self.assertEqual(json.loads(args[args.index("--json-schema") + 1]), visionreader.SCHEMA)
+        self.assertEqual(out["model"], "opus")
+
+    def test_bad_config(self):
+        for reader, word in (
+            ({"command": "claude -p"}, "command"),
+            ({"command": ["claude", "{promt}"]}, "{promt}"),
+            ({"enviroment": {}}, "enviroment"),
+            ({"env": {"A": 1}}, "env"),
+            ({"timeout": "60"}, "timeout"),
+        ):
+            with self.subTest(reader=reader):
+                self.write_config(reader)
+                with self.assertRaises(visionreader.ReaderConfigError) as cm:
+                    visionreader.load_config()
+                self.assertIn(word, str(cm.exception))
+        (self.tmp / "cyrus.config.json").write_text("{", encoding="utf-8")
+        self.assertRaises(visionreader.ReaderConfigError, visionreader.load_config)
+        os.environ["CYRUS_CONFIG"] = str(self.tmp / "missing.json")
+        self.assertRaises(visionreader.ReaderConfigError, visionreader.load_config)
+
+    def test_model_required_by_placeholder(self):
+        self.write_config({"command": ["claude", "--model", "{model}"]})
+        cfg = visionreader.load_config()
+        self.assertIsNone(cfg.model)
+        with self.assertRaises(visionreader.ReaderConfigError):
+            visionreader.build_command(cfg, {"model": ""})
+
+    def test_parse_output_shapes(self):
+        result = self.RESULT
+        text = json.dumps(result, ensure_ascii=False)
+        cases = {
+            "agy": json.dumps({"status": "SUCCESS", "structured_output": result}),
+            "agy の文字列の回答": json.dumps({"status": "SUCCESS", "response": text}),
+            "Claude Code の文章の回答": json.dumps({"type": "result", "result": "読みました。\n```json\n" + text + "\n```"}),
+            "回答の JSON だけ": text,
+            "文章だけ": "前置きです。\n```json\n" + text + "\n```\n",
+            "ログのあとの JSON の行": "読み込み中…\n" + json.dumps({"structured_output": result}),
+        }
+        for label, stdout in cases.items():
+            with self.subTest(label):
+                self.assertEqual(visionreader.parse_output(stdout)[0], result)
+        with self.assertRaises(visionreader.ReaderUnavailable):
+            visionreader.parse_output(json.dumps({"type": "result", "result": "画像を開けませんでした。"}))
+        with self.assertRaises(visionreader.ReaderUnavailable):
+            visionreader._validate({"reader_summary": "要約"})
+
+
+class VisionConfigCliTest(CliCase):
+    def test_show_command(self):
+        (self.tmp / "cyrus.config.json").write_text(json.dumps({"vision": {"reader": {
+            "name": "Claude Code", "command": ["claude", "-p", "--model", "{model}"], "model": "sonnet",
+            "env": {"SECRET_TOKEN": "秘密の値", "CLAUDECODE": None}}}}, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("vision", "--show-command")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        for word in ("Claude Code", "--model sonnet", "標準入力", "SECRET_TOKEN", "CLAUDECODE"):
+            self.assertIn(word, r.stdout)
+        self.assertNotIn("秘密の値", r.stdout)  # 環境変数の値は表示しない
+
+    def test_bad_config_is_reported(self):
+        (self.tmp / "cyrus.config.json").write_text('{"vision": {"reader": {"command": []}}}', encoding="utf-8")
+        r = self.run_cli("vision", "--show-command")
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("vision.reader.command", r.stderr)
+
+
 @unittest.skipUnless(HAS_VISUAL, "Chrome か Pillow がないため画像のテストを省略")
 class VisionTest(CliCase):
-    def test_render_and_fake_gemini(self):
+    def test_render_and_default_agy_reader(self):
         self.env["CYRUS_AGY"] = str(FAKE_AGY)
         log = self.tmp / "agy.json"
         self.env["FAKE_AGY_LOG"] = str(log)
@@ -378,10 +532,31 @@ class VisionTest(CliCase):
         called = json.loads(log.read_text(encoding="utf-8"))
         self.assertEqual(called["problems"], [])
         self.assertIn("overview.png", called["files"])
-        out = json.loads((self.doc / "skim" / "visual" / "gemini-reader.json").read_text(encoding="utf-8"))
+        out = json.loads((self.doc / "skim" / "visual" / "reader-result.json").read_text(encoding="utf-8"))
         self.assertEqual(out["draft_hash"], skim.text_hash((self.doc / "draft.md").read_text(encoding="utf-8")))
         self.assertEqual(out["result"]["requested_action"], "予算の承認")
+        self.assertEqual(out["reader"], "Gemini（agy）")
         self.assertTrue((self.doc / "skim" / "visual" / "page-01.png").exists())
+
+    def test_render_and_configured_reader(self):
+        log = self.tmp / "reader.json"
+        self.env["CYRUS_MERMAID_JS"] = ""
+        (self.tmp / "cyrus.config.json").write_text(json.dumps({"vision": {"reader": {
+            "name": "偽の Claude Code",
+            "command": [sys.executable, str(FAKE_CLAUDE), "-p", "--output-format", "json",
+                        "--json-schema", "{schema}", "--permission-mode", "plan"],
+            "env": {"FAKE_READER_LOG": str(log)}}}}, ensure_ascii=False), encoding="utf-8")
+        self.run_cli("new", "wiki-search", "--title", "テスト")
+        self.advance_through("cogload")
+        r = self.run_cli("vision")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("偽の Claude Code に読ませています", r.stdout)
+        called = json.loads(log.read_text(encoding="utf-8"))
+        self.assertEqual(called["problems"], [])
+        self.assertIn("overview.png", called["files"])
+        out = json.loads((self.doc / "skim" / "visual" / "reader-result.json").read_text(encoding="utf-8"))
+        self.assertEqual(out["reader"], "偽の Claude Code")
+        self.assertEqual(out["result"]["visual_notes"]["missed_or_hidden"], ["表1の金額"])
 
     def test_foveation_blurs_outside_fixations(self):
         from PIL import Image, ImageDraw

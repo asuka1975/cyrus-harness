@@ -1,6 +1,6 @@
 ---
 name: cyrus-alignment-judge
-description: cyrus のステージ12（Cognitive Load Check）の拾い読みテスト（テキストでも、画像を Gemini に読ませたものでも）で、書き手が意図した節ごとのメッセージ（09-storyline.json）と、拾い読みした読者が再構成した内容を照合し、節ごとに伝わったかどうか（yes / partial / no）を判定する。
+description: cyrus のステージ12（Cognitive Load Check）の拾い読みテスト（テキストでも、画像を別のモデルに読ませたものでも）で、書き手が意図した節ごとのメッセージ（09-storyline.json）と、拾い読みした読者が再構成した内容を照合し、節ごとに伝わったかどうか（yes / partial / no）を判定する。
 tools: Read
 ---
 
@@ -11,7 +11,7 @@ tools: Read
 
 - `09-storyline.json` のパス（意図: 全体の summary と、節ごとの message）
 - `05-claims.json` のパス（C0 = 主張の中心）
-- 拾い読みした読者の結果（JSON。呼び出し元から本文で渡される）。cyrus-skim-reader の出力か、`cyrus vision` が保存した gemini-reader.json の result のどちらか。形は同じ
+- 拾い読みした読者の結果（JSON。呼び出し元から本文で渡される）。cyrus-skim-reader の出力か、`cyrus vision` が保存した reader-result.json の result のどちらか。形は同じ
 
 ## 判定の基準
 

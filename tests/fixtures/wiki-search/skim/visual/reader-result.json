@@ -2,16 +2,20 @@
   "source": "draft.md",
   "draft_hash": "1a0f9091dbea07b6",
   "media": "screen",
+  "reader": "Gemini（agy）",
   "model": "gemini-3.8-flash-medium",
-  "status": "SUCCESS",
+  "exit_code": 0,
   "duration_seconds": 40.0,
   "pages_given": [
     "page-01.png",
     "page-02.png"
   ],
   "truncated": false,
-  "usage": null,
-  "denied_actions": [],
+  "meta": {
+    "status": "SUCCESS",
+    "usage": null,
+    "denied_actions": []
+  },
   "result": {
     "reader_summary": "検索を全文検索エンジンに置き換えるため300万円の承認を求める提案。",
     "main_point": "300万円を承認してほしい。",

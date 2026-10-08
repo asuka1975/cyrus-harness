@@ -261,7 +261,16 @@ def cmd_skim(args):
 
 
 def cmd_vision(args):
-    from . import agyreader, visual
+    from . import visionreader, visual
+    cfg = None
+    if args.show_command or not args.no_reader:
+        try:
+            cfg = visionreader.load_config()
+        except visionreader.ReaderConfigError as e:
+            sys.exit(f"読み手の設定に誤りがあります: {e}")
+    if args.show_command:
+        print("\n".join(visionreader.describe(cfg, args.model)))
+        return
     ws = _ws(args)
     src = _resolve_file(ws, args.file)
     text = src.read_text(encoding="utf-8")
@@ -277,13 +286,14 @@ def cmd_vision(args):
     print(f"原稿の指紋: {h}")
     if args.no_reader:
         return
-    print(f"Gemini（{args.model or agyreader.DEFAULT_MODEL}）に読ませています…")
+    model = args.model or cfg.model
+    print(f"{cfg.name}" + (f"（{model}）" if model else "") + " に読ませています…")
     try:
-        out = agyreader.run(res.pages, res.overview, reader, model=args.model)
-    except agyreader.AgyUnavailable as e:
-        sys.exit(f"Gemini に読ませられませんでした: {e}")
+        out = visionreader.run(res.pages, res.overview, reader, model=args.model, cfg=cfg)
+    except visionreader.ReaderUnavailable as e:
+        sys.exit(f"{cfg.name} に読ませられませんでした: {e}")
     out = {"source": src.name, "draft_hash": h, "media": media, **out}
-    dest = out_dir / "gemini-reader.json"
+    dest = out_dir / visionreader.RESULT_NAME
     dest.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     r = out["result"]
     print(f"\n結果: {dest}（{out['duration_seconds']}秒）")
@@ -418,12 +428,15 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--file-only", action="store_true", help="ドキュメントに紐づけず、ファイルの隣に出力する")
     p.set_defaults(func=cmd_skim)
 
-    p = sub.add_parser("vision", help="原稿を画像にして周辺視野を模してぼかし、Gemini（agy）に読ませる")
+    p = sub.add_parser("vision", help="原稿を画像にして周辺視野を模してぼかし、読み手（既定は agy 経由の Gemini）に読ませる")
     p.add_argument("file", nargs="?", default="draft.md")
     p.add_argument("--media", choices=["screen", "mobile", "print", "slide"], help="省略時は 03-reader.json の reading_context.medium")
-    p.add_argument("--model", help="agy に渡すモデル名（既定は環境変数 CYRUS_AGY_MODEL か gemini-3.8-flash-medium）")
-    p.add_argument("--no-reader", action="store_true", help="画像を作るだけで Gemini には読ませない")
+    p.add_argument("--model", help="読み手に渡すモデル名（既定は cyrus.config.json の vision.reader.model。"
+                                   "設定ファイルがなければ環境変数 CYRUS_AGY_MODEL か gemini-3.8-flash-medium）")
+    p.add_argument("--no-reader", action="store_true", help="画像を作るだけで読み手には読ませない")
     p.add_argument("--keep-sharp", action="store_true", help="ぼかす前の画像（sharp.png）も残す")
+    p.add_argument("--show-command", action="store_true",
+                   help="読み手を起動せず、cyrus.config.json から組み立てたコマンドと環境変数を表示する")
     p.set_defaults(func=cmd_vision)
 
     p = sub.add_parser("logic-round", help="ステージ7の周を記録する（close: いまの周を写して打ち切りを判定 / diff: 前の周との差分と対応表）")
