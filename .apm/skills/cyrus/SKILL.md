@@ -37,7 +37,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `lint [file]` | 認知負荷の検査（既定は draft.md） |
 | `wording [file]` | 言葉遣いの検査（読者辞書・硬い表現・表記ゆれ） |
 | `skim [file]` | 拾い読みビュー（outline / pickup / local）を作る |
-| `vision [file]` | 原稿を画像にして周辺視野を模してぼかし、Gemini（agy）に読ませる |
+| `vision [file]` | 原稿を画像にして周辺視野を模してぼかし、別のモデル（既定は agy 経由の Gemini）に読ませる |
 
 ## 進め方（毎回このループ）
 
@@ -81,7 +81,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `cyrus-alignment-judge` | 再構成された内容と、意図したメッセージを照合する（テキスト・画像の両方） | 12 |
 | `cyrus-wording-reviewer` | 読者の語彙で言葉遣いを見直す | 13 |
 
-画像での拾い読みテストでは、読み手を Claude ではなく Gemini にします（`cyrus vision` が agy を読み取り専用で呼ぶ）。書き手と同じモデルが読み手を演じる偏りを避けるためです。
+画像での拾い読みテストでは、既定で読み手を Claude ではなく Gemini にします（`cyrus vision` が agy を読み取り専用で呼ぶ）。書き手と同じモデルが読み手を演じる偏りを避けるためです。読み手のコマンドは、プロジェクトのルートの `cyrus.config.json` で変えられます（書き方は `stages/12-cogload.md`）。
 
 サブエージェントには、必要なファイルのパスと読者ペルソナの要点を渡してください。拾い読みテストでは、**原稿そのものを渡してはいけません**（テストが成り立たなくなります）。
 

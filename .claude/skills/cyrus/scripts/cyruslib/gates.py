@@ -490,8 +490,9 @@ SKIM_THRESHOLD = 0.7
 
 
 def _visual_tools_available() -> bool:
-    from . import agyreader, visual
-    if not (visual.find_chrome() and agyreader.find_agy()):
+    """Chrome・Pillow・読み手のコマンドがそろっているか。読み手の設定に誤りがあれば ReaderConfigError。"""
+    from . import visionreader, visual
+    if not (visual.find_chrome() and visionreader.available()):
         return False
     try:
         import PIL  # noqa: F401
@@ -501,19 +502,25 @@ def _visual_tools_available() -> bool:
 
 
 def _check_visual_test(ws: Workspace, vt: dict | None, sids: list, current_hash: str) -> list[Issue]:
-    """画像での拾い読みテスト（Gemini に読ませた結果を cyrus-alignment-judge が判定したもの）を検査する。"""
+    """画像での拾い読みテスト（読み手に読ませた結果を cyrus-alignment-judge が判定したもの）を検査する。"""
+    from . import visionreader
     if not vt:
         return [Issue("GT140", "error", "visual_test（画像での拾い読みテスト）がありません。`cyrus vision` を実行し、"
                                         "cyrus-alignment-judge の判定を記録してください。")]
     if vt.get("skipped_reason"):
-        if _visual_tools_available():
-            return [Issue("GT141", "error", "この環境では Chrome と agy が使えるので、画像での拾い読みテストは省略できません。")]
+        try:
+            usable = _visual_tools_available()
+        except visionreader.ReaderConfigError as e:
+            return [Issue("GT148", "error", f"読み手の設定に誤りがあります: {e}")]
+        if usable:
+            return [Issue("GT141", "error", "この環境では Chrome と読み手のコマンドが使えるので、画像での拾い読みテストは省略できません。")]
         return []
-    rec = ws.path("skim/visual/gemini-reader.json")
+    rec = ws.path("skim/visual") / visionreader.RESULT_NAME
     try:
         run = json.loads(rec.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return [Issue("GT142", "error", "skim/visual/gemini-reader.json がないか、読めません。`cyrus vision` で Gemini に読ませてください。")]
+        return [Issue("GT142", "error", f"skim/visual/{visionreader.RESULT_NAME} がないか、読めません。"
+                                        "`cyrus vision` で読み手に読ませてください。")]
     issues: list[Issue] = []
     if run.get("draft_hash") != current_hash or vt.get("draft_hash") != current_hash:
         issues.append(Issue("GT143", "error", "画像での拾い読みテストが、いまの draft.md で行われていません。"
@@ -526,7 +533,7 @@ def _check_visual_test(ws: Workspace, vt: dict | None, sids: list, current_hash:
         if s.get("recovered") not in ("yes", "partial", "no"):
             issues.append(Issue("GT144", "error", f"visual_test の節 {s.get('id')} の recovered は yes / partial / no にしてください。"))
     if vt.get("main_claim_recovered") is not True:
-        issues.append(Issue("GT145", "error", "画像で拾い読みした Gemini に、主張の中心（C0）が伝わっていません。"
+        issues.append(Issue("GT145", "error", "画像で拾い読みした読み手に、主張の中心（C0）が伝わっていません。"
                                               "冒頭の見出しと段落の最初の文、太字の使い方を見直してください。"))
     score = _skim_score(vt)
     if score < SKIM_THRESHOLD:
@@ -534,7 +541,7 @@ def _check_visual_test(ws: Workspace, vt: dict | None, sids: list, current_hash:
                                               "伝わらなかった節の見出し・段落の最初の文・太字を直し、再テストしてください。"))
     missed = ((run.get("result") or {}).get("visual_notes") or {}).get("missed_or_hidden") or []
     if missed and not _nonempty_str(vt.get("visual_notes_resolution")):
-        issues.append(Issue("GT147", "warn", "Gemini が「重要そうなのに目立たなかった」点を挙げています。"
+        issues.append(Issue("GT147", "warn", "読み手が「重要そうなのに目立たなかった」点を挙げています。"
                                              "どう対応したかを visual_test.visual_notes_resolution に書いてください。"))
     return issues
 
