@@ -254,7 +254,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:cb9deaf9b915a549a45536cbf1fdd3315d0a45d18ae969d1105afeac827d31a0
+  content_hash: sha256:b27755c21462555b0d91797307d95c2cc71a9dd4800d67071baaef5205e4e1e8
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/cli.py
@@ -971,7 +971,7 @@ local_deployed_file_hashes:
   .claude/skills/cyrus/references/lean-modeling.md: sha256:974a2b18a7aded906ec27f1769a3e88571cc9ba6d2343caf4f575aa40daaac02
   .claude/skills/cyrus/references/owner-principles.md: sha256:67b2558f04890283d7a51548c1129e3a77ef31144c515969ddad15d8345664b3
   .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
-  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:cb9deaf9b915a549a45536cbf1fdd3315d0a45d18ae969d1105afeac827d31a0
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:b27755c21462555b0d91797307d95c2cc71a9dd4800d67071baaef5205e4e1e8
   .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:871db3247bc929f62e4f113a8a00f952a09a491190643491d314076bb87151e2
   .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:6938491f157fc2c2653e8c54076639e010be45533669c74bab60cf15573529eb
   .claude/skills/cyrus/scripts/cyruslib/hooks.py: sha256:835034fad61bd05eb7ac3e1f34ab5e21ed44786e8dedc1c08849e703c3d8285c
