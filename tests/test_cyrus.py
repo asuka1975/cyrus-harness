@@ -32,6 +32,8 @@ try:
     HAS_VISUAL = visual.find_chrome() is not None
 except ImportError:
     HAS_VISUAL = False
+YOMIYASU_CHECK = ROOT / ".claude" / "skills" / "yomiyasu" / "scripts" / "yomiyasu_check.py"  # apm install で入る依存
+HAS_YOMIYASU = YOMIYASU_CHECK.exists()
 FAKE_AGY = Path(__file__).resolve().parent / "fakes" / "fake_agy.py"
 FAKE_CLAUDE = Path(__file__).resolve().parent / "fakes" / "fake_claude.py"
 
@@ -150,10 +152,16 @@ class WordingTest(unittest.TestCase):
         self.assertNotIn("WD001", rules(wording.check_wording("# t\n\nprefix を付けます。\n", prof)[0]))
         self.assertIn("WD001", rules(wording.check_wording("# t\n\nPRを出します。\n", prof)[0]))
 
-    def test_hard_expression_and_variants(self):
-        issues = self.check("# t\n\n状況に鑑みて判断します。サーバーとサーバを比べます。\n")
+    def test_kana_and_variants(self):
+        issues = self.check("# t\n\n既に判断しました。サーバーとサーバを比べます。\n")
         self.assertIn("WD005", rules(issues))
         self.assertIn("WD007", rules(issues))
+
+    def test_rewriting_is_left_to_yomiyasu(self):
+        # 硬い漢語・冗長な表現・補助動詞の推敲は yomiyasu に任せ、辞書では拾わない
+        issues = self.check("# t\n\n状況に鑑みて、確認することができます。確認を行って下さい。\n")
+        self.assertNotIn("WD005", rules(issues))
+        self.assertNotIn("WD006", rules(issues))
 
 
 class SkimTest(unittest.TestCase):
@@ -169,7 +177,7 @@ class SkimTest(unittest.TestCase):
 class CliCase(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="cyrus-test-"))
-        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp))
+        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp), CYRUS_YOMIYASU=str(YOMIYASU_CHECK))
         self.env.pop("CLAUDE_PROJECT_DIR", None)
         self.doc = self.tmp / "documents" / "wiki-search"
 
@@ -184,6 +192,13 @@ class CliCase(unittest.TestCase):
         dst = self.doc / rel
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(FIXTURE / rel, dst)
+
+    def yomiyasu_run(self):
+        """ステージ13の推敲のあとに yomiyasu が残す検査の記録を、draft.md と final.md で作る。"""
+        r = subprocess.run([sys.executable, str(YOMIYASU_CHECK), "run", "--source", str(self.doc / "draft.md"),
+                            "--final", str(self.doc / "final.md")], capture_output=True, text=True, cwd=str(self.tmp),
+                           timeout=300)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
     def advance_through(self, upto: str):
         for key, rel in STAGE_FILES:
@@ -335,6 +350,27 @@ class GateTest(CliCase):
         r = self.run_cli("skim")
         self.assertIn("原稿の指紋", r.stdout)
         self.assertTrue((self.doc / "skim" / "meta.json").exists())
+
+    @unittest.skipUnless(HAS_YOMIYASU, "yomiyasu が入っていない（apm install）")
+    def test_wording_requires_yomiyasu_record(self):
+        self.advance_through("wording")
+        self.put("final.md")
+        self.assertIn("GT134", self.run_cli("check").stdout)  # yomiyasu の検査の記録がない
+        self.yomiyasu_run()
+        r = self.run_cli("check")
+        self.assertNotIn("GT134", r.stdout)
+        self.assertEqual(r.returncode, 0, r.stdout)
+        with open(self.doc / "final.md", "a", encoding="utf-8") as f:
+            f.write("\n検査のあとで足した段落です。\n")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT134", out)  # 検査したあとで本文が変わった
+        self.assertIn("final_changed", out)
+
+    def test_wording_without_yomiyasu(self):
+        self.advance_through("wording")
+        self.put("final.md")
+        self.env["CYRUS_YOMIYASU"] = str(self.tmp / "no-such" / "yomiyasu_check.py")
+        self.assertIn("GT133", self.run_cli("check").stdout)
 
     def test_back_clears_later_confirmations(self):
         self.advance_through("analysis")
@@ -1028,7 +1064,7 @@ class PrivateSubjectTest(CliCase):
         self.assertIn("手戻りの一覧", r.stdout)
 
 
-@unittest.skipUnless(HAS_LEAN, "lean が見つからないため全ステージのテストを省略")
+@unittest.skipUnless(HAS_LEAN and HAS_YOMIYASU, "lean か yomiyasu が見つからないため全ステージのテストを省略")
 class EndToEndTest(CliCase):
     def test_all_stages(self):
         self.assertEqual(self.run_cli("new", "wiki-search", "--title", "社内Wiki検索の刷新提案").returncode, 0)
@@ -1039,6 +1075,8 @@ class EndToEndTest(CliCase):
             self.put(rel)
             for extra in EXTRA_FILES.get(key, []):
                 self.put(extra)
+            if key == "wording":
+                self.yomiyasu_run()
             r = self.run_cli("check")
             self.assertEqual(r.returncode, 0, f"{key}: {r.stdout}")
             r = self.run_cli("advance", "--confirmed", "テスト承認", "--accept-warnings")

@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 
-from . import jatext, leancheck, lint, mdparse, skim, wording
+from . import jatext, leancheck, lint, mdparse, skim, wording, yomiyasu
 from .issues import Issue
 from .reader import build_profile
 from .workspace import Workspace
@@ -612,6 +612,20 @@ def gate_wording(ws: Workspace) -> list[Issue]:
         issues.append(Issue("GT131", "error", f"final.md に言葉遣いのエラーが{len(werrs)}件あります（`cyrus wording final.md`）。"))
     if PLACEHOLDER_RE.search(text):
         issues.append(Issue("GT132", "error", "final.md に TODO などの未記入箇所が残っています。"))
+    script = yomiyasu.find_check()
+    if script is None:
+        issues.append(Issue("GT133", "error", "yomiyasu が見つかりません。`apm install` で入れてください"
+                                              "（場所は環境変数 CYRUS_YOMIYASU で yomiyasu_check.py を指定できます）。"))
+    else:
+        rc, status, first = yomiyasu.verify(script, p, ws.path("draft.md"))
+        if rc != 0 and status == "no_record":
+            issues.append(Issue("GT134", "error", "final.md に yomiyasu の検査の記録がありません（no_record）。"
+                                                  "stages/13-wording.md の手順1で、yomiyasu で draft.md を推敲してください。"))
+        elif rc != 0:
+            reason = first.split("。")[0] + "。" if first else ""
+            issues.append(Issue("GT134", "error", f"final.md が、yomiyasu で draft.md から推敲して検査した本文と合いません（{status}）。"
+                                                  f"{reason}yomiyasu_check.py の run をやり直してから verify してください"
+                                                  "（stages/13-wording.md の手順4）。"))
     return issues
 
 

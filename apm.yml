@@ -6,7 +6,8 @@ license: MIT
 targets:
 - claude
 dependencies:
-  apm: []
+  apm:
+  - nanaism/yomiyasu#v2.0.1
   mcp: []
 includes: auto
 scripts: {}

@@ -23,11 +23,12 @@
 | ステージのガイド | `skills/cyrus/stages/01〜13-*.md` | 各ステージでやること・聞くこと・成果物の形式・完了条件 |
 | 文章の指針 | `skills/cyrus/references/japanese-style.md` | 読みやすい日本語の書き方（lint のルールと対応） |
 | CLI | `skills/cyrus/scripts/cyrus.py`, `cyruslib/` | 状態管理・完了条件の検査・認知負荷の検査・言葉遣いの検査・Lean の検査 |
-| 言葉遣いの辞書 | `skills/cyrus/data/wording-rules.json` | 硬い表現・冗長な表現・表記ゆれの辞書 |
-| サブエージェント | `agents/cyrus-*.agent.md` | 事実確認・論理批判・ペルソナ読者・拾い読み読者・照合判定・言葉遣いの校閲 |
+| 表記の辞書 | `skills/cyrus/data/wording-rules.json` | ひらく漢字・表記ゆれの辞書 |
+| サブエージェント | `agents/cyrus-*.agent.md` | 事実確認・論理批判・ペルソナ読者・拾い読み読者・照合判定 |
 | コマンド | `prompts/cyrus.prompt.md`, `cyrus-status.prompt.md` | `/cyrus`, `/cyrus-status` |
 | ルール | `instructions/cyrus-documents.instructions.md` | `documents/` を編集するときの約束 |
 | フック | `hooks/cyrus-hooks.json` | 成果物を保存したら自動で検査／セッション開始時に進捗を知らせる |
+| 依存（APM） | `apm.yml` の `dependencies.apm` | ステージ13の推敲に使う yomiyasu（nanaism/yomiyasu）。`apm install asuka1975/cyrus-harness` で cyrus を入れると、推移的に入る。中身はこのリポジトリに含めない（`.gitignore`） |
 
 CLI は Python の標準ライブラリだけで動きます。Lean の検査には Lean 4（elan）が必要です。
 
@@ -53,7 +54,7 @@ CLI は Python の標準ライブラリだけで動きます。Lean の検査に
 | 10 詳細設計 | 表現の種類、図表の理由、1節あたりの新しい用語の数、字数と読了時間 | 見せ方の判断 |
 | 11 執筆 | 見出しが設計どおりか、図表の参照 | 執筆 |
 | 12 認知負荷 | lint のエラーが0か、拾い読みの再現率が基準以上か、指摘すべてに対応したか | ペルソナ通読、拾い読み、照合判定 |
-| 13 言葉遣い | 読者辞書に基づく検査、硬い表現・表記ゆれ | 校閲（cyrus-wording-reviewer）。ユーザーの承認 |
+| 13 言葉遣い | 読者辞書に基づく検査、ひらく漢字・表記ゆれ、yomiyasu の検査（lint・diff）と記録の照合 | 推敲（yomiyasu スキル）。ユーザーの承認 |
 
 ## Lean による論理検証と確信度
 
@@ -116,7 +117,9 @@ CLI は Python の標準ライブラリだけで動きます。Lean の検査に
 - 知らない語が、初出で説明されずに使われていればエラーにする。説明が初出より後にある場合もエラーにする。
 - 避けるべき語が使われていればエラーにする。
 - 辞書にないカタカナ語と英字語は「判断が必要な語」として知らせる。判断の結果は辞書に追加するので、使うほど辞書が育つ。
-- 硬い表現、冗長な表現、表記ゆれは `data/wording-rules.json` の辞書で検出する。
+- ひらく漢字と表記ゆれは `data/wording-rules.json` の辞書で検出する。
+
+推敲（不自然な比喩、あいまいな主述関係、硬い表現、冗長な言い方、立場に合わない文末や敬語）は yomiyasu スキルに任せます。yomiyasu は表記をそろえない（補助動詞と形式名詞「事」「為」を除く）ので、表記の検査は cyrus に残しています。yomiyasu は推敲した最終稿に lint と diff をかけ、最終稿のハッシュを記録に残します。ステージ13の完了条件は `yomiyasu_check.py verify` で、final.md が draft.md から推敲して検査した本文のままかを確かめます（GT133・GT134）。
 
 ## 実機での確認
 
