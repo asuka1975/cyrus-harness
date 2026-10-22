@@ -323,6 +323,7 @@ def gate_logic(ws: Workspace) -> list[Issue]:
 
 STYLES = {"敬体", "常体"}
 OUTLINE_ITEM_RE = re.compile(r"^(\d+)\.\s+(.+?)\s*$")  # constructivism の骨子: 「1. 見出し（役割：…／目安：…）」
+CHECK_ITEM_RE = re.compile(r"^\s*[-*]\s*\[([ xX])\][ \t]*(.+?)\s*$", re.M)  # constructivism の構成チェック: 「- [x] 項目」（判定理由の行は拾わない。項目文のない行で次の行を拾わないよう、] の後は行内の空白だけ）
 
 
 def constructivism_dir():
@@ -390,6 +391,16 @@ def gate_structure(ws: Workspace) -> list[Issue]:
         md_style = selection_style(md)
         if not outline and any(k.startswith("骨子") for k in secs):
             issues.append(Issue("GT073", "error", "08-structure.md の「骨子」に「1. 見出し（役割：…）」の形の項目がありません。"))
+        check = next((v for k, v in secs.items() if k.startswith("構成チェック")), None)
+        if check is not None:
+            items = CHECK_ITEM_RE.findall(check)
+            if not items:
+                issues.append(Issue("GT075", "warn", "08-structure.md の「構成チェック」に「- [x] 項目」の形の項目がありません。"
+                                                     "constructivism の最終チェック（6項目と判定理由）までそのまま貼ってください。"))
+            for mark, text in items:
+                if not mark.strip():
+                    issues.append(Issue("GT075", "warn", f"構成チェックの「{text}」が未達（[ ]）です。constructivism に骨子を直してもらうか、"
+                                                         "直せない理由を 08-structure.md の仮定・逸脱に書いてください。"))
     for k in ("genre", "form"):
         if not _nonempty_str(data.get(k)):
             issues.append(Issue("GT074", "error", f"{k}（constructivism の{'採用構成' if k == 'genre' else '型'}）を書いてください。"))

@@ -46,7 +46,7 @@ Claude が目的と読者を聞き取り、事実を確かめ、論理を検証�
 文書を書きたいプロジェクトで、次のコマンドを実行します。
 
 ```bash
-apm install asuka1975/cyrus-harness#v0.2.0
+apm install asuka1975/cyrus-harness#v0.2.1
 ```
 
 スキル（cyrus と visual-patterns）、サブエージェント、コマンド、フックが Claude Code に入ります。

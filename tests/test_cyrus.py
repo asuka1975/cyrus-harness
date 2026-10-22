@@ -446,8 +446,17 @@ class GateTest(CliCase):
         self.put("08-structure.json")
         self.assertIn("GT002", self.run_cli("check").stdout)  # 雛形の 08-structure.md は TODO のまま
         self.put("08-structure.md")
-        self.assertEqual(self.run_cli("check").returncode, 0, self.run_cli("check").stdout)
+        out = self.run_cli("check").stdout
+        self.assertEqual(self.run_cli("check").returncode, 0, out)
+        self.assertNotIn("GT075", out)
         md = (self.doc / "08-structure.md").read_text(encoding="utf-8")
+        (self.doc / "08-structure.md").write_text(md.replace("- [x] 文体がジャンルの既定に合い", "- [ ] 文体がジャンルの既定に合い"), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT075", out)  # 構成チェックに未達の項目（警告）
+        self.assertIn("「文体がジャンルの既定に合い、統一されているか」が未達", out)
+        self.assertNotIn("判定理由", out)  # 判定理由の行は項目として拾わない
+        (self.doc / "08-structure.md").write_text(md.split("## 構成チェック")[0] + "## 構成チェック\n", encoding="utf-8")
+        self.assertIn("項目がありません", self.run_cli("check").stdout)
         (self.doc / "08-structure.md").write_text(md.replace("3. 置き換えで変わること（", "3. 置き換えると何が変わるか（"), encoding="utf-8")
         out = self.run_cli("check").stdout
         self.assertIn("GT073", out)  # 骨子の見出しが節にない
@@ -1478,8 +1487,10 @@ class HarnessConsistencyTest(unittest.TestCase):
         self.assertIn("根拠にしてよい資料の範囲", text)
 
     def test_structure_and_figure_guides(self):
-        for m in ("constructivism", "08-structure.md", "genre", "form", "style", "purpose", "message_kind"):
+        for m in ("constructivism", "08-structure.md", "genre", "form", "style", "purpose", "message_kind",
+                  "目的は必須", "判定理由", "GT075"):
             self.assertIn(m, self.read("skills/cyrus/stages/08-structure.md"), m)
+        self.assertNotIn("欠けた項目はスキルが既定値で補い", self.read("skills/cyrus/stages/08-structure.md"))  # v1.0.0 までの決まり
         for m in ("visual-patterns", "spec", "VP020", "answer", "evidence"):
             self.assertIn(m, self.read("skills/cyrus/stages/10-detail.md"), m)
         for m in ("cyrus figure check", "cyrus figure render", "figures/fig-NN.vl.json", "キャプション"):
@@ -1499,6 +1510,25 @@ class HarnessConsistencyTest(unittest.TestCase):
         self.assertTrue(vp.startswith("---\nname: visual-patterns\n"))
         for m in ("手順2", "evidence", "scripts/vp_figure.py", "references/catalog/taxonomy.md"):
             self.assertIn(m, vp, m)
+
+    @unittest.skipUnless(HAS_CONSTRUCTIVISM, "constructivism が入っていない（apm install）")
+    def test_structure_fixture_follows_installed_constructivism(self):
+        """fixture の 08-structure.md は、入っている constructivism の出力形式（最終チェックの6項目を同文で）に合わせておく。
+        apm.yml の版を上げたら、この fixture と stages/08-structure.md も見直す。"""
+        from cyruslib import gates
+        skill = (CONSTRUCTIVISM / "SKILL.md").read_text(encoding="utf-8")
+        pinned = re.search(r"asuka1975/constructivism#v(\S+)", (ROOT / "apm.yml").read_text(encoding="utf-8")).group(1)
+        self.assertIn(f'version: "{pinned}"', skill, "apm.yml の版と .claude/ に入っている版が違う（apm install を実行する）")
+        final = next((v for k, v in gates._md_sections(skill).items() if "最終チェック" in k), "")
+        expected = [ln[2:].strip() for ln in final.split("\n") if ln.startswith("- ")]
+        self.assertEqual(len(expected), 6, final)
+        fixture = (FIXTURE / "08-structure.md").read_text(encoding="utf-8")
+        check = next((v for k, v in gates._md_sections(fixture).items() if k.startswith("構成チェック")), "")
+        items = gates.CHECK_ITEM_RE.findall(check)
+        self.assertEqual([t for _, t in items], expected)
+        self.assertTrue(all(m == "x" for m, _ in items))
+        self.assertEqual(check.count("判定理由："), 6)
+        self.assertIn("仮定・逸脱", skill)  # 「仮定」欄の名前（stages/08-structure.md と gates.py のメッセージが使う）
 
     def test_render_routes_cover_catalog(self):
         index = json.loads(self.read("skills/visual-patterns/data/index.json"))
