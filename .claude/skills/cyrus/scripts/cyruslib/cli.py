@@ -8,7 +8,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import gates, lint, leancheck, logicround, scaffold, skim, wording
+from . import figure, gates, lint, leancheck, logicround, scaffold, skim, wording
 from .issues import count, format_issues
 from .reader import build_profile, load_profile
 from .workspace import (PHASE_JA, STAGE_KEYS, STAGES, Workspace, documents_dir, list_workspaces,
@@ -278,7 +278,7 @@ def cmd_vision(args):
     media = args.media or ((reader or {}).get("reading_context") or {}).get("medium") or "screen"
     out_dir = ws.path("skim") / "visual"
     try:
-        res = visual.render(text, out_dir, media=media, keep_sharp=args.keep_sharp)
+        res = visual.render(text, out_dir, media=media, keep_sharp=args.keep_sharp, base_dir=ws.dir)
     except visual.VisualUnavailable as e:
         sys.exit(f"画像化できません: {e}")
     h = skim.text_hash(text)
@@ -292,7 +292,7 @@ def cmd_vision(args):
         out = visionreader.run(res.pages, res.overview, reader, model=args.model, cfg=cfg)
     except visionreader.ReaderUnavailable as e:
         sys.exit(f"{cfg.name} に読ませられませんでした: {e}")
-    out = {"source": src.name, "draft_hash": h, "media": media, **out}
+    out = {"source": src.name, "draft_hash": h, "assets_hash": figure.assets_hash(ws, text), "media": media, **out}
     dest = out_dir / visionreader.RESULT_NAME
     dest.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     r = out["result"]
@@ -307,6 +307,68 @@ def cmd_vision(args):
         for x in notes.get(key, []):
             print(f"  [{label}] {x}")
     print("\n次に cyrus-alignment-judge で 09-storyline.json と照合し、12-cogload.json の visual_test に記録してください。")
+
+
+def cmd_figure(args):
+    from . import visionreader
+    ws = _ws(args)
+    detail = ws.read_json("10-detail.json")
+    reader = ws.read_json("03-reader.json")
+    if args.action == "check":
+        issues = figure.check_detail(detail, build_profile(reader).level)
+        src = ws.path(args.file)
+        if src.exists():
+            issues += figure.check_draft(ws, src.read_text(encoding="utf-8"), detail)
+        c = count(issues)
+        if args.json:
+            print(json.dumps({"counts": c, "issues": [i.to_dict() for i in issues]}, ensure_ascii=False, indent=2))
+        else:
+            n = len(figure.planned(detail))
+            print(f"設計の図表 {n} 件: エラー {c['error']} 件・警告 {c['warn']} 件・参考 {c['info']} 件")
+            if issues:
+                print(format_issues(issues, args.file))
+        sys.exit(1 if c["error"] else 0)
+    if args.action == "render":
+        try:
+            done = figure.render_all(ws)
+        except Exception as e:  # スキルや Chrome がない、仕様が描けない
+            sys.exit(f"描けませんでした: {e}")
+        if not done:
+            print(f"{figure.FIGURES_DIR}/ に *.vl.json がありません。")
+        for png, size in done:
+            print(f"{png.relative_to(ws.dir)}（{size['width']}×{size['height']}）")
+        return
+    # read: 図表だけを切り出し、原稿を知らない読み手に読ませる
+    src = _resolve_file(ws, args.file)
+    text = src.read_text(encoding="utf-8")
+    found = figure.draft_figures(text)
+    if not found:
+        print("原稿に図表（「図N: …」「表N: …」のキャプション）がありません。")
+        return
+    out_dir = ws.path(str(figure.READ_DIR))
+    if args.no_reader:
+        try:
+            pairs = figure.figure_images(ws, found, out_dir)
+        except Exception as e:
+            sys.exit(f"画像にできません: {e}")
+        for f, png in pairs:
+            print(f"{f.label} → {png.relative_to(ws.dir)}")
+        return
+    try:
+        cfg = visionreader.load_config()
+    except visionreader.ReaderConfigError as e:
+        sys.exit(f"読み手の設定に誤りがあります: {e}")
+    print(f"{len(found)} 件の図表を切り出し、{cfg.name} に読ませています…")
+    try:
+        out = figure.read_figures(ws, text, found, reader, cfg=cfg, model=args.model)
+    except (visionreader.ReaderUnavailable, RuntimeError) as e:
+        sys.exit(f"読ませられませんでした: {e}")
+    print(f"結果: {out_dir / figure.RESULT_NAME}（{out['duration_seconds']}秒）　原稿の指紋: {out['draft_hash']}")
+    for x in out["figures"]:
+        print(f"  - {x['label']}: {x['claim']}　［文章のほうがよいか: {x['prefers_text']}］")
+        if x.get("unclear"):
+            print(f"      注目点が不明: {x['unclear']}")
+    print("\n次に cyrus-alignment-judge で 10-detail.json の各 spec.answer と照合し、12-cogload.json の figure_test に記録してください。")
 
 
 def _names(names: list[str], limit: int = 5) -> str:
@@ -430,7 +492,8 @@ def main(argv: list[str] | None = None) -> None:
 
     p = sub.add_parser("vision", help="原稿を画像にして周辺視野を模してぼかし、読み手（既定は agy 経由の Gemini）に読ませる")
     p.add_argument("file", nargs="?", default="draft.md")
-    p.add_argument("--media", choices=["screen", "mobile", "print", "slide"], help="省略時は 03-reader.json の reading_context.medium")
+    p.add_argument("--media", choices=["screen", "mobile", "print", "slide", "mail"],
+                   help="省略時は 03-reader.json の reading_context.medium（mail は screen と同じ幅で描く）")
     p.add_argument("--model", help="読み手に渡すモデル名（既定は cyrus.config.json の vision.reader.model。"
                                    "設定ファイルがなければ環境変数 CYRUS_AGY_MODEL か gemini-3.8-flash-medium）")
     p.add_argument("--no-reader", action="store_true", help="画像を作るだけで読み手には読ませない")
@@ -438,6 +501,14 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--show-command", action="store_true",
                    help="読み手を起動せず、cyrus.config.json から組み立てたコマンドと環境変数を表示する")
     p.set_defaults(func=cmd_vision)
+
+    p = sub.add_parser("figure", help="図表: 設計と原稿の照合（check）、Vega-Lite の仕様の PNG 化（render）、図表だけの逆読み（read）")
+    p.add_argument("action", choices=["check", "render", "read"])
+    p.add_argument("--file", default="draft.md", help="原稿（既定は draft.md）")
+    p.add_argument("--model", help="読み手に渡すモデル名（read）")
+    p.add_argument("--no-reader", action="store_true", help="画像を切り出すだけで読み手には読ませない（read）")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_figure)
 
     p = sub.add_parser("logic-round", help="ステージ7の周を記録する（close: いまの周を写して打ち切りを判定 / diff: 前の周との差分と対応表）")
     p.add_argument("action", choices=["close", "diff"])

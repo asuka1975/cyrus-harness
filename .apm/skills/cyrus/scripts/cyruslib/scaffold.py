@@ -72,6 +72,9 @@ def reader_template() -> dict:
         "persona": {"name": "TODO: 呼び名（例: 情シスの田中さん）", "role": "TODO: 立場・職種",
                     "background": "TODO: 経験・前提知識・関心ごと"},
         "knowledge_level": "intermediate",
+        "purpose": "TODO: 読者は読後に何をするか: decide（決める）/ report（報告を受ける）/ act（作業する）/ learn（学ぶ）"
+                   "/ lookup（調べる）/ understand（理解する）/ persuade（動かされる）/ verify（検証する）/ summary（要点だけ知る）",
+        "audience_scope": "internal",
         "known_terms": [],
         "unknown_terms": [],
         "avoid_terms": [],
@@ -85,7 +88,10 @@ def reader_template() -> dict:
 def claims_template() -> dict:
     return {
         "main_claim": {"id": "C0", "text": "TODO: 文書全体で最も伝えたい主張（01-intent.md の「伝えたいこと」を精密にしたもの）",
-                       "form": "TODO: capability（能力の文）か comparison（比較の文）", "premises": []},
+                       "form": "TODO: capability（能力の文）か comparison（比較の文）",
+                       "message_kind": "TODO: proposal（提言）/ decision（決定の記録）/ report（事実報告）/ instruction（手順指示）"
+                                       "/ explanation（概念説明）/ comparison（比較評価）/ education（教育）",
+                       "premises": []},
         "claims": [
             {"id": "C1", "text": "TODO: C0 を支える主張", "type": "judgement",
              "form": "TODO: capability（能力の文）か comparison（比較の文）", "supports": "C0", "premises": ["F1"]}
@@ -254,15 +260,27 @@ TODO: 比べる相手（現実の相手にする）と、導くべき不利な�
 """
 
 
+STRUCTURE_MD = """# 構成の選択（constructivism の出力）
+
+TODO: constructivism スキルを呼び、その出力（「構成選択結果」「骨子」「構成チェック」の3節）をここにそのまま貼る。
+08-structure.json の sections は、この骨子から作る（cyrus check が見出しの対応を照合する）。
+"""
+
+
 def structure_template(ws: Workspace) -> dict:
     return {
         "title": (ws.load().get("title") or "TODO: 文書のタイトル"),
-        "doc_type": "TODO: 提案書／手順書／解説／報告 など",
+        "doc_type": "TODO: 提案書／手順書／解説／報告 など（cyrus の大まかな種類）",
+        "genre": "TODO: constructivism の「採用構成」（例: 技術記事（Qiita/Zenn 型）、稟議書・決裁文書）",
+        "form": "TODO: constructivism の「型」（例: PREP、SDS、SCQA、IMRaD、Diátaxis のチュートリアル、結論ファースト）",
+        "style": "TODO: 敬体 か 常体（constructivism の「文体」）",
+        "second_choice": "",
+        "deviations": "",
         "format": "markdown",
         "conclusion_first": True,
         "sections": [
-            {"id": "S1", "heading": "TODO: 見出し", "level": 2, "purpose": "TODO: この節の役割",
-             "reader_question": "TODO: この節が答える読者の疑問", "claims": ["C0"]}
+            {"id": "S1", "heading": "TODO: 骨子の見出し", "level": 2, "purpose": "TODO: この節の役割（骨子の「役割」）",
+             "length_hint": "", "elements": [], "reader_question": "TODO: この節が答える読者の疑問", "claims": ["C0"]}
         ],
     }
 
@@ -286,7 +304,7 @@ def detail_template(ws: Workspace) -> dict:
         "target_length_chars": 0,
         "sections": [
             {"id": s.get("id"), "heading": s.get("heading"),
-             "blocks": [{"kind": "prose", "plan": "TODO: 何をどう見せるか", "why": ""}],
+             "blocks": [{"kind": "prose", "plan": "TODO: 何をどう見せるか（図表にするブロックは kind を figure / table にし、visual-patterns で決めた spec を添える）"}],
              "new_terms": [], "length_chars": 0}
             for s in structure.get("sections") or []
         ],
@@ -306,8 +324,8 @@ def draft_template(ws: Workspace) -> str:
     return "\n".join(L)
 
 
-def cogload_template() -> dict:
-    return {
+def cogload_template(ws: Workspace | None = None) -> dict:
+    out = {
         "metrics_before": {},
         "metrics_after": {},
         "skim_test": {
@@ -327,6 +345,17 @@ def cogload_template() -> dict:
         "persona_review": {"issues": []},
         "changes": [],
     }
+    # 図表があれば、図表の逆読み（手順9）の記録欄を、設計の図表ごとに用意する
+    from . import figure
+    plan = figure.planned(ws.read_json("10-detail.json")) if ws else []
+    if plan:
+        out["figure_test"] = {
+            "draft_hash": "",
+            "reader_model": "",
+            "figures": [{"label": p.label, "verdict": "TODO: match / partial / mismatch / misread", "note": "", "prefers_text": "",
+                         "keep_reason": ""} for p in plan],
+        }
+    return out
 
 
 def scaffold(ws: Workspace, key: str, force: bool = False) -> str:
@@ -340,11 +369,12 @@ def scaffold(ws: Workspace, key: str, force: bool = False) -> str:
         "logic": [("07-logic/Argument.lean", lambda: argument_template(ws)),
                   ("07-logic/Model.lean", lambda: model_template(ws)),
                   ("07-logic/model-plan.md", lambda: model_plan_template(ws))],
-        "structure": ("08-structure.json", lambda: _dump(structure_template(ws))),
+        "structure": [("08-structure.md", lambda: STRUCTURE_MD),
+                      ("08-structure.json", lambda: _dump(structure_template(ws)))],
         "storyline": ("09-storyline.json", lambda: _dump(storyline_template(ws))),
         "detail": ("10-detail.json", lambda: _dump(detail_template(ws))),
         "writing": ("draft.md", lambda: draft_template(ws)),
-        "cogload": ("12-cogload.json", lambda: _dump(cogload_template())),
+        "cogload": ("12-cogload.json", lambda: _dump(cogload_template(ws))),
         "wording": ("final.md", lambda: ws.path("draft.md").read_text(encoding="utf-8") if ws.path("draft.md").exists() else ""),
     }
     entries = targets[key] if isinstance(targets[key], list) else [targets[key]]

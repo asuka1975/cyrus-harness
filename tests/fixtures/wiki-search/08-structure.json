@@ -1,12 +1,17 @@
 {
   "title": "社内Wikiの検索を置き換える提案",
   "doc_type": "提案書",
+  "genre": "企画書・提案書",
+  "form": "PREP",
+  "style": "敬体",
+  "second_choice": "エグゼクティブサマリー＋稟議書",
+  "deviations": "読む時間が5分なので、提案内容と期待効果を「置き換えで変わること」に統合し、実施計画・体制・代替案との比較は添付に回した",
   "format": "markdown",
   "conclusion_first": true,
   "sections": [
-    {"id": "S1", "heading": "お願いしたいこと", "level": 2, "purpose": "結論と依頼を先に伝える", "reader_question": "結局、何を判断すればよいのか", "claims": ["C0"]},
-    {"id": "S2", "heading": "いま困っていること", "level": 2, "purpose": "問題の大きさを示す", "reader_question": "何が問題なのか", "claims": ["C1"]},
-    {"id": "S3", "heading": "置き換えで変わること", "level": 2, "purpose": "解決の見通しを示す", "reader_question": "置き換えると何がよくなるのか", "claims": ["C2"]},
-    {"id": "S4", "heading": "費用と効果", "level": 2, "purpose": "費用対効果を示す", "reader_question": "費用に見合うのか", "claims": ["C3"]}
+    {"id": "S1", "heading": "お願いしたいこと", "level": 2, "purpose": "結論と依頼を先に伝える", "length_hint": "20%", "reader_question": "結局、何を判断すればよいのか", "claims": ["C0"]},
+    {"id": "S2", "heading": "いま困っていること", "level": 2, "purpose": "問題の大きさを示す", "length_hint": "25%", "reader_question": "何が問題なのか", "claims": ["C1"]},
+    {"id": "S3", "heading": "置き換えで変わること", "level": 2, "purpose": "解決の見通しを示す", "length_hint": "30%", "reader_question": "置き換えると何がよくなるのか", "claims": ["C2"]},
+    {"id": "S4", "heading": "費用と効果", "level": 2, "purpose": "費用対効果を示す", "length_hint": "25%", "reader_question": "費用に見合うのか", "claims": ["C3"]}
   ]
 }

@@ -38,6 +38,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `wording [file]` | 言葉遣いの検査（読者辞書・ひらく漢字・表記ゆれ） |
 | `skim [file]` | 拾い読みビュー（outline / pickup / local）を作る |
 | `vision [file]` | 原稿を画像にして周辺視野を模してぼかし、別のモデル（既定は agy 経由の Gemini）に読ませる |
+| `figure check` / `render` / `read` | 図表の設計と原稿の照合／Vega-Lite の仕様を PNG にする／図表だけを切り出して別のモデルに読ませる（逆読み） |
 
 ## 進め方（毎回このループ）
 
@@ -78,11 +79,13 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `cyrus-logic-reviewer` | モデルを敵対的に監査し、証拠のない公理の確信度を下げる | 7 |
 | `cyrus-persona-reader` | 読者になりきって通読し、つまずきを報告する | 12 |
 | `cyrus-skim-reader` | 拾い読みビューだけを見て内容を再構成する | 12 |
-| `cyrus-alignment-judge` | 再構成された内容と、意図したメッセージを照合する（テキスト・画像の両方） | 12 |
+| `cyrus-alignment-judge` | 再構成された内容と、意図したメッセージを照合する（テキスト・画像・図表の逆読み） | 12 |
 
 画像での拾い読みテストでは、既定で読み手を Claude ではなく Gemini にします（`cyrus vision` が agy を読み取り専用で呼ぶ）。書き手と同じモデルが読み手を演じる偏りを避けるためです。読み手のコマンドは、プロジェクトのルートの `cyrus.config.json` で変えられます（書き方は `stages/12-cogload.md`）。
 
 ステージ13の推敲は、サブエージェントではなく yomiyasu スキル（nanaism/yomiyasu）に任せます。cyrus の依存として APM で一緒に入ります。呼び方は `stages/13-wording.md` にあります。
+
+同じように、ステージ8の構成（章立て）は constructivism スキル（asuka1975/constructivism）に、ステージ10の図表の選択と作図の指針は visual-patterns スキル（このパッケージに同梱。図表パターンのカタログを写したもの）に任せます。呼び方は `stages/08-structure.md` と `stages/10-detail.md` にあります。
 
 サブエージェントには、必要なファイルのパスと読者ペルソナの要点を渡してください。拾い読みテストでは、**原稿そのものを渡してはいけません**（テストが成り立たなくなります）。
 
@@ -95,6 +98,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 - 読者が知らない語は、初めて出たところで説明する。説明できないなら使わない。
 - 主張の強さは、ステージ7で計算した確信度に合わせる（`07-logic/report.json` の hedge）。
 - 文体（です・ます／だ・である）を混ぜない。
+- 図表は、読み取らせたい答えと根拠の形から決め、キャプションに答えの一文を書く。
 
 ## ファイルの置き場所
 

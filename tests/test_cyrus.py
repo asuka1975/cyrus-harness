@@ -34,6 +34,9 @@ except ImportError:
     HAS_VISUAL = False
 YOMIYASU_CHECK = ROOT / ".claude" / "skills" / "yomiyasu" / "scripts" / "yomiyasu_check.py"  # apm install で入る依存
 HAS_YOMIYASU = YOMIYASU_CHECK.exists()
+CONSTRUCTIVISM = ROOT / ".claude" / "skills" / "constructivism"  # apm install で入る依存（ゲートは SKILL.md の有無だけを見る）
+HAS_CONSTRUCTIVISM = (CONSTRUCTIVISM / "SKILL.md").exists()
+VISUAL_PATTERNS = ROOT / ".apm" / "skills" / "visual-patterns"  # このパッケージのスキル（元を直接使う）
 FAKE_AGY = Path(__file__).resolve().parent / "fakes" / "fake_agy.py"
 FAKE_CLAUDE = Path(__file__).resolve().parent / "fakes" / "fake_claude.py"
 
@@ -41,7 +44,8 @@ MINI = Path(__file__).resolve().parent / "fixtures" / "logic-mini"
 PRIVATE = Path(__file__).resolve().parent / "fixtures" / "private-subject"  # 公開しない題材（.gitignore）
 
 # ステージの成果物のほかに、完了条件の検査で参照されるファイル
-EXTRA_FILES = {"logic": ["07-logic/Model.lean"], "cogload": ["skim/visual/reader-result.json"]}
+EXTRA_FILES = {"logic": ["07-logic/Model.lean"], "structure": ["08-structure.md"],
+               "cogload": ["skim/visual/reader-result.json", "skim/figures/reader-result.json"]}
 
 STAGE_FILES = [
     ("intent", "01-intent.md"),
@@ -75,6 +79,8 @@ class JaTextTest(unittest.TestCase):
         self.assertEqual(jatext.sentence_style("検索が遅い。"), "plain")
         self.assertEqual(jatext.sentence_style("そうですね。"), "desumasu")
         self.assertEqual(jatext.sentence_style("結果の一覧。"), "neutral")
+        self.assertEqual(jatext.sentence_style("索引を作り直します（図1）。"), "desumasu")  # 末尾の括弧の参照を外して判定する
+        self.assertEqual(jatext.sentence_style("不満は解消しない（表1）。"), "plain")
 
     def test_pickup_drops_hiragana(self):
         self.assertEqual(jatext.pickup("社内の検索はとても遅いです"), "社内 検索 遅")
@@ -177,8 +183,15 @@ class SkimTest(unittest.TestCase):
 class CliCase(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="cyrus-test-"))
-        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp), CYRUS_YOMIYASU=str(YOMIYASU_CHECK))
-        self.env.pop("CLAUDE_PROJECT_DIR", None)
+        constructivism = CONSTRUCTIVISM
+        if not HAS_CONSTRUCTIVISM:  # 入っていなくても他のステージの検査を試せるよう、場所だけの代役を置く
+            constructivism = self.tmp / "constructivism"
+            constructivism.mkdir()
+            (constructivism / "SKILL.md").write_text("stub\n", encoding="utf-8")
+        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp), CYRUS_YOMIYASU=str(YOMIYASU_CHECK),
+                        CYRUS_CONSTRUCTIVISM=str(constructivism), CYRUS_VISUAL_PATTERNS=str(VISUAL_PATTERNS))
+        for k in ("CLAUDE_PROJECT_DIR", "CYRUS_CONFIG", "CYRUS_DOCS_DIR", "CYRUS_AGY", "CYRUS_AGY_MODEL"):  # 開発者の環境を持ち込まない
+            self.env.pop(k, None)
         self.doc = self.tmp / "documents" / "wiki-search"
 
     def tearDown(self):
@@ -309,10 +322,13 @@ class GateTest(CliCase):
         (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         self.assertIn("GT125", self.run_cli("check").stdout)
 
+    def put_cogload(self):
+        for rel in ("12-cogload.json", *EXTRA_FILES["cogload"]):
+            self.put(rel)
+
     def test_visual_test_required_and_tied_to_draft(self):
         self.advance_through("cogload")
-        self.put("12-cogload.json")
-        self.put("skim/visual/reader-result.json")
+        self.put_cogload()
         self.assertEqual(self.run_cli("check").returncode, 0)
         data = json.loads((FIXTURE / "12-cogload.json").read_text(encoding="utf-8"))
         del data["visual_test"]
@@ -324,8 +340,10 @@ class GateTest(CliCase):
 
     def test_visual_test_skip_follows_reader_config(self):
         self.advance_through("cogload")
+        self.put_cogload()
         data = json.loads((FIXTURE / "12-cogload.json").read_text(encoding="utf-8"))
         data["visual_test"] = {"skipped_reason": "読み手のコマンドがない"}
+        data["figure_test"] = {"skipped_reason": "読み手のコマンドがない"}
         (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         config = self.tmp / "cyrus.config.json"
         config.write_text(json.dumps({"vision": {"reader": {"command": ["cyrus-no-such-reader"]}}}), encoding="utf-8")
@@ -339,14 +357,14 @@ class GateTest(CliCase):
 
     def test_skim_test_must_match_current_draft(self):
         self.advance_through("cogload")
-        self.put("12-cogload.json")
-        self.put("skim/visual/reader-result.json")
+        self.put_cogload()
         self.assertEqual(self.run_cli("check").returncode, 0)
         with open(self.doc / "draft.md", "a", encoding="utf-8") as f:
             f.write("\n追記した段落です。\n")
         out = self.run_cli("check").stdout
         self.assertIn("GT129", out)
         self.assertIn("GT143", out)
+        self.assertIn("GT153", out)  # 図表の逆読みも、いまの原稿で行われている必要がある
         r = self.run_cli("skim")
         self.assertIn("原稿の指紋", r.stdout)
         self.assertTrue((self.doc / "skim" / "meta.json").exists())
@@ -395,6 +413,438 @@ class GateTest(CliCase):
     def test_session_start_hook(self):
         r = self.run_cli("hook", "session-start")
         self.assertIn("wiki-search", r.stdout)
+
+    # ---- constructivism（ステージ8）と、その入力になる読者・主張の項目 ----
+
+    def test_reader_purpose_and_claim_kind_required(self):
+        self.advance_through("reader")
+        data = json.loads((FIXTURE / "03-reader.json").read_text(encoding="utf-8"))
+        data["purpose"] = "読む"
+        (self.doc / "03-reader.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT029", self.run_cli("check").stdout)
+        data["purpose"] = "decide"
+        data["audience_scope"] = "社外"
+        (self.doc / "03-reader.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("audience_scope", self.run_cli("check").stdout)
+        data["audience_scope"] = "external"
+        data["reading_context"]["reading_mode"] = "headline"  # 冒頭だけ読む決裁者
+        data["reading_context"]["medium"] = "mail"
+        (self.doc / "03-reader.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertEqual(self.run_cli("check").returncode, 0)
+        self.assertEqual(self.run_cli("advance", "--confirmed", "x", "--accept-warnings").returncode, 0)
+        self.put("04-analysis.md")
+        self.assertEqual(self.run_cli("advance", "--accept-warnings").returncode, 0)
+        data = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        del data["main_claim"]["message_kind"]
+        (self.doc / "05-claims.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT043", self.run_cli("check").stdout)
+
+    def test_structure_requires_constructivism_output(self):
+        self.advance_through("structure")
+        r = self.run_cli("scaffold", "structure", "--force")
+        self.assertIn("08-structure.md を作りました", r.stdout)
+        self.put("08-structure.json")
+        self.assertIn("GT002", self.run_cli("check").stdout)  # 雛形の 08-structure.md は TODO のまま
+        self.put("08-structure.md")
+        self.assertEqual(self.run_cli("check").returncode, 0, self.run_cli("check").stdout)
+        md = (self.doc / "08-structure.md").read_text(encoding="utf-8")
+        (self.doc / "08-structure.md").write_text(md.replace("3. 置き換えで変わること（", "3. 置き換えると何が変わるか（"), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT073", out)  # 骨子の見出しが節にない
+        self.assertIn("置き換えると何が変わるか", out)
+        self.put("08-structure.md")
+        data = json.loads((FIXTURE / "08-structure.json").read_text(encoding="utf-8"))
+        data["sections"][1], data["sections"][2] = data["sections"][2], data["sections"][1]  # 骨子と順が違う
+        (self.doc / "08-structure.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("骨子の順と違います", self.run_cli("check").stdout)
+        data = json.loads((FIXTURE / "08-structure.json").read_text(encoding="utf-8"))
+        data["style"] = "常体"  # 構成選択結果の文体（敬体）と違う
+        (self.doc / "08-structure.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("constructivism の文体「敬体」", self.run_cli("check").stdout)
+        data = json.loads((FIXTURE / "08-structure.json").read_text(encoding="utf-8"))
+        data["style"] = "です・ます"
+        del data["genre"]
+        (self.doc / "08-structure.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertEqual(self.run_cli("check").stdout.count("GT074"), 2)
+        self.put("08-structure.json")
+        self.env["CYRUS_CONSTRUCTIVISM"] = str(self.tmp / "no-such")
+        self.assertIn("GT071", self.run_cli("check").stdout)
+
+    def test_storyline_pattern_follows_form_and_draft_follows_style(self):
+        self.advance_through("storyline")
+        data = json.loads((FIXTURE / "09-storyline.json").read_text(encoding="utf-8"))
+        data["pattern"] = "SCQA"
+        (self.doc / "09-storyline.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT088", out)
+        self.assertNotIn("[エラー]", out)
+        self.put("09-storyline.json")
+        self.assertEqual(self.run_cli("advance", "--confirmed", "x", "--accept-warnings").returncode, 0)
+        self.put("10-detail.json")
+        self.assertEqual(self.run_cli("advance", "--accept-warnings").returncode, 0)
+        self.put("draft.md")
+        st = json.loads((self.doc / "08-structure.json").read_text(encoding="utf-8"))
+        st["style"] = "常体"
+        (self.doc / "08-structure.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT118", self.run_cli("check").stdout)  # 本文は敬体なのに設計は常体
+
+    # ---- 図表（visual-patterns）: 設計・原稿・逆読み ----
+
+    def test_detail_figure_spec_is_checked(self):
+        self.advance_through("detail")
+        data = json.loads((FIXTURE / "10-detail.json").read_text(encoding="utf-8"))
+        fig = data["sections"][2]["blocks"][1]
+        del fig["spec"]
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT094", self.run_cli("check").stdout)
+        data = json.loads((FIXTURE / "10-detail.json").read_text(encoding="utf-8"))
+        fig = data["sections"][2]["blocks"][1]
+        fig["spec"]["evidence"] = {"form": "quantity", "description": "値が2つ", "counts": {"values": 2}}
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("VP020", out)  # 手順2 の目安では文章
+        self.assertIn("VP031", out)  # 量の根拠から実行順は選べない
+        data = json.loads((FIXTURE / "10-detail.json").read_text(encoding="utf-8"))
+        data["sections"][2]["blocks"][1]["spec"]["pattern"] = "flowchart"
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("VP041", self.run_cli("check").stdout)  # 実行順の候補にない
+        self.env["CYRUS_VISUAL_PATTERNS"] = str(self.tmp / "no-such")
+        self.assertIn("GT101", self.run_cli("check").stdout)
+
+    def test_draft_figures_must_match_plan(self):
+        self.advance_through("writing")
+        self.put("draft.md")
+        self.assertEqual(self.run_cli("check").returncode, 0, self.run_cli("check").stdout)
+        text = (FIXTURE / "draft.md").read_text(encoding="utf-8")
+        (self.doc / "draft.md").write_text(text.replace("図1: 記事は保存のたびに", "図1: 仕組み。記事は保存のたびに").replace(
+            "図1: 仕組み。記事は保存のたびに索引が作り直され、数秒で検索に出る。", "図1: 仕組み"), encoding="utf-8")
+        self.assertIn("GT114", self.run_cli("check").stdout)  # キャプションに答えがない
+        (self.doc / "draft.md").write_text(text + "\n| a | b |\n| --- | --- |\n| 1 | 2 |\n\n表1: 設計にない表\n", encoding="utf-8")
+        self.assertIn("GT117", self.run_cli("check").stdout)  # 設計にない図表
+        (self.doc / "draft.md").write_text(text.replace("```mermaid", "```text"), encoding="utf-8")
+        self.assertIn("GT115", self.run_cli("check").stdout)  # Mermaid で描く設計なのにコードブロックがない
+        (self.doc / "draft.md").write_text(text.replace("図1", "図9"), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT113", out)
+        self.assertIn("GT117", out)
+        # キャプションのない Mermaid の図、同じ番号のキャプション
+        (self.doc / "draft.md").write_text(text + "\n```mermaid\nflowchart LR\n X-->Y\n```\n", encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("キャプションのない Mermaid", out)
+        (self.doc / "draft.md").write_text(text + "\n```mermaid\nflowchart LR\n X-->Y\n```\n\n図1: 別の図。\n", encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("図1のキャプションが 2 つ", out)
+        # 小数点は照合で落とさない
+        (self.doc / "draft.md").write_text(text.replace("5秒以内", "0.5秒以内"), encoding="utf-8")
+        self.assertIn("GT114", self.run_cli("check").stdout)
+        # style を list にしても落ちない
+        st = json.loads((self.doc / "08-structure.json").read_text(encoding="utf-8"))
+        st["style"] = ["敬体"]
+        (self.doc / "08-structure.json").write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("check", "structure")
+        self.assertIn("GT074", r.stdout)
+        self.assertNotIn("Traceback", r.stdout + r.stderr)
+
+    def test_figure_test_required_and_judged(self):
+        self.advance_through("cogload")
+        self.put_cogload()
+        self.assertEqual(self.run_cli("check").returncode, 0)
+        data = json.loads((FIXTURE / "12-cogload.json").read_text(encoding="utf-8"))
+        data["figure_test"]["figures"][0]["verdict"] = "misread"
+        (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT155", self.run_cli("check").stdout)
+        rec0 = self.doc / "skim" / "figures" / "reader-result.json"
+        run0 = json.loads(rec0.read_text(encoding="utf-8"))
+        run0["figures"][0]["prefers_text"] = "yes"  # 読み手が「文章のほうがよい」と答えた
+        rec0.write_text(json.dumps(run0, ensure_ascii=False), encoding="utf-8")
+        data["figure_test"]["figures"][0].update(verdict="match", prefers_text="yes", note="読み手は値が少ないと答えた")
+        (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT157", out)  # 削除の問い（判定者の note があっても、書き手の keep_reason がなければ出る）
+        self.assertNotIn("[エラー]", out)
+        data["figure_test"]["figures"][0]["keep_reason"] = "三者の順序は文章だと戻り読みが要る"
+        (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertNotIn("GT157", self.run_cli("check").stdout)
+        self.put("skim/figures/reader-result.json")
+        del data["figure_test"]
+        (self.doc / "12-cogload.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT150", self.run_cli("check").stdout)
+        self.put("12-cogload.json")
+        rec = self.doc / "skim" / "figures" / "reader-result.json"
+        run = json.loads(rec.read_text(encoding="utf-8"))
+        run["figures"] = []  # 読み手の回答が空
+        rec.write_text(json.dumps(run, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT152", self.run_cli("check").stdout)
+        self.put("skim/figures/reader-result.json")
+        run = json.loads(rec.read_text(encoding="utf-8"))
+        run["figures"][0]["prefers_text"] = "yes"  # 判定の prefers_text（no）が読み手の答えと違う
+        rec.write_text(json.dumps(run, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT154", self.run_cli("check").stdout)
+        self.put("skim/figures/reader-result.json")
+        det = json.loads((self.doc / "10-detail.json").read_text(encoding="utf-8"))
+        det["sections"][2]["blocks"][1]["spec"]["answer"] = "別の答えに差し替えた。"  # 逆読みのあとで設計の答えを変える
+        (self.doc / "10-detail.json").write_text(json.dumps(det, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT153", self.run_cli("check").stdout)
+        self.put("10-detail.json")
+        rec.unlink()
+        self.assertIn("GT152", self.run_cli("check").stdout)
+
+    def test_enum_fields_with_wrong_types_report_instead_of_crashing(self):
+        self.advance_through("reader")
+        data = json.loads((FIXTURE / "03-reader.json").read_text(encoding="utf-8"))
+        data["purpose"] = ["decide"]
+        data["audience_scope"] = ["internal"]
+        data["reading_context"]["medium"] = ["screen"]
+        (self.doc / "03-reader.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT029", out)
+        self.assertIn("GT026", out)
+        self.assertNotIn("Traceback", out)
+        self.put("03-reader.json")
+        self.assertEqual(self.run_cli("advance", "--confirmed", "x", "--accept-warnings").returncode, 0)
+        self.put("04-analysis.md")
+        self.assertEqual(self.run_cli("advance", "--accept-warnings").returncode, 0)
+        data = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        data["main_claim"]["message_kind"] = ["proposal"]
+        (self.doc / "05-claims.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("check")
+        self.assertIn("GT043", r.stdout)
+        self.assertNotIn("Traceback", r.stdout + r.stderr)
+
+    def test_cogload_scaffold_has_figure_test(self):
+        self.advance_through("cogload")
+        data = json.loads((self.doc / "12-cogload.json").read_text(encoding="utf-8"))
+        self.assertEqual([f["label"] for f in data["figure_test"]["figures"]], ["図1"])
+
+
+class FigureParseTest(unittest.TestCase):
+    """原稿の図表とキャプションの読み取り、constructivism の骨子の読み取り。"""
+
+    def test_caption_requires_separator(self):
+        from cyruslib import figure
+        self.assertIsNone(figure.CAPTION_RE.match("表 1 に費用を示します。"))   # 参照の文はキャプションではない
+        self.assertIsNone(figure.CAPTION_RE.match("図1 を見てください。"))
+        self.assertTrue(figure.CAPTION_RE.match("図１．答えの一文。"))
+        self.assertTrue(figure.CAPTION_RE.match("表1: 答え"))
+
+    def test_caption_above_figure_does_not_steal_next_block(self):
+        from cyruslib import figure
+        text = ("# t\n\n## a\n\n図1: 一つ目。\n\n```mermaid\nflowchart LR\n A-->B\n```\n\n図2: 二つ目。\n\n```mermaid\nflowchart LR\n C-->D\n```\n\n"
+                "図 1 のとおりです。\n\n![図3: 三つ目](figures/fig-03.png)\n")
+        found = figure.draft_figures(text)
+        self.assertEqual([(f.label, f.source) for f in found], [("図1", "mermaid"), ("図2", "mermaid"), ("図3", "image")])
+        self.assertIn("C-->D", found[1].src)
+        self.assertEqual(found[2].src, "figures/fig-03.png")
+
+    def test_norm_keeps_decimal_points_and_image_titles_are_parsed(self):
+        from cyruslib import figure, mdparse
+        self.assertNotEqual(figure._norm("差は1.5%である。"), figure._norm("差は15%である。"))
+        self.assertEqual(figure._norm("答え（補足）。"), figure._norm("答え補足"))
+        self.assertEqual(figure._norm("1,200 時間"), "1,200時間")
+        blocks = mdparse.parse('# t\n\n![図1](figures/a.png "説明")\n\n![図2](<figures/b c.png>)\n')
+        self.assertEqual([b.src for b in blocks if b.kind == "image"], ["figures/a.png", "figures/b c.png"])
+
+    def test_outline_headings_tolerate_indent_and_nested_items(self):
+        from cyruslib import gates
+        md = ("## 構成選択結果\n- 文体：常体 標題案：x\n\n## 骨子\n   1. 件名（役割：対象＋行為（SCQA の S と C）／目安：1行）\n"
+              "   2. 目的（役割：y）\n      - 入れる要素：3.1 キャッシュ、3.2 並列化\n   10. 添付資料（役割：z）\n\n## 構成チェック\n- [x] a\n")
+        self.assertEqual(gates.outline_headings(md), ["件名", "目的", "添付資料"])
+        self.assertEqual(gates.selection_style(md), "常体")
+
+
+class FigureReadTest(CliCase):
+    """図表だけを切り出して読み手に読ませる（PNG の図なら Chrome も網も要らない）。"""
+
+    def setUp(self):
+        super().setUp()
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow がない")
+        self.run_cli("new", "demo", "--title", "demo")
+        self.doc = self.tmp / "documents" / "demo"
+        (self.doc / "figures").mkdir()
+        Image.new("RGB", (120, 60), "white").save(self.doc / "figures" / "fig-01.png")
+        (self.doc / "03-reader.json").write_text(json.dumps({"knowledge_level": "novice", "persona": {"role": "部長"}}), encoding="utf-8")
+        spec = {"question": "どの区分が最も伸びたか", "answer": "B だけが五年前より増えた。", "reading": "lookup", "precision": "overview",
+                "evidence": {"form": "quantity", "description": "3 区分 × 2 時点", "counts": {"values": 6, "groups": 3, "periods": 2}, "difference_matters": True},
+                "intent": "time-series-change", "pattern": "bar-chart", "drawing": "B だけ色", "render": "vega-lite"}
+        (self.doc / "10-detail.json").write_text(json.dumps({"target_length_chars": 100, "sections": [
+            {"id": "S1", "heading": "伸び", "blocks": [{"kind": "figure", "plan": "x", "spec": spec}], "new_terms": [], "length_chars": 100}]},
+            ensure_ascii=False), encoding="utf-8")
+        (self.doc / "draft.md").write_text("# t\n\n## 伸び\n\n図1を見てください。\n\n![図1](figures/fig-01.png)\n\n図1: B だけが五年前より増えた。\n",
+                                           encoding="utf-8")
+
+    def test_read_with_fake_agy(self):
+        self.env["CYRUS_AGY"] = str(FAKE_AGY)
+        log = self.tmp / "agy.json"
+        self.env["FAKE_AGY_LOG"] = str(log)
+        r = self.run_cli("figure", "read")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        called = json.loads(log.read_text(encoding="utf-8"))
+        self.assertEqual(called["problems"], [])
+        self.assertEqual(called["files"], ["fig-01.png"])
+        prompt = called["args"][called["args"].index("-p") + 1]
+        self.assertIn("どの区分が最も伸びたか", prompt)       # 参照の図表には問いを先に示す
+        self.assertNotIn("五年前より増えた", prompt)            # 答えは渡さない
+        out = json.loads((self.doc / "skim" / "figures" / "reader-result.json").read_text(encoding="utf-8"))
+        self.assertEqual(out["draft_hash"], skim.text_hash((self.doc / "draft.md").read_text(encoding="utf-8")))
+        self.assertEqual(out["figures"][0]["label"], "図1")
+        self.assertEqual(out["figures"][0]["prefers_text"], "no")
+
+    def test_check_reports_missing_png(self):
+        (self.doc / "figures" / "fig-01.png").unlink()
+        out = self.run_cli("figure", "check").stdout
+        self.assertIn("GT116", out)
+
+    def test_swapped_png_invalidates_reading(self):
+        """本文を変えずに PNG を差し替えても、逆読みの記録は失効する。"""
+        from PIL import Image
+        from cyruslib import figure
+        from cyruslib.workspace import Workspace
+        with mock.patch.dict(os.environ, {"CYRUS_ROOT": str(self.tmp), "CYRUS_VISUAL_PATTERNS": str(VISUAL_PATTERNS)}):
+            ws = Workspace("demo")
+            text = (self.doc / "draft.md").read_text(encoding="utf-8")
+            detail = ws.read_json("10-detail.json")
+            before = figure.figures_hash(ws, text, detail)
+            self.assertEqual(figure.figures_hash(ws, text, detail), before)
+            Image.new("RGB", (120, 60), "black").save(self.doc / "figures" / "fig-01.png")
+            self.assertNotEqual(figure.figures_hash(ws, text, detail), before)
+            # 記録の指紋が古ければ GT153
+            rec = self.doc / "skim" / "figures" / "reader-result.json"
+            rec.parent.mkdir(parents=True, exist_ok=True)
+            h = skim.text_hash(text)
+            rec.write_text(json.dumps({"draft_hash": h, "figures_hash": before,
+                                       "figures": [{"label": "図1", "claim": "B が増えた", "prefers_text": "no"}]}), encoding="utf-8")
+            ft = {"draft_hash": h, "figures": [{"label": "図1", "verdict": "match", "note": "", "prefers_text": "no"}]}
+            self.assertIn("GT153", rules(figure.check_figure_test(ws, ft, figure.planned(detail), h, text, detail)))
+            rec.write_text(json.dumps({"draft_hash": h, "figures_hash": figure.figures_hash(ws, text, detail),
+                                       "figures": [{"label": "図1", "claim": "B が増えた", "prefers_text": "no"}]}), encoding="utf-8")
+            self.assertEqual(rules(figure.check_figure_test(ws, ft, figure.planned(detail), h, text, detail)), set())
+
+    def test_many_figures_are_read_in_batches(self):
+        """読み手に一度に渡せる枚数を超えても、全部の図表に回答が付く。"""
+        from PIL import Image
+        spec = json.loads((self.doc / "10-detail.json").read_text(encoding="utf-8"))["sections"][0]["blocks"][0]["spec"]
+        blocks, md = [], ["# t", "", "## 伸び", ""]
+        for n in range(1, 14):
+            Image.new("RGB", (60, 40), "white").save(self.doc / "figures" / f"fig-{n:02d}.png")
+            s = dict(spec, answer=f"{n} 番目の答え。")
+            blocks.append({"kind": "figure", "plan": "x", "spec": s})
+            md += [f"図{n}を見てください。", "", f"![図{n}](figures/fig-{n:02d}.png)", "", f"図{n}: {n} 番目の答え。", ""]
+        (self.doc / "10-detail.json").write_text(json.dumps({"target_length_chars": 100, "sections": [
+            {"id": "S1", "heading": "伸び", "blocks": blocks, "new_terms": [], "length_chars": 100}]}, ensure_ascii=False), encoding="utf-8")
+        (self.doc / "draft.md").write_text("\n".join(md), encoding="utf-8")
+        self.env["CYRUS_AGY"] = str(FAKE_AGY)
+        r = self.run_cli("figure", "read")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        out = json.loads((self.doc / "skim" / "figures" / "reader-result.json").read_text(encoding="utf-8"))
+        self.assertEqual(out["batches"], 2)
+        self.assertEqual(len(out["figures"]), 13)
+        self.assertTrue(all(x["claim"] for x in out["figures"]))
+
+
+class VisualPatternsTest(unittest.TestCase):
+    """visual-patterns スキルの決定論的な部分（vp_figure.py）。"""
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(VISUAL_PATTERNS / "scripts"))
+        import vp_figure
+        cls.vp = vp_figure
+        cls.index = vp_figure.load_index()
+        cls.routes = vp_figure.load_routes()
+        cls.good = {"question": "書いた記事はどうやって検索に出るのか", "answer": "記事は保存のたびに索引が作り直され、数秒で検索に出る。",
+                    "evidence": {"form": "parts-relations", "description": "主体 3、受け渡し 3", "counts": {"actors": 3, "steps": 3}},
+                    "precision": "overview", "reading": "through", "intent": "step-order", "pattern": "sequence-diagram",
+                    "drawing": "数秒の注釈", "render": "mermaid"}
+
+    def warranted(self, **ev):
+        return self.vp.figure_warranted(ev)[0]
+
+    def test_step2_thresholds(self):
+        self.assertFalse(self.warranted(form="quantity", counts={"values": 4}))
+        self.assertTrue(self.warranted(form="quantity", counts={"values": 5}))
+        self.assertFalse(self.warranted(form="quantity", counts={"groups": 2, "periods": 2}))
+        self.assertTrue(self.warranted(form="quantity", counts={"groups": 2, "periods": 2}, difference_matters=True))
+        self.assertFalse(self.warranted(form="items-attributes", counts={"items": 2, "categories": 2}))
+        self.assertTrue(self.warranted(form="items-attributes", counts={"items": 2, "categories": 3}))
+        self.assertTrue(self.warranted(form="items-attributes", counts={"items": 5, "categories": 2}))
+        self.assertFalse(self.warranted(form="parts-relations", counts={"actors": 1, "steps": 5}))   # 一主体の直線
+        self.assertFalse(self.warranted(form="parts-relations", counts={"actors": 2, "steps": 1}))   # 合わせて 3 つ
+        self.assertTrue(self.warranted(form="parts-relations", counts={"actors": 2, "steps": 2}))
+        self.assertTrue(self.warranted(form="parts-relations", counts={"actors": 1, "steps": 2}, features=["branching"]))
+        self.assertTrue(self.warranted(form="parts-relations", counts={}, features=["loss-per-handoff"]))
+        self.assertFalse(self.warranted(form="conditions", counts={"conditions": 1}))
+        self.assertTrue(self.warranted(form="conditions", counts={"conditions": 2}))
+        self.assertTrue(self.warranted(form="appearance"))
+
+    def test_parse_range(self):
+        self.assertEqual(self.vp.parse_range("2〜30"), (2, 30))
+        self.assertEqual(self.vp.parse_range("〜30"), (None, 30))
+        self.assertEqual(self.vp.parse_range("2〜20（線の本数）"), (2, 20))
+        self.assertEqual(self.vp.parse_range("ふつう"), (None, None))
+
+    def errors(self, spec, kind="figure", level="intermediate", chrome=True):
+        return rules([i for i in self.vp.check_spec(spec, kind, self.index, self.routes, level, chrome) if i.severity == "error"])
+
+    def test_check_spec(self):
+        self.assertEqual(self.errors(self.good), set())
+        self.assertIn("VP041", self.errors(dict(self.good, pattern="flowchart")))
+        self.assertIn("VP044", self.errors(self.good, kind="table"))
+        self.assertIn("VP060", self.errors(dict(self.good, intent_type="ない型")))
+        self.assertIn("VP074", self.errors(dict(self.good, render="vega-lite")))  # 描ける手段と render の不一致
+        self.assertIn("VP003", self.errors(dict(self.good, answer="一文目。二文目。")))
+        q = dict(self.good, evidence={"form": "quantity", "description": "x", "counts": {"values": 3}})
+        self.assertEqual({"VP020", "VP031"}, self.errors(q) & {"VP020", "VP031"})
+        bar = {"question": "どれが多いか", "answer": "A が最も多い。", "precision": "overview", "reading": "through",
+               "evidence": {"form": "quantity", "description": "5 項目の件数", "counts": {"values": 5, "items": 5}},
+               "intent": "magnitude-comparison", "pattern": "bar-chart", "drawing": "A だけ色", "render": "vega-lite"}
+        self.assertEqual(self.errors(bar), set())
+        self.assertIn("VP072", self.errors(bar, chrome=False))  # Chrome がなければ Vega-Lite は PNG にできない
+        warns = rules([i for i in self.vp.check_spec(dict(bar, answer="A が増加し、B は減った。"), "figure", self.index, self.routes)
+                       if i.severity == "warn"])
+        self.assertIn("VP004", warns)  # 述語が二つ
+        warns = rules([i for i in self.vp.check_spec(self.good, "figure", self.index, self.routes, "novice") if i.severity == "warn"])
+        self.assertIn("VP052", warns)  # 専門的な記法 × 初心者
+        self.assertIn("VP053", self.errors(dict(bar, precision="exact")))  # 正確な値 × 概観のパターン
+        # 目安に満たなくても、照合し直す必要があると判断したなら図表にできる（警告に下がる）
+        few = dict(bar, evidence={"form": "quantity", "description": "4 項目", "counts": {"values": 4, "items": 4}})
+        self.assertIn("VP020", self.errors(few))
+        few["evidence"]["below_threshold_reason"] = "cross-reference"
+        self.assertNotIn("VP020", self.errors(few))
+        self.assertIn("VP020", rules([i for i in self.vp.check_spec(few, "figure", self.index, self.routes) if i.severity == "warn"]))
+        # 引用の中の「？」では文を分けない
+        quoted = dict(self.good, answer="「この操作でよいですか？」と確認する画面が表示される。")
+        self.assertNotIn("VP003", self.errors(quoted))
+        self.assertEqual(self.vp.split_sentences("A。「B？」とC。"), ["A。", "「B？」とC。"])
+        # リストなどの型違いは診断になる
+        self.assertIn("VP010", self.errors(dict(self.good, evidence={"form": [], "description": "x"})))
+        self.assertIn("VP014", self.errors(dict(self.good, precision=["exact"])))
+        sankey = dict(bar, evidence={"form": "quantity", "description": "経路ごとの量", "counts": {"values": 6}},
+                      intent="flow", pattern="sankey", render="mermaid")
+        issues = self.vp.check_spec(sankey, "figure", self.index, self.routes)
+        self.assertFalse([i for i in issues if i.severity == "error"], issues)
+        self.assertIn("ASCII", next(i.message for i in issues if i.rule == "VP073"))  # 描き方ごとの注意
+
+    def test_index_matches_catalog(self):
+        for iid, it in self.index["intents"].items():
+            self.assertTrue(it["category"], iid)
+            for c in it["candidates"]:
+                self.assertIn(c["pattern"], self.index["patterns"], f"{iid}: {c['pattern']}")
+        for pid, p in self.index["patterns"].items():
+            if p.get("status") == "planned":
+                continue
+            self.assertTrue((VISUAL_PATTERNS / "references" / "catalog" / p["path"]).exists(), pid)
+            self.assertIn(p["primary_intent"], self.index["intents"], pid)
+        self.assertIn("入れ替わり", self.index["intent_types"])
+
+    def test_cli_candidates(self):
+        r = subprocess.run([sys.executable, str(VISUAL_PATTERNS / "scripts" / "vp_figure.py"), "candidates", "step-order"],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("sequence-diagram", r.stdout)
+        self.assertIn("when:", r.stdout)
 
 
 class VisualHtmlTest(unittest.TestCase):
@@ -592,7 +1042,30 @@ class VisionTest(CliCase):
         self.assertIn("overview.png", called["files"])
         out = json.loads((self.doc / "skim" / "visual" / "reader-result.json").read_text(encoding="utf-8"))
         self.assertEqual(out["reader"], "偽の Claude Code")
-        self.assertEqual(out["result"]["visual_notes"]["missed_or_hidden"], ["表1の金額"])
+        self.assertEqual(out["result"]["visual_notes"]["missed_or_hidden"], ["費用と効果の節の約6000万円"])
+
+    def test_figure_render_vega_lite_to_png(self):
+        """figures/*.vl.json を Chrome で PNG にし、原稿の画像として扱えること（ライブラリは CDN から読むので網が要る）。"""
+        import urllib.request
+        try:
+            urllib.request.urlopen("https://cdn.jsdelivr.net/npm/vega-embed@6", timeout=5).close()
+        except Exception:
+            self.skipTest("CDN（jsdelivr）に届かない")
+        self.run_cli("new", "demo", "--title", "demo")
+        self.doc = self.tmp / "documents" / "demo"
+        (self.doc / "figures").mkdir()
+        (self.doc / "figures" / "fig-01.vl.json").write_text(json.dumps({
+            "data": {"values": [{"k": "A", "v": 5}, {"k": "B", "v": 3}]}, "mark": "bar",
+            "encoding": {"x": {"field": "k", "type": "nominal"}, "y": {"field": "v", "type": "quantitative"}}}), encoding="utf-8")
+        r = self.run_cli("figure", "render")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        png = self.doc / "figures" / "fig-01.png"
+        self.assertTrue(png.exists())
+        from PIL import Image
+        im = Image.open(png).convert("L")
+        self.assertLess(min(im.getdata()), 200)  # 何か描かれている
+        html_ = visual.markdown_to_html("# t\n\n![図1](figures/fig-01.png)\n\n図1: A が多い。\n", base_dir=self.doc)
+        self.assertIn('<img src="file://', html_)  # 画像のある原稿は、そのまま画面に描く
 
     def test_foveation_blurs_outside_fixations(self):
         from PIL import Image, ImageDraw
@@ -1003,6 +1476,58 @@ class HarnessConsistencyTest(unittest.TestCase):
         self.assertIn("## 1. オーナーの原則（原文）", text)
         self.assertIn("「ちなみにconfidenceは単に「確信度」という意味だと思うので", text)
         self.assertIn("根拠にしてよい資料の範囲", text)
+
+    def test_structure_and_figure_guides(self):
+        for m in ("constructivism", "08-structure.md", "genre", "form", "style", "purpose", "message_kind"):
+            self.assertIn(m, self.read("skills/cyrus/stages/08-structure.md"), m)
+        for m in ("visual-patterns", "spec", "VP020", "answer", "evidence"):
+            self.assertIn(m, self.read("skills/cyrus/stages/10-detail.md"), m)
+        for m in ("cyrus figure check", "cyrus figure render", "figures/fig-NN.vl.json", "キャプション"):
+            self.assertIn(m, self.read("skills/cyrus/stages/11-writing.md"), m)
+        for m in ("cyrus figure read", "figure_test", "match / partial / mismatch / misread"):
+            self.assertIn(m, self.read("skills/cyrus/stages/12-cogload.md"), m)
+        self.assertIn("genre", self.read("skills/cyrus/stages/13-wording.md"))
+        self.assertIn("purpose", self.read("skills/cyrus/stages/03-reader.md"))
+        self.assertIn("message_kind", self.read("skills/cyrus/stages/05-claims.md"))
+        skill = self.read("skills/cyrus/SKILL.md")
+        for m in ("constructivism", "visual-patterns", "figure check"):
+            self.assertIn(m, skill, m)
+        judge = self.read("agents/cyrus-alignment-judge.agent.md")
+        for m in ("misread", "figure_test", "spec.answer"):
+            self.assertIn(m, judge, m)
+        vp = self.read("skills/visual-patterns/SKILL.md")
+        self.assertTrue(vp.startswith("---\nname: visual-patterns\n"))
+        for m in ("手順2", "evidence", "scripts/vp_figure.py", "references/catalog/taxonomy.md"):
+            self.assertIn(m, vp, m)
+
+    def test_render_routes_cover_catalog(self):
+        index = json.loads(self.read("skills/visual-patterns/data/index.json"))
+        routes = json.loads(self.read("skills/visual-patterns/data/render-routes.json"))
+        render_md = self.read("skills/visual-patterns/references/render.md")
+        for pid, p in index["patterns"].items():
+            if p.get("status") == "planned":
+                continue
+            self.assertIn(pid, routes, f"{pid} の描き方が render-routes.json にない")
+            r = routes[pid]
+            self.assertIn(r["route"], ("mermaid", "vega-lite", "markdown-table", "image", "none"), pid)
+            self.assertIn(r["fidelity"], ("full", "approximate", "unavailable"), pid)
+            for how in r.get("caveats") or {}:
+                self.assertIn(how, [r["route"]] + list(r.get("alt") or []), f"{pid}: 使わない描き方 {how} の注意")
+            self.assertEqual(render_md.count(f"\n### {pid}（"), 1, f"{pid} の描き方が render.md にない（または重複）")
+            if r["route"] != "none":
+                self.assertRegex(render_md, rf"### {re.escape(pid)}（[^\n]*\n- 描き方: ", pid)
+
+    def test_catalog_snapshot_in_sync(self):
+        src = Path(os.environ.get("VISUAL_PATTERNS_DIR", Path.home() / "work" / "ai-agent" / "visual-patterns"))
+        if not (src / "taxonomy.md").exists():
+            self.skipTest("図表パターンのカタログの元が手元にない")
+        try:
+            import yaml  # noqa: F401
+        except ImportError:
+            self.skipTest("PyYAML がない")
+        r = subprocess.run([sys.executable, str(ROOT / "scripts" / "sync-visual-patterns.py"), "--source", str(src), "--check"],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
 
 @unittest.skipUnless(HAS_LEAN, "lean が見つからないため Lean のテストを省略")

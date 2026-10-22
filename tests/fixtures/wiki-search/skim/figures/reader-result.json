@@ -1,0 +1,37 @@
+{
+  "source": "draft.md",
+  "draft_hash": "64ca2779579571b0",
+  "figures": [
+    {
+      "label": "図1",
+      "file": "fig-01.png",
+      "source": "mermaid",
+      "question": "",
+      "claim": "書き手が記事を保存すると索引が作り直され、探す人が検索すると数秒でその記事が出る。",
+      "answer": "",
+      "prefers_text": "no",
+      "reason": "三者の受け渡しの順が図のほうが追いやすい",
+      "unclear": ""
+    }
+  ],
+  "reader": "Gemini（agy）",
+  "model": "gemini-3.8-flash-medium",
+  "exit_code": 0,
+  "duration_seconds": 12.0,
+  "pages_given": [
+    "fig-01.png"
+  ],
+  "truncated": false,
+  "meta": {},
+  "raw": {
+    "figures": [
+      {
+        "file": "fig-01.png",
+        "claim": "書き手が記事を保存すると索引が作り直され、探す人が検索すると数秒でその記事が出る。",
+        "prefers_text": "no",
+        "reason": "三者の受け渡しの順が図のほうが追いやすい"
+      }
+    ]
+  },
+  "figures_hash": "e955ab05dbffbb40"
+}

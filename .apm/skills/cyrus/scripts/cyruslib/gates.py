@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 
-from . import jatext, leancheck, lint, mdparse, skim, wording, yomiyasu
+from . import figure, jatext, leancheck, lint, mdparse, skim, wording, yomiyasu
 from .issues import Issue
 from .reader import build_profile
 from .workspace import Workspace
@@ -23,8 +23,8 @@ SECTION_ID = re.compile(r"^S\d+(\.\d+)*$")
 # ---------------------------------------------------------------- 共通
 
 
-def _md_sections(text: str) -> dict[str, str]:
-    """H2 見出しごとの本文。"""
+def _md_sections(text: str, strip: bool = True) -> dict[str, str]:
+    """H2 見出しごとの本文。strip=False なら行頭の字下げも残す（番号付きの項目を読むとき）。"""
     out: dict[str, list[str]] = {}
     cur = None
     in_code = False
@@ -37,7 +37,7 @@ def _md_sections(text: str) -> dict[str, str]:
             out[cur] = []
         elif cur is not None:
             out[cur].append(line)
-    return {k: "\n".join(v).strip() for k, v in out.items()}
+    return {k: ("\n".join(v).strip() if strip else "\n".join(v)) for k, v in out.items()}
 
 
 def _require_md(ws: Workspace, rel: str, headings: list[str]) -> tuple[list[Issue], dict[str, str]]:
@@ -72,6 +72,11 @@ def _nonempty_str(v) -> bool:
     return isinstance(v, str) and v.strip() != ""
 
 
+def _is(v, coll) -> bool:
+    """列挙に含まれる文字列か（リストなど、ハッシュできない値が来ても例外にしない）。"""
+    return isinstance(v, str) and v in coll
+
+
 def _all_claims(claims: dict) -> list[dict]:
     main = dict(claims.get("main_claim") or {})
     main.setdefault("id", "C0")
@@ -97,8 +102,12 @@ def gate_context(ws: Workspace) -> list[Issue]:
 
 
 READER_LEVELS = {"novice", "intermediate", "expert"}
-MEDIA = {"screen", "mobile", "print", "slide"}
-MODES = {"skim", "careful", "reference"}
+MEDIA = {"screen", "mobile", "print", "slide", "mail"}  # mail: メール・チャットで読む（件名と冒頭で要件を示す構成になる）
+AUDIENCE_SCOPES = {"internal": "社内", "external": "社外"}
+# 読者は読後に何をするか（constructivism の「目的」。構成の系統を決める）
+PURPOSES = {"decide": "決める（承認・決定する）", "report": "報告を受ける", "act": "作業する", "learn": "学ぶ", "lookup": "調べる",
+            "understand": "理解する", "persuade": "動かされる（依頼・説得）", "verify": "検証する（学術）", "summary": "要点だけ知る"}
+MODES = {"skim", "careful", "reference", "headline"}  # 拾い読み／通読／必要なときに引く／冒頭だけ（多忙な決裁者）
 
 
 def gate_reader(ws: Workspace) -> list[Issue]:
@@ -109,8 +118,13 @@ def gate_reader(ws: Workspace) -> list[Issue]:
     for k in ("role", "background"):
         if not _nonempty_str(p.get(k)):
             issues.append(Issue("GT020", "error", f"persona.{k} を書いてください。"))
-    if data.get("knowledge_level") not in READER_LEVELS:
+    if not _is(data.get("knowledge_level"), READER_LEVELS):
         issues.append(Issue("GT021", "error", f"knowledge_level は {sorted(READER_LEVELS)} のいずれかにしてください。"))
+    if not _is(data.get("purpose"), PURPOSES):
+        issues.append(Issue("GT029", "error", "purpose（読者は読後に何をするか）を次のいずれかにしてください: "
+                                              + "、".join(f"{k}（{v}）" for k, v in PURPOSES.items()) + "。構成（ステージ8）を決める軸になります。"))
+    if "audience_scope" in data and not _is(data["audience_scope"], AUDIENCE_SCOPES):
+        issues.append(Issue("GT029", "error", "audience_scope（社内向けか社外向けか）は internal か external にしてください（省略すると社内）。"))
     for k in ("known_terms", "unknown_terms"):
         if not isinstance(data.get(k), list):
             issues.append(Issue("GT022", "error", f"{k} は語の配列にしてください（空でも可）。"))
@@ -123,10 +137,10 @@ def gate_reader(ws: Workspace) -> list[Issue]:
     for a in data.get("avoid_terms", []) or []:
         if not (isinstance(a, dict) and _nonempty_str(a.get("term"))):
             issues.append(Issue("GT025", "error", "avoid_terms の各要素は {\"term\": ..., \"replace\": ...} にしてください。"))
-    ctx = data.get("reading_context") or {}
-    if ctx.get("medium") not in MEDIA:
+    ctx = data.get("reading_context") if isinstance(data.get("reading_context"), dict) else {}
+    if not _is(ctx.get("medium"), MEDIA):
         issues.append(Issue("GT026", "error", f"reading_context.medium は {sorted(MEDIA)} のいずれかにしてください。"))
-    if ctx.get("reading_mode") not in MODES:
+    if not _is(ctx.get("reading_mode"), MODES):
         issues.append(Issue("GT026", "error", f"reading_context.reading_mode は {sorted(MODES)} のいずれかにしてください。"))
     if not (isinstance(ctx.get("time_budget_min"), (int, float)) and ctx["time_budget_min"] > 0):
         issues.append(Issue("GT026", "error", "reading_context.time_budget_min（読者が使える時間・分）を正の数で書いてください。"))
@@ -146,6 +160,9 @@ def gate_analysis(ws: Workspace) -> list[Issue]:
 
 CLAIM_TYPES = {"fact", "judgement", "proposal", "explanation"}
 CLAIM_FORMS = {"capability", "comparison"}  # 能力の文／比較の文（ステージ7の論証の深さを決める）
+# 主張の中心（C0）のメッセージ種別（constructivism の「メッセージ種別」。構成の型を決める）
+MESSAGE_KINDS = {"proposal": "提言", "decision": "決定の記録", "report": "事実報告", "instruction": "手順指示",
+                 "explanation": "概念説明", "comparison": "比較評価", "education": "教育"}
 
 
 def gate_claims(ws: Workspace) -> list[Issue]:
@@ -155,6 +172,9 @@ def gate_claims(ws: Workspace) -> list[Issue]:
     main = data.get("main_claim") or {}
     if main.get("id", "C0") != "C0" or not _nonempty_str(main.get("text")):
         issues.append(Issue("GT030", "error", "main_claim は id \"C0\" と text（文書全体で最も伝えたい主張）を持たせてください。"))
+    if not _is(main.get("message_kind"), MESSAGE_KINDS):
+        issues.append(Issue("GT043", "error", "main_claim.message_kind（メッセージの種別）を次のいずれかにしてください: "
+                                              + "、".join(f"{k}（{v}）" for k, v in MESSAGE_KINDS.items()) + "。構成（ステージ8）の型を決める軸になります。"))
     claims = _all_claims(data)
     for c in claims:
         if c.get("form") not in CLAIM_FORMS:
@@ -301,16 +321,102 @@ def gate_logic(ws: Workspace) -> list[Issue]:
     return issues
 
 
+STYLES = {"敬体", "常体"}
+OUTLINE_ITEM_RE = re.compile(r"^(\d+)\.\s+(.+?)\s*$")  # constructivism の骨子: 「1. 見出し（役割：…／目安：…）」
+
+
+def constructivism_dir():
+    """constructivism スキル（asuka1975/constructivism）の場所。APM の依存として cyrus と同じ skills/ に入る。"""
+    import os
+    from pathlib import Path
+    from .workspace import SKILL_DIR, project_root
+    env = os.environ.get("CYRUS_CONSTRUCTIVISM")
+    if env:
+        return Path(env) if (Path(env) / "SKILL.md").exists() else None
+    for cand in (SKILL_DIR.parent / "constructivism", project_root() / ".claude" / "skills" / "constructivism"):
+        if (cand / "SKILL.md").exists():
+            return cand
+    return None
+
+
+def outline_headings(md: str) -> list[str]:
+    """08-structure.md（constructivism の出力）の「骨子」から、番号付きの見出しを順に取る。
+
+    項目全体が字下げされていてもよいが（dedent する）、「入れる要素」の中の「3.1 …」のような下位の項目は拾わない。
+    """
+    import textwrap
+    secs = _md_sections(md, strip=False)
+    body = textwrap.dedent(next((v for k, v in secs.items() if k.startswith("骨子")), ""))
+    out = []
+    for line in body.split("\n"):
+        m = OUTLINE_ITEM_RE.match(line)
+        if not m:
+            continue
+        head = re.split(r"[（(]役割", m.group(2), 1)[0].strip()
+        if head:
+            out.append(head)
+    return out
+
+
+def selection_style(md: str) -> str | None:
+    """08-structure.md の「構成選択結果」にある文体（敬体／常体）。なければ None。"""
+    secs = _md_sections(md)
+    sel = next((v for k, v in secs.items() if k.startswith("構成選択結果")), "")
+    m = re.search(r"文体\s*[：:]\s*(敬体|常体)", sel)
+    return m.group(1) if m else None
+
+
 def gate_structure(ws: Workspace) -> list[Issue]:
     data, issues = _load_json(ws, "08-structure.json")
     if data is None:
         return issues
+    if constructivism_dir() is None:
+        issues.append(Issue("GT071", "error", "constructivism が見つかりません。`apm install` で入れてください"
+                                              "（場所は環境変数 CYRUS_CONSTRUCTIVISM で指定できます）。"))
+    md_path = ws.path("08-structure.md")
+    outline: list[str] = []
+    md_style = None
+    if not md_path.exists():
+        issues.append(Issue("GT072", "error", "08-structure.md（constructivism の出力）がありません。スキルを呼び、出力をそのまま保存してください。"))
+    else:
+        md = md_path.read_text(encoding="utf-8")
+        secs = _md_sections(md)
+        for h in ("構成選択結果", "骨子", "構成チェック"):
+            if not any(k.startswith(h) for k in secs):
+                issues.append(Issue("GT072", "error", f"08-structure.md に「## {h}」の節がありません。constructivism の出力を3節ともそのまま貼ってください。"))
+        if PLACEHOLDER_RE.search(md):
+            issues.append(Issue("GT002", "error", "08-structure.md に TODO などの未記入箇所が残っています。"))
+        outline = outline_headings(md)
+        md_style = selection_style(md)
+        if not outline and any(k.startswith("骨子") for k in secs):
+            issues.append(Issue("GT073", "error", "08-structure.md の「骨子」に「1. 見出し（役割：…）」の形の項目がありません。"))
+    for k in ("genre", "form"):
+        if not _nonempty_str(data.get(k)):
+            issues.append(Issue("GT074", "error", f"{k}（constructivism の{'採用構成' if k == 'genre' else '型'}）を書いてください。"))
+    if not _is(data.get("style"), STYLES):
+        issues.append(Issue("GT074", "error", "style は 敬体 か 常体 にしてください（constructivism の「文体」）。"))
+    elif md_style and data["style"] != md_style:
+        issues.append(Issue("GT074", "error", f"style「{data['style']}」が、constructivism の文体「{md_style}」（08-structure.md の構成選択結果）と違います。"
+                                              "写し間違いなら直し、意図して変えるなら 08-structure.md の仮定・逸脱に理由を書いて文体の行も直してください。"))
     if not _nonempty_str(data.get("title")):
         issues.append(Issue("GT060", "error", "title を書いてください。"))
     secs = data.get("sections") or []
     if not secs:
         return issues + [Issue("GT061", "error", "sections が空です。")]
+    heads_norm = [_norm_heading(s.get("heading", "")) if isinstance(s, dict) else "" for s in secs]
+    positions = []
+    for h in outline:
+        if _norm_heading(h) not in heads_norm:
+            issues.append(Issue("GT073", "error", f"骨子の見出し「{h}」が sections にありません。骨子の見出しはすべて節にします"
+                                                  "（変えるなら 08-structure.md の骨子も直し、仮定・逸脱に理由を書く）。"))
+        else:
+            positions.append(heads_norm.index(_norm_heading(h)))
+    if positions != sorted(positions):
+        issues.append(Issue("GT073", "error", "sections の順序が 08-structure.md の骨子の順と違います。骨子の順に節を並べます"
+                                              "（変えるなら 08-structure.md の骨子も直し、仮定・逸脱に理由を書く）。"))
     ids = [s.get("id") for s in secs]
+    if any(not isinstance(s, dict) for s in secs):
+        return issues + [Issue("GT061", "error", "sections の各要素はオブジェクトにしてください。")]
     for s in secs:
         if not (isinstance(s.get("id"), str) and SECTION_ID.match(s["id"])):
             issues.append(Issue("GT062", "error", f"節の id「{s.get('id')}」は S1, S2, S2.1 … の形にしてください。"))
@@ -366,6 +472,11 @@ def gate_storyline(ws: Workspace) -> list[Issue]:
     order = [s.get("id") for s in data.get("sections") or [] if s.get("id") in sids]
     if order != [s for s in sids if s in got]:
         issues.append(Issue("GT083", "error", "09-storyline.json の節の順序が 08-structure.json と違います。"))
+    form = str(structure.get("form") or "")
+    pattern = str(data.get("pattern") or "")
+    if form and pattern and _norm_heading(form) not in _norm_heading(pattern) and _norm_heading(pattern) not in _norm_heading(form):
+        issues.append(Issue("GT088", "warn", f"pattern「{pattern}」が、構成の型「{form}」（08-structure.json の form）と違います。"
+                                             "話の型は構成の型に合わせるか、変える理由を pattern に添えてください。"))
     for sid, s in got.items():
         msg = s.get("message", "")
         if not _nonempty_str(msg):
@@ -409,8 +520,9 @@ def gate_detail(ws: Workspace) -> list[Issue]:
                 issues.append(Issue("GT092", "error", f"節 {sid} のブロックの kind は {sorted(BLOCK_KINDS)} のいずれかにしてください。"))
             if not _nonempty_str(b.get("plan")):
                 issues.append(Issue("GT093", "error", f"節 {sid} のブロックに plan（何をどう見せるか）を書いてください。"))
-            if b.get("kind") in ("figure", "table") and not _nonempty_str(b.get("why")):
-                issues.append(Issue("GT094", "error", f"節 {sid} の{b.get('kind')}に why（文章でなく図表にする理由）を書いてください。"))
+            if b.get("kind") in ("figure", "table") and not isinstance(b.get("spec"), dict):
+                issues.append(Issue("GT094", "error", f"節 {sid} の{b.get('kind')}に spec（問い・答え・根拠の形・趣旨・パターン。"
+                                                      "visual-patterns スキルで決める）を書いてください。"))
         nts = s.get("new_terms") or []
         for t in nts:
             if not (isinstance(t, dict) and _nonempty_str(t.get("term")) and _nonempty_str(t.get("definition"))):
@@ -440,6 +552,8 @@ def gate_detail(ws: Workspace) -> list[Issue]:
         minutes = total / prof.limits["chars_per_minute"]
         if minutes > prof.time_budget_min * 1.2:
             issues.append(Issue("GT100", "warn", f"想定字数では読むのに約{minutes:.1f}分かかり、読者の時間（{prof.time_budget_min:g}分）を超えます。"))
+    # 図表の spec を、visual-patterns のカタログの規則（手順2・5・6）で検査する
+    issues += figure.check_detail(data, prof.level)
     return issues
 
 
@@ -471,10 +585,30 @@ def gate_writing(ws: Workspace) -> list[Issue]:
         pos = idx + 1
     if PLACEHOLDER_RE.search(text):
         issues.append(Issue("GT112", "error", "draft.md に TODO などの未記入箇所が残っています。"))
+    # 文体が設計（08-structure.json の style）どおりか: 段落の文の過半数が、宣言した文体であること
+    style = structure.get("style")
+    if style in STYLES:
+        counts = {"desumasu": 0, "plain": 0}
+        for b in mdparse.parse(text):
+            if b.kind in ("paragraph", "quote"):
+                plain_text = jatext.strip_inline(b.text)
+                if b.kind == "paragraph" and figure.CAPTION_RE.match(plain_text):
+                    continue  # 図表のキャプションは答えの一文をそのまま書くので、文体の集計から外す（lint の JA006 と同じ扱い）
+                for s in jatext.split_sentences(plain_text):
+                    st = jatext.sentence_style(s)
+                    if st in counts:
+                        counts[st] += 1
+        want = "desumasu" if style == "敬体" else "plain"
+        other = "plain" if want == "desumasu" else "desumasu"
+        if counts[want] + counts[other] >= 5 and counts[other] > counts[want]:
+            issues.append(Issue("GT118", "error", f"文体が設計（{style}）と違います（です・ます {counts['desumasu']} 文、だ・である {counts['plain']} 文）。"
+                                                  "本文の文体を設計に合わせるか、`cyrus back structure` で style を直してください。"))
     lint_issues, _ = lint.lint_text(text, build_profile(ws.read_json("03-reader.json")))
     for i in lint_issues:
         if i.rule in ("ST001", "ST003", "ST010") and i.severity == "error":
             issues.append(i)
+    # 図表が設計（10-detail.json の spec）どおりか: キャプションに答えの一文、描き方、画像の有無
+    issues += figure.check_draft(ws, text, ws.read_json("10-detail.json"))
     return issues
 
 
@@ -525,6 +659,8 @@ def _check_visual_test(ws: Workspace, vt: dict | None, sids: list, current_hash:
     if run.get("draft_hash") != current_hash or vt.get("draft_hash") != current_hash:
         issues.append(Issue("GT143", "error", "画像での拾い読みテストが、いまの draft.md で行われていません。"
                                               "原稿を直したら `cyrus vision` からやり直し、visual_test.draft_hash を更新してください。"))
+    elif "assets_hash" in run and run["assets_hash"] != figure.assets_hash(ws, ws.path("draft.md").read_text(encoding="utf-8")):
+        issues.append(Issue("GT143", "error", "画像での拾い読みテストのあとで、原稿が参照する画像ファイルが変わっています。`cyrus vision` からやり直してください。"))
     got = {s.get("id") for s in vt.get("sections") or []}
     for sid in sids:
         if sid not in got:
@@ -582,6 +718,9 @@ def gate_cogload(ws: Workspace) -> list[Issue]:
         issues.append(Issue("GT125", "error", f"拾い読みテストの再現率が {score:.0%} です（基準 {SKIM_THRESHOLD:.0%}）。"
                                               "伝わらなかった節の見出しと段落の最初の文を直し、再テストしてください。"))
     issues += _check_visual_test(ws, data.get("visual_test"), sids, current)
+    detail = ws.read_json("10-detail.json")
+    draft_text = draft.read_text(encoding="utf-8")
+    issues += figure.check_figure_test(ws, data.get("figure_test"), figure.planned(detail), current, draft_text, detail)
     review = data.get("persona_review") or {}
     if not isinstance(review.get("issues"), list):
         issues.append(Issue("GT126", "error", "persona_review.issues（ペルソナ読者が指摘した問題の一覧）がありません。"))
@@ -612,6 +751,8 @@ def gate_wording(ws: Workspace) -> list[Issue]:
         issues.append(Issue("GT131", "error", f"final.md に言葉遣いのエラーが{len(werrs)}件あります（`cyrus wording final.md`）。"))
     if PLACEHOLDER_RE.search(text):
         issues.append(Issue("GT132", "error", "final.md に TODO などの未記入箇所が残っています。"))
+    # 推敲でキャプション（答えの一文）が書き換えられていないか、図表が設計どおりのままか
+    issues += figure.check_draft(ws, text, ws.read_json("10-detail.json"), name="final.md")
     script = yomiyasu.find_check()
     if script is None:
         issues.append(Issue("GT133", "error", "yomiyasu が見つかりません。`apm install` で入れてください"

@@ -1,5 +1,5 @@
 name: cyrus-harness
-version: 0.1.1
+version: 0.2.0
 description: インタビューしながら、読者の認知負荷がきわめて低い日本語ドキュメントを書き上げる半決定論的ハーネス（Claude Code 向け）
 author: asuka1975
 license: MIT
@@ -8,6 +8,7 @@ targets:
 dependencies:
   apm:
   - nanaism/yomiyasu#v2.0.1
+  - asuka1975/constructivism#v1.0.0
   mcp: []
 includes: auto
 scripts: {}

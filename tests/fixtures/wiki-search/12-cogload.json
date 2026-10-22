@@ -6,7 +6,7 @@
     "avg_sentence_length": 35.0
   },
   "skim_test": {
-    "draft_hash": "1a0f9091dbea07b6",
+    "draft_hash": "64ca2779579571b0",
     "reader_summary": "検索を全文検索エンジンに置き換えるために300万円の承認を求めている。探し物に時間がかかっており、置き換えで記事がすぐ検索に出るようになり、費用は失われている時間より小さい。",
     "main_claim_recovered": true,
     "sections": [
@@ -33,7 +33,7 @@
     ]
   },
   "visual_test": {
-    "draft_hash": "1a0f9091dbea07b6",
+    "draft_hash": "64ca2779579571b0",
     "reader_model": "gemini-3.8-flash-medium",
     "main_claim_recovered": true,
     "sections": [
@@ -58,7 +58,7 @@
         "note": ""
       }
     ],
-    "visual_notes_resolution": "表1の金額が目立たないという指摘を受け、段落の最初の文で金額の比較を述べた"
+    "visual_notes_resolution": "金額の比較が目立たないという指摘を受け、段落の冒頭で2つの金額を並べて述べた"
   },
   "local_test": {
     "unclear_paragraphs": []
@@ -66,14 +66,26 @@
   "persona_review": {
     "issues": [
       {
-        "where": "S4 表1",
+        "where": "S4 第1段落",
         "problem": "6000万円の計算根拠がわからない",
-        "resolution": "表の項目名に400名・1日20分を明記した"
+        "resolution": "段落に400名・1日20分を明記した"
       }
     ]
   },
   "changes": [
     "要約の節を3文にした",
-    "表1の項目名に計算の前提を入れた"
-  ]
+    "費用の段落に計算の前提を入れた"
+  ],
+  "figure_test": {
+    "draft_hash": "64ca2779579571b0",
+    "reader_model": "gemini-3.8-flash-medium",
+    "figures": [
+      {
+        "label": "図1",
+        "verdict": "match",
+        "note": "保存→索引づくり→検索の順と、試験環境で5秒以内に出ることを読み取った",
+        "prefers_text": "no"
+      }
+    ]
+  }
 }

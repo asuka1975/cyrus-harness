@@ -141,7 +141,8 @@ def _first_sentence_split(raw: str) -> tuple[str, str]:
     return raw, ""
 
 
-def markdown_to_html(text: str, media: str = "screen") -> str:
+def markdown_to_html(text: str, media: str = "screen", base_dir: Path | None = None) -> str:
+    """Markdown を HTML にする。base_dir を渡すと、相対パスの画像（PNG の図）をその下から読み込んで表示する。"""
     m = MEDIA.get(media, MEDIA["screen"])
     body: list[str] = []
     for b in mdparse.parse(text):
@@ -192,7 +193,13 @@ def markdown_to_html(text: str, media: str = "screen") -> str:
                 body.append(f'<pre><code><span data-fx="code-head">{html.escape(first)}</span>'
                             + (f"\n{html.escape(rest)}" if rest else "") + "</code></pre>")
         elif b.kind == "image":
-            body.append(f'<div class="figure"><span data-fx="caption">［図］{html.escape(b.text)}</span></div>')
+            img = (base_dir / b.src) if base_dir and b.src and not re.match(r"^[a-z]+:", b.src) else None
+            if img is not None and img.exists():
+                # 描いた図（PNG）はそのまま見せる。図は目に留まりやすいので全体を注視点にする
+                body.append(f'<div data-fx="figure" style="text-align:center;margin:0 0 0.9em">'
+                            f'<img src="{html.escape(img.resolve().as_uri())}" alt="{html.escape(b.text)}" style="max-width:100%"></div>')
+            else:
+                body.append(f'<div class="figure"><span data-fx="caption">［図］{html.escape(b.text)}</span></div>')
         elif b.kind == "hr":
             body.append("<hr>")
     css = CSS % {"width": m["width"], "margin": MARGIN, "font": m["font"]}
@@ -280,8 +287,9 @@ class VisualResult:
     fixations: int
 
 
-def render(text: str, out_dir: Path, media: str = "screen", keep_sharp: bool = False) -> VisualResult:
-    """原稿を画像化してぼかし、out_dir に page-XX.png と overview.png を書き出す。"""
+def render(text: str, out_dir: Path, media: str = "screen", keep_sharp: bool = False,
+           base_dir: Path | None = None) -> VisualResult:
+    """原稿を画像化してぼかし、out_dir に page-XX.png と overview.png を書き出す。base_dir は原稿の置き場所（画像の相対パスの基準）。"""
     Image, _, _ = _pil()
     m = MEDIA.get(media, MEDIA["screen"])
     window = m["width"] + MARGIN * 2
@@ -290,7 +298,7 @@ def render(text: str, out_dir: Path, media: str = "screen", keep_sharp: bool = F
         old.unlink()
     with tempfile.TemporaryDirectory(prefix="cyrus-visual-") as td:
         page = Path(td) / "doc.html"
-        page.write_text(markdown_to_html(text, media), encoding="utf-8")
+        page.write_text(markdown_to_html(text, media, base_dir), encoding="utf-8")
         layout = measure(page, window)
         height = max(int(layout["height"]) + MARGIN, 200)
         full_png = Path(td) / "full.png"

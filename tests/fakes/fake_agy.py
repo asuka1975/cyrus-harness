@@ -23,13 +23,20 @@ if log:
 if problems:
     print(json.dumps({"status": "ERROR", "response": "; ".join(problems)}, ensure_ascii=False))
     sys.exit(3)
+if "本文やキャプションから切り離して" in prompt:  # 図表の逆読み（cyrus figure read）
+    result = {"figures": [{"file": f, "claim": "書き手が記事を保存すると索引が作り直され、検索すると数秒で出る。",
+                           "answer": "", "prefers_text": "no", "reason": "受け渡しの順が追いやすい", "unclear": ""}
+                          for f in files]}
+    print(json.dumps({"status": "SUCCESS", "duration_seconds": 0.1, "structured_output": result,
+                      "usage": {"total_tokens": 1}}, ensure_ascii=False))
+    sys.exit(0)
 result = {
     "reader_summary": "検索の置き換えのために300万円の承認を求める提案。",
     "main_point": "検索を置き換えるため300万円を承認してほしい。",
     "requested_action": "予算の承認",
     "sections": [{"heading": "お願いしたいこと", "understood": "300万円の承認を求めている", "confidence": "high"}],
     "confusing_points": [],
-    "visual_notes": {"stood_out": ["見出し"], "missed_or_hidden": ["表1の金額"], "layout_issues": []},
+    "visual_notes": {"stood_out": ["見出し"], "missed_or_hidden": ["費用と効果の節の約6000万円"], "layout_issues": []},
 }
 print(json.dumps({"status": "SUCCESS", "duration_seconds": 0.1, "structured_output": result,
                   "usage": {"total_tokens": 1}}, ensure_ascii=False))

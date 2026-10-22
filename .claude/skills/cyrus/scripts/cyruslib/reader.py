@@ -69,7 +69,7 @@ def build_profile(reader: dict | None) -> ReaderProfile:
     limits = dict(COMMON_LIMITS)
     limits.update(BASE_PROFILES[level])
     ctx = reader.get("reading_context", {}) or {}
-    if ctx.get("reading_mode") == "skim":
+    if ctx.get("reading_mode") in ("skim", "headline"):  # 拾い読み・冒頭だけ: 段落を短く
         limits["paragraph_warn"] -= 50
         limits["paragraph_error"] -= 50
     if ctx.get("medium") == "mobile":

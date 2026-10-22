@@ -24,9 +24,20 @@ Skill ツールで `yomiyasu` を呼びます。依頼には次のことを書�
 
 - **原文**: `documents/<slug>/draft.md`（書き換えない）
 - **最終稿の保存先**: `documents/<slug>/final.md`（上書きしてよい）
-- **文書の種類**（`--doc-type`）: `08-structure.json` の `doc_type` から、次の表で決める。当てはまらなければ付けない。
+- **文書の種類**（`--doc-type`）: `08-structure.json` の `genre`（constructivism が選んだ構成）から、次の表で決める。genre が表にないときは `doc_type` で決める。当てはまらなければ付けない。
 
-  | doc_type | yomiyasu の値 |
+  | genre（採用構成） | yomiyasu の値 |
+  | --- | --- |
+  | チュートリアル、ハウツー／手順書、ランブック、マニュアル | manual |
+  | 解説記事、技術記事（Qiita/Zenn 型）、FAQ、リリースノート、教科書・教材の章 | article |
+  | 企画書・提案書、エグゼクティブサマリー／1枚もの、Amazon 型ナラティブ・PR/FAQ、稟議書・決裁文書、デザインドキュメント、プロジェクト計画書 | proposal |
+  | ADR、要件定義書・仕様書、リファレンス／API ドキュメント | formal |
+  | 学術論文（IMRaD）、報告書（SDS 型。調査報告に近いとき。進捗報告なら付けない） | paper |
+  | 障害報告書・ポストモーテム | incident |
+  | 議事録 | minutes |
+  | 社内通知・案内、依頼・説得メール | mail |
+
+  | doc_type（genre が表にないとき） | yomiyasu の値 |
   | --- | --- |
   | 提案書 | proposal |
   | 手順書・マニュアル | manual |
@@ -38,10 +49,13 @@ Skill ツールで `yomiyasu` を呼びます。依頼には次のことを書�
   | 論文・研究レポート | paper |
   | メール・チャット | mail |
 
+  文体は `08-structure.json` の `style`（敬体／常体）です。yomiyasu に、この文体を変えないよう伝えます。
+
 - **読者**（`--reader`）: `03-reader.json` の `knowledge_level` から決める。novice は general、intermediate は informed、expert は expert。
 - **書き手と読み手の関係**: `01-intent.md` と `03-reader.json` の persona からわかる範囲で書く（例: 書き手は情報システム部の担当者、読み手は決裁者の部長）。関係を渡すと、yomiyasu は読み手に合わせて敬語を直す。
 - **文書の立場**（`--stance`）: 提案や推奨なら「勧め」、守ってもらう決まりや手順なら「決まり」、解説や報告なら「説明」。決めきれなければ付けない。
 - **資料**: 渡さない。事実はステージ6で確かめてあり、ここでは事実を足さない。
+- **図表のキャプション**: 「図N: …」「表N: …」の行は、設計（`10-detail.json` の spec.answer）の答えの一文そのものなので書き換えない、と伝える。Mermaid のコードブロックと図表の位置も変えない。キャプションの文体を直したいときは、`cyrus back detail` で spec.answer を直してから書き直す（`cyrus check` が照合する）。
 - **返答の形**: 本文は `final.md` に保存し、返答に本文を載せない。返答には「変えたところ」「書き手に確かめたい点」「事実の確かめ」「確認の記録」だけを書く。
 
 yomiyasu は推敲のあと、`yomiyasu_check.py run --source draft.md --final final.md` で lint と diff をかけ、`verify` で記録と照らします。途中でフックが lint や wording のエラーを知らせてきても、yomiyasu の手順を最後まで終えてから、手順2・3で直します。
@@ -60,9 +74,10 @@ yomiyasu は、補助動詞と形式名詞の「事」「為」のほかは表�
 
 yomiyasu が「書き手に確かめたい点」に「ここに説明が必要です」と挙げた語は、WD002 と同じように扱います。
 
-### 3. 認知負荷を確かめる
+### 3. 認知負荷と図表を確かめる
 
 `cyrus lint final.md` で、言い換えによって認知負荷が上がっていないか確かめます。
+`cyrus figure check --file final.md` で、図表とキャプションが設計どおりのままかを確かめます（GT113〜GT117。`cyrus check` にも含まれます）。
 
 ### 4. 直したら、yomiyasu の検査をやり直す
 
@@ -87,6 +102,6 @@ python3 .claude/skills/yomiyasu/scripts/yomiyasu_check.py verify --final documen
 
 ## 完了条件
 
-- `final.md` に lint と wording のエラーがない。
+- `final.md` に lint と wording のエラーがない。図表が設計どおり（GT113〜GT117 がない）。
 - `final.md` が、yomiyasu で `draft.md` から推敲して検査した本文のままである（yomiyasu の verify が通る）。
 - ユーザーの承認をもらって `cyrus advance --confirmed "…"`。

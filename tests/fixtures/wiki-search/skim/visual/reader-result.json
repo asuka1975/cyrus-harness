@@ -1,6 +1,6 @@
 {
   "source": "draft.md",
-  "draft_hash": "1a0f9091dbea07b6",
+  "draft_hash": "64ca2779579571b0",
   "media": "screen",
   "reader": "Gemini（agy）",
   "model": "gemini-3.8-flash-medium",
@@ -27,9 +27,10 @@
         "見出し"
       ],
       "missed_or_hidden": [
-        "表1の金額"
+        "費用と効果の節の約6000万円"
       ],
       "layout_issues": []
     }
-  }
+  },
+  "assets_hash": "e3b0c44298fc1c14"
 }

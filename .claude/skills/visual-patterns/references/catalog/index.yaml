@@ -1,0 +1,661 @@
+# 選択インデックス。スキーマは taxonomy.md の「6.4 index.yaml」を参照。
+# chart の趣旨と候補は FT Visual Vocabulary 日本語版に準拠する（chart/chart.md）。縦横・並べ替え・系列数だけが違う派生は統合する（adr/0002）。
+# diagram の趣旨と候補は Periodic Table of Visualization Methods を整理して登録する（diagram/diagram.md）。
+
+intents:
+  magnitude-comparison:
+    candidates:
+      - pattern: bar-chart
+      - pattern: lollipop-chart
+        when: 値を目立たせたい、またはゼロを起点にできない
+      - pattern: proportional-symbol
+        when: 値の差が極端に大きい（微妙な差には不向き）
+      - pattern: isotype
+        when: 整数の個数を直感的に見せる
+      - pattern: grouped-symbol
+        when: 個数を数えさせる、または一部の要素を目立たせる
+      - pattern: bullet-chart
+        when: 目標値に対する達成度を示す
+      - pattern: radar-chart
+        when: 複数の項目を一覧で比べる（違いが読み取れる場合に限る）
+      - pattern: parallel-coordinates
+        when: 項目が多く、レーダーチャートでは線が重なる
+      - pattern: marimekko
+        when: 大きさと割合を同時に見せる
+  deviation:
+    candidates:
+      - pattern: diverging-bar-chart
+      - pattern: diverging-stacked-bar-chart
+        when: 賛成・中立・反対のような態度を含む調査結果
+      - pattern: spine-chart
+        when: 一つのデータを対照的な二要素に分ける（男性／女性など）
+      - pattern: surplus-deficit-filled-line
+        when: 基準線からの隔たりの推移を見せる
+  ranking:
+    candidates:
+      - pattern: bar-chart
+      - pattern: lollipop-chart
+        when: 順位と値の両方を目立たせる
+      - pattern: proportional-symbol
+        when: 値の差が極端に大きい
+      - pattern: dot-strip-plot
+        when: 複数の分野にわたる順位を省スペースで見せる
+      - pattern: slope-chart
+        when: 二時点または二条件の間で順位がどう変わったかを見せる
+      - pattern: bump-chart
+        when: 複数時点にわたる順位の変動を見せる
+  attribute-comparison:
+    candidates:
+      - pattern: comparison-table
+  time-series-change:
+    candidates:
+      - pattern: line-chart
+      - pattern: bar-chart
+        when: 期間が少なく、系列が一つ
+      - pattern: line-column-chart
+        when: 量と比率の変化を同時に見せる
+      - pattern: stock-price-chart
+        when: 始値・終値・高値・安値を示す
+      - pattern: slope-chart
+        when: 二つか三つの時点に絞って比べる
+      - pattern: area-chart
+        when: 総量の変化を見せる（内訳の変化は読みにくい）
+      - pattern: fan-chart
+        when: 不確かさを伴う予測値を示す
+      - pattern: connected-scatter-plot
+        when: 二つの変数の変化を同時に辿らせる
+      - pattern: calendar-heatmap
+        when: 暦単位（日・週・月）の傾向を大まかに示す
+      - pattern: priestley-timeline
+        when: 日付と期間（在任期間など）が重要
+      - pattern: circle-timeline
+        when: 複数カテゴリにわたる離散的な出来事と大きさを示す
+      - pattern: vertical-timeline
+        when: 詳細な時系列を縦に並べる（スクロール向き）
+      - pattern: seismogram
+        when: 大きな変動を含むひとかたまりの出来事を示す
+  correlation:
+    candidates:
+      - pattern: scatter-plot
+      - pattern: bubble-chart
+        when: 第三の変数を円の大きさで加える
+      - pattern: connected-scatter-plot
+        when: 二つの変数の関係の時間変化を見せる
+      - pattern: line-column-chart
+        when: 量と割合の関係を見せる
+      - pattern: xy-heatmap
+        when: 両軸がカテゴリで、組み合わせごとの傾向を見せる
+  part-to-whole:
+    candidates:
+      - pattern: stacked-column-chart
+      - pattern: pie-chart
+        when: 項目が少なく、正確な比較を求めない。中心に値を置かない
+      - pattern: donut-chart
+        when: 中心に合計などの関連情報を添える
+      - pattern: treemap
+        when: 階層構造を伴う構成割合を見せる
+      - pattern: marimekko
+        when: 大きさと割合を同時に見せる
+      - pattern: arc-chart
+        when: 議会構成など、構成比を半円で見せる
+      - pattern: grid-plot
+        when: 全体に占める割合を整数の升目で見せる
+      - pattern: waterfall-chart
+        when: 構成要素にマイナスの値がある
+  step-order:
+    candidates:
+      - pattern: sequence-diagram
+      - pattern: communication-diagram
+        when: 主体間のつながりを優先し、順序は番号で示す
+  branching:
+    candidates:
+      - pattern: flowchart
+      - pattern: swim-lane-diagram
+        when: 担当（主体）が複数あり、誰がどの段階を行うかの分担が主題
+  flow:
+    candidates:
+      - pattern: sankey
+      - pattern: waterfall-chart
+        when: 過程に沿った増減の累積を見せる
+      - pattern: chord
+        when: 双方向の流れを見せる
+      - pattern: funnel
+        when: 比喩で示す（一本の経路で段階ごとに減る量を見せる）
+  distribution:
+    candidates:
+      - pattern: histogram
+      - pattern: box-plot
+        when: 複数の集団の中央値と幅をまとめて比べる
+      - pattern: violin-plot
+        when: 単純な要約では表せない複雑な分布を見せる
+      - pattern: population-pyramid
+        when: 年齢別・男女別の人口分布を見せる
+      - pattern: dot-strip-plot
+        when: 個々の値を一本の線上に見せる（同じ値の点が多すぎない）
+      - pattern: dot-plot
+        when: カテゴリごとの値の幅（最小／最大）を示す
+      - pattern: barcode-plot
+        when: 全データを見せつつ個々の値を目立たせる
+      - pattern: cumulative-curve
+        when: 分布の不均衡さを見せる
+      - pattern: frequency-polygon
+        when: 複数の分布を重ねて比べる（3〜4本まで）
+  geographic:
+    candidates:
+      - pattern: choropleth-map
+      - pattern: proportional-symbol-map
+        when: 割合ではなく数値そのものを比べる
+      - pattern: dot-density-map
+        when: 個々の出来事の位置を見せる
+      - pattern: spatial-heatmap
+        when: 行政区域と連動しない連続的な濃淡を見せる
+      - pattern: contour-map
+        when: 等値線で領域を示す
+      - pattern: equalised-cartogram
+        when: 地区を同サイズの形に置き換えて同価値のグループを示す
+      - pattern: scaled-cartogram
+        when: 領域の面積を値に比例させる
+      - pattern: flow-map
+        when: 地図上の移動を示す
+      - pattern: voronoi
+        when: 空間内の点ごとに最も近い領域を分割して見せる
+  conditional-outcome:
+    candidates:
+      - pattern: decision-tree
+  appearance:
+    candidates:
+      - pattern: screenshot
+      - pattern: photo
+        when: 対象が画面ではない
+  positioning:
+    candidates:
+      - pattern: quadrant-matrix
+      - pattern: continuum
+        when: 軸が一つ
+  chronology:
+    candidates:
+      - pattern: timeline
+      - pattern: priestley-timeline
+        when: 日付と期間（在任期間など）が重要
+      - pattern: circle-timeline
+        when: 複数カテゴリにわたる離散的な出来事と大きさを示す
+      - pattern: vertical-timeline
+        when: 詳細な時系列を縦に並べる（スクロール向き）
+  relationship:
+    candidates:
+      - pattern: concept-map
+      - pattern: er-diagram
+        when: 対象がデータの実体で、多重度を示す
+      - pattern: network
+        when: 関係の種類より、つながりの全体像（密度や中心）を見せる
+  causation:
+    candidates:
+      - pattern: cause-effect-chain
+      - pattern: ishikawa-diagram
+        when: 一つの結果に対する原因を分類して洗い出す
+      - pattern: fault-tree
+        when: 原因の組み合わせ（AND・OR）を論理的に示す
+      - pattern: feedback-diagram
+        when: 因果がループする
+      - pattern: stock-flow-diagram
+        when: 蓄積と流量の因果を示す
+  parent-child:
+    candidates:
+      - pattern: tree-diagram
+      - pattern: mind-map
+        when: 中心の主題から放射状に広げ、階層が浅く幅が広い
+      - pattern: tree-metaphor
+        when: 比喩で示す（根・幹・枝のように、土台からの派生を見せる）
+  membership:
+    candidates:
+      - pattern: venn-diagram
+      - pattern: affinity-diagram
+        when: 項目が多く、重ならないグループに見出しを付けて並べる
+      - pattern: cluster-diagram
+        when: 中心の主題に対するグループを放射状に置き、重なりを示さない
+  layering:
+    candidates:
+      - pattern: layer-diagram
+      - pattern: concentric-circles
+        when: 層が入れ子で、中心からの距離に意味がある
+      - pattern: temple
+        when: 比喩で示す（複数の要素が並んで一つの目標を支える）
+      - pattern: iceberg
+        when: 比喩で示す（見えている部分と隠れた部分を対比する）
+  argumentation:
+    candidates:
+      - pattern: minto-pyramid
+      - pattern: toulmin-map
+        when: 根拠から主張への推論の正当性（論拠・反証）を示す
+      - pattern: ibis-map
+        when: 論点に対する複数の立場と賛否を記録する
+  schedule:
+    candidates:
+      - pattern: gantt-chart
+      - pattern: pert-chart
+        when: 作業間の依存と最長経路が主題
+      - pattern: technology-roadmap
+        when: 年単位の粗い時期で方向性を示す
+      - pattern: metro-map
+        when: 比喩で示す（複数の系列が交わる節目を見せ、時期の正確さを求めない）
+  cycle:
+    candidates:
+      - pattern: cycle-diagram
+  lookup:
+    candidates:
+      - pattern: data-table
+  dependency:
+    candidates:
+      - pattern: data-flow-diagram
+  opposing-forces:
+    candidates:
+      - pattern: force-field-diagram
+
+patterns:
+  - id: comparison-table
+    layer: primitive
+    family: table
+    path: table/comparison-table.md
+  - id: decision-tree
+    layer: primitive
+    family: diagram
+    path: diagram/decision-tree.md
+
+  # diagram / composition / picture
+  - id: sequence-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/sequence-diagram.md
+  - id: flowchart
+    layer: primitive
+    family: diagram
+    path: diagram/flowchart.md
+  - id: visual-exact-values
+    name: Visual + Exact Values
+    layer: composition
+    status: planned
+  - id: screenshot
+    layer: primitive
+    family: picture
+    path: picture/screenshot.md
+  - id: photo
+    layer: primitive
+    family: picture
+    path: picture/photo.md
+
+  # Periodic Table of Visualization Methods 由来（diagram/diagram.md）。Network は Visual Vocabulary 由来
+  - id: tree-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/tree-diagram.md
+  - id: mind-map
+    layer: primitive
+    family: diagram
+    path: diagram/mind-map.md
+  - id: venn-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/venn-diagram.md
+  - id: affinity-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/affinity-diagram.md
+  - id: cluster-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/cluster-diagram.md
+  - id: concept-map
+    layer: primitive
+    family: diagram
+    path: diagram/concept-map.md
+  - id: er-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/er-diagram.md
+  - id: network
+    layer: primitive
+    family: diagram
+    path: diagram/network.md
+  - id: cause-effect-chain
+    layer: primitive
+    family: diagram
+    path: diagram/cause-effect-chain.md
+  - id: ishikawa-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/ishikawa-diagram.md
+  - id: fault-tree
+    layer: primitive
+    family: diagram
+    path: diagram/fault-tree.md
+  - id: feedback-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/feedback-diagram.md
+  - id: stock-flow-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/stock-flow-diagram.md
+  - id: cycle-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/cycle-diagram.md
+  - id: quadrant-matrix
+    layer: primitive
+    family: diagram
+    path: diagram/quadrant-matrix.md
+  - id: continuum
+    layer: primitive
+    family: diagram
+    path: diagram/continuum.md
+  - id: timeline
+    layer: primitive
+    family: chart
+    path: chart/timeline.md
+  - id: gantt-chart
+    layer: primitive
+    family: chart
+    path: chart/gantt-chart.md
+  - id: pert-chart
+    layer: primitive
+    family: diagram
+    path: diagram/pert-chart.md
+  - id: technology-roadmap
+    layer: primitive
+    family: diagram
+    path: diagram/technology-roadmap.md
+  - id: minto-pyramid
+    layer: primitive
+    family: diagram
+    path: diagram/minto-pyramid.md
+  - id: toulmin-map
+    layer: primitive
+    family: diagram
+    path: diagram/toulmin-map.md
+  - id: ibis-map
+    layer: primitive
+    family: diagram
+    path: diagram/ibis-map.md
+  - id: layer-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/layer-diagram.md
+  - id: concentric-circles
+    layer: primitive
+    family: diagram
+    path: diagram/concentric-circles.md
+  - id: communication-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/communication-diagram.md
+  - id: swim-lane-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/swim-lane-diagram.md
+  - id: data-table
+    layer: primitive
+    family: table
+    path: table/data-table.md
+  - id: metro-map
+    layer: primitive
+    family: diagram
+    path: diagram/metro-map.md
+  - id: temple
+    layer: primitive
+    family: diagram
+    path: diagram/temple.md
+  - id: iceberg
+    layer: primitive
+    family: diagram
+    path: diagram/iceberg.md
+  - id: funnel
+    layer: primitive
+    family: diagram
+    path: diagram/funnel.md
+  - id: tree-metaphor
+    layer: primitive
+    family: diagram
+    path: diagram/tree-metaphor.md
+  - id: data-flow-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/data-flow-diagram.md
+  - id: force-field-diagram
+    layer: primitive
+    family: diagram
+    path: diagram/force-field-diagram.md
+
+  # chart（FT Visual Vocabulary 日本語版）
+  # Deviation
+  - id: diverging-bar-chart
+    layer: primitive
+    family: chart
+    path: chart/diverging-bar-chart.md
+  - id: diverging-stacked-bar-chart
+    layer: primitive
+    family: chart
+    path: chart/diverging-stacked-bar-chart.md
+  - id: spine-chart
+    layer: primitive
+    family: chart
+    path: chart/spine-chart.md
+  - id: surplus-deficit-filled-line
+    layer: primitive
+    family: chart
+    path: chart/surplus-deficit-filled-line.md
+  # Correlation
+  - id: scatter-plot
+    layer: primitive
+    family: chart
+    path: chart/scatter-plot.md
+  - id: line-column-chart
+    layer: primitive
+    family: chart
+    path: chart/line-column-chart.md
+  - id: connected-scatter-plot
+    layer: primitive
+    family: chart
+    path: chart/connected-scatter-plot.md
+  - id: bubble-chart
+    layer: primitive
+    family: chart
+    path: chart/bubble-chart.md
+  - id: xy-heatmap
+    layer: primitive
+    family: chart
+    path: chart/xy-heatmap.md
+  # Ranking
+  - id: dot-strip-plot
+    layer: primitive
+    family: chart
+    path: chart/dot-strip-plot.md
+  - id: slope-chart
+    layer: primitive
+    family: chart
+    path: chart/slope-chart.md
+  - id: lollipop-chart
+    layer: primitive
+    family: chart
+    path: chart/lollipop-chart.md
+  - id: bump-chart
+    layer: primitive
+    family: chart
+    path: chart/bump-chart.md
+  # Distribution
+  - id: histogram
+    layer: primitive
+    family: chart
+    path: chart/histogram.md
+  - id: box-plot
+    layer: primitive
+    family: chart
+    path: chart/box-plot.md
+  - id: violin-plot
+    layer: primitive
+    family: chart
+    path: chart/violin-plot.md
+  - id: population-pyramid
+    layer: primitive
+    family: chart
+    path: chart/population-pyramid.md
+  - id: dot-plot
+    layer: primitive
+    family: chart
+    path: chart/dot-plot.md
+  - id: barcode-plot
+    layer: primitive
+    family: chart
+    path: chart/barcode-plot.md
+  - id: cumulative-curve
+    layer: primitive
+    family: chart
+    path: chart/cumulative-curve.md
+  - id: frequency-polygon
+    layer: primitive
+    family: chart
+    path: chart/frequency-polygon.md
+  # Change over Time
+  - id: line-chart
+    layer: primitive
+    family: chart
+    path: chart/line-chart.md
+  - id: stock-price-chart
+    layer: primitive
+    family: chart
+    path: chart/stock-price-chart.md
+  - id: area-chart
+    layer: primitive
+    family: chart
+    path: chart/area-chart.md
+  - id: fan-chart
+    layer: primitive
+    family: chart
+    path: chart/fan-chart.md
+  - id: calendar-heatmap
+    layer: primitive
+    family: chart
+    path: chart/calendar-heatmap.md
+  - id: priestley-timeline
+    layer: primitive
+    family: chart
+    path: chart/priestley-timeline.md
+  - id: circle-timeline
+    layer: primitive
+    family: chart
+    path: chart/circle-timeline.md
+  - id: vertical-timeline
+    layer: primitive
+    family: chart
+    path: chart/vertical-timeline.md
+  - id: seismogram
+    layer: primitive
+    family: chart
+    path: chart/seismogram.md
+  # Magnitude
+  - id: bar-chart
+    layer: primitive
+    family: chart
+    path: chart/bar-chart.md
+  - id: marimekko
+    layer: primitive
+    family: chart
+    path: chart/marimekko.md
+  - id: proportional-symbol
+    layer: primitive
+    family: chart
+    path: chart/proportional-symbol.md
+  - id: isotype
+    layer: primitive
+    family: chart
+    path: chart/isotype.md
+  - id: radar-chart
+    layer: primitive
+    family: chart
+    path: chart/radar-chart.md
+  - id: parallel-coordinates
+    layer: primitive
+    family: chart
+    path: chart/parallel-coordinates.md
+  - id: bullet-chart
+    layer: primitive
+    family: chart
+    path: chart/bullet-chart.md
+  - id: grouped-symbol
+    layer: primitive
+    family: chart
+    path: chart/grouped-symbol.md
+  # Part-to-whole
+  - id: stacked-column-chart
+    layer: primitive
+    family: chart
+    path: chart/stacked-column-chart.md
+  - id: pie-chart
+    layer: primitive
+    family: chart
+    path: chart/pie-chart.md
+  - id: donut-chart
+    layer: primitive
+    family: chart
+    path: chart/donut-chart.md
+  - id: treemap
+    layer: primitive
+    family: chart
+    path: chart/treemap.md
+  - id: arc-chart
+    layer: primitive
+    family: chart
+    path: chart/arc-chart.md
+  - id: grid-plot
+    layer: primitive
+    family: chart
+    path: chart/grid-plot.md
+  - id: waterfall-chart
+    layer: primitive
+    family: chart
+    path: chart/waterfall-chart.md
+  # Spatial
+  - id: choropleth-map
+    layer: primitive
+    family: chart
+    path: chart/choropleth-map.md
+  - id: proportional-symbol-map
+    layer: primitive
+    family: chart
+    path: chart/proportional-symbol-map.md
+  - id: flow-map
+    layer: primitive
+    family: chart
+    path: chart/flow-map.md
+  - id: contour-map
+    layer: primitive
+    family: chart
+    path: chart/contour-map.md
+  - id: equalised-cartogram
+    layer: primitive
+    family: chart
+    path: chart/equalised-cartogram.md
+  - id: scaled-cartogram
+    layer: primitive
+    family: chart
+    path: chart/scaled-cartogram.md
+  - id: dot-density-map
+    layer: primitive
+    family: chart
+    path: chart/dot-density-map.md
+  - id: spatial-heatmap
+    layer: primitive
+    family: chart
+    path: chart/spatial-heatmap.md
+  - id: voronoi
+    layer: primitive
+    family: chart
+    path: chart/voronoi.md
+  # Flow
+  - id: sankey
+    layer: primitive
+    family: chart
+    path: chart/sankey.md
+  - id: chord
+    layer: primitive
+    family: chart
+    path: chart/chord.md

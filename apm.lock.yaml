@@ -1,7 +1,35 @@
 lockfile_version: '1'
-generated_at: '2026-10-18T09:21:14.436610+00:00'
+generated_at: '2026-10-22T02:24:01.776660+00:00'
 apm_version: 0.29.0
 dependencies:
+- repo_url: asuka1975/constructivism
+  name: constructivism
+  host: github.com
+  resolved_commit: b456cb596af139793a8b0cfa97876fcab2001cb8
+  resolved_ref: v1.0.0
+  version: 1.0.0
+  package_type: apm_package
+  deployed_files:
+  - .claude/skills/constructivism
+  - .claude/skills/constructivism/SKILL.md
+  - .claude/skills/constructivism/examples/sample-outputs.md
+  - .claude/skills/constructivism/references/catalog-academic-edu.md
+  - .claude/skills/constructivism/references/catalog-business.md
+  - .claude/skills/constructivism/references/catalog-technical.md
+  - .claude/skills/constructivism/references/decision-rules.md
+  - .claude/skills/constructivism/references/hybrid-and-checklist.md
+  - .claude/skills/constructivism/references/japanese-conventions.md
+  deployed_file_hashes:
+    .claude/skills/constructivism/SKILL.md: sha256:351d983e5ef3e29ef479ea615286399759a4f2483149315e863075cdf1a6ce76
+    .claude/skills/constructivism/examples/sample-outputs.md: sha256:19c09a37bf7a42ea7298f920c421308a01794469bb299111be0fc98acd6f6e38
+    .claude/skills/constructivism/references/catalog-academic-edu.md: sha256:e36f9d58b8d85c8c31500bf0e7a6af3577adb093fa53bc80a530606569735e32
+    .claude/skills/constructivism/references/catalog-business.md: sha256:4f9545166df8d41836e6da1627483fb47f3b2fd56bbca94006a2af2cd23e11a3
+    .claude/skills/constructivism/references/catalog-technical.md: sha256:662bdd9cbd10b8474618e0618f78417f17f70d44d3d34d30ceef9edea5c17bab
+    .claude/skills/constructivism/references/decision-rules.md: sha256:d480d6a1095d8d30ba26118ee742beee8405bce836c978c5b6e36d8856b87744
+    .claude/skills/constructivism/references/hybrid-and-checklist.md: sha256:40050c284842bb0db1511c7e12ad41444c1ff7d1b96fa6c53f2df4740dc73983
+    .claude/skills/constructivism/references/japanese-conventions.md: sha256:c9071b561db53d353e70b6711be797899ddd8a0c394224eae94bb244ac4199e1
+  content_hash: sha256:cb7284fa27d4424dc08037934ab0149840deec6bee93a5c4511c8a5746fd3ff3
+  declared_license: MIT
 - repo_url: nanaism/yomiyasu
   name: yomiyasu
   host: github.com
@@ -101,7 +129,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:2cf4baeef38d359b55c9a75fe15eb8d60c71a44dabf5f8eaaba1496e865bb0d5
+  content_hash: sha256:f23d70143ba31de7fb426ef40232bbf70d00ce21856c5705c2ac145fccd2d3bb
 - kind: project-relative
   target: claude
   value: .claude/agents/cyrus-fact-checker.md
@@ -185,6 +213,87 @@ deployments:
   content_hash: sha256:1d59ecb32f396354559538e38316fad96726e2462578e4ac1dff4fa335cfc7f3
 - kind: project-relative
   target: claude
+  value: .claude/skills/constructivism
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:351d983e5ef3e29ef479ea615286399759a4f2483149315e863075cdf1a6ce76
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/examples/sample-outputs.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:19c09a37bf7a42ea7298f920c421308a01794469bb299111be0fc98acd6f6e38
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/catalog-academic-edu.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:e36f9d58b8d85c8c31500bf0e7a6af3577adb093fa53bc80a530606569735e32
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/catalog-business.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:4f9545166df8d41836e6da1627483fb47f3b2fd56bbca94006a2af2cd23e11a3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/catalog-technical.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:662bdd9cbd10b8474618e0618f78417f17f70d44d3d34d30ceef9edea5c17bab
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/decision-rules.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:d480d6a1095d8d30ba26118ee742beee8405bce836c978c5b6e36d8856b87744
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/hybrid-and-checklist.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:40050c284842bb0db1511c7e12ad41444c1ff7d1b96fa6c53f2df4740dc73983
+- kind: project-relative
+  target: claude
+  value: .claude/skills/constructivism/references/japanese-conventions.md
+  runtime: null
+  scope: project
+  owners:
+  - asuka1975/constructivism
+  active_owner: asuka1975/constructivism
+  content_hash: sha256:c9071b561db53d353e70b6711be797899ddd8a0c394224eae94bb244ac4199e1
+- kind: project-relative
+  target: claude
   value: .claude/skills/cyrus
   runtime: null
   scope: project
@@ -200,7 +309,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:8a4f9deeb8d9c95b85d0039d242342b311fcb3d7c82ac701aafe4597c20b9314
+  content_hash: sha256:56e2d7b4a0344cf1d479aad28cfcaa9ece910d05b047b4e5166713412a4c12d7
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/data/wording-rules.json
@@ -218,7 +327,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:332796ddc9970e184f61e11554dbd06268258e7a374398fa29865958178d2f41
+  content_hash: sha256:c41b39b0d373f902e9231bc719556ef563034b57a7910bca5767d19d661d8180
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/references/lean-modeling.md
@@ -254,7 +363,169 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:b27755c21462555b0d91797307d95c2cc71a9dd4800d67071baaef5205e4e1e8
+  content_hash: sha256:804756e38d02a2be56400e898afaadef51f44a03ca4384de709c53de04d6e83e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0d89edb26ba701f4b90b5a5e037964def80ac687f09952708aca0daeeceddcba
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/figure.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a743b9464ef60f2014d5e70826e8aaffae9d6d8268afd2a63619b81478bac5c2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/gates.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9cadc714954dab7f4576e1adcfe9615164b6ff75811c80864cf296c178941100
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7271013fff9339a9b5897f9df281971ad6ce340af2b522a296dc0bda1faaaeaa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3e8860c9e1380d0e64328edfda731663735faa001bfb3b4ae4ba331322ae5e65
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:84b444dbddafa22325fca58d5f0570c6ca4f3e858ece0baa6d22a8e66cbe0d5f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/leansrc.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6adf6b477ded7e9f3fbbee613350da7dafea0e7e536e61e305c8fd92d52c1717
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:03091f2ec875022fa2f5614376d9232093fcbc747edb6f3b186c9965abc47c26
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a625d33003cd316654b3a12238c28a21807aeb60ae6c6845b9496b74e8a84d30
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1c945fbe0452d78fb2b395d89488b73c58a843e4d8f11e9c410169350c9c94f3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/scaffold.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:824d0d817eb93182cfc17aa3f1af23e67f989df829ffb9dbf9bd6c405ddfeff1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0ea3cfe156812d665f82a623a03dac59b54cc7ea834ecc9569ca124846af6abe
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fd9e53b2f9f47ec7eab635d99364f5b105720189f657acf86539d2258df4e2c4
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/visionreader.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:086cc8aa3884dc9aa588fad46ecd9300104baac02340a6629a027f600995d4f8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:29466c2f7245561a7420f883f29d4628c3d34d082643b81e211f1c553d992b5e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:254db543ac17a255f4e7298d996286369142403aa2d28fffa737f52066463b41
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/workspace.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:444eab02f9feb2c1b81df53059fb2d47f5b910c3274ac1932234baad2c78217f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/yomiyasu.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a80a528c288aeeeed956ee99740707143d62937d5d73d719f1b5e94488591c16
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/cli.py
@@ -263,7 +534,16 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:871db3247bc929f62e4f113a8a00f952a09a491190643491d314076bb87151e2
+  content_hash: sha256:65439e27f784609db79cb1166d46b7f4a53dc502c734090a9d58668e39ec4e59
+- kind: project-relative
+  target: claude
+  value: .claude/skills/cyrus/scripts/cyruslib/figure.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a6c840440352b624ef3988a36c7967b7d743a01f0289646f7017bacc2fa53091
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/gates.py
@@ -272,7 +552,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:6938491f157fc2c2653e8c54076639e010be45533669c74bab60cf15573529eb
+  content_hash: sha256:0f5c37b7493691b7aabcd669aee98aa458062c141a0bcee4a447e7daf2a28a2e
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/hooks.py
@@ -299,7 +579,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:4f667e1c17582d64776af9255b5f37067a7c92bbf986d9bfe635f7b8ca4f51f6
+  content_hash: sha256:a6c7ab40f3c5f01b7ebdcfe02a2e83f22d89e32d940c76cfe75fb8f8e0112800
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/leancheck.py
@@ -344,7 +624,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:9f2510c035a3e0bab672a567fc703219470b45f6707277cafbbf111f305317ef
+  content_hash: sha256:72c802a4eafc581df80e5ae227296890421a3e3973b5e792697ac4c421472d88
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/reader.py
@@ -353,7 +633,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:a0e78500f98bf05d98c15c2d02332812eb31db3ba8607dbf309a26d3d3360233
+  content_hash: sha256:df7933df55d2ebb4395f51143b917d13a724c35b1a34adefdc4cde7530bfdeae
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/scaffold.py
@@ -362,7 +642,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:52155dd942a7bbb2e468d2de84d93bf3a40ab4057f9f002b949b2b35b03bfa53
+  content_hash: sha256:0747569341f33d7b7c9177596573c20b2ffb736984774650ecb8d9ddae24372e
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/skim.py
@@ -389,7 +669,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:467c1e36307f43025d42eb36b57e868f8cb31c39091ffc92cff87fb59eb5584f
+  content_hash: sha256:216adba7b280907220d2fd92e45f38e35a182a74abb994630ea1fa1a919cfaf0
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/visual.py
@@ -398,7 +678,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:eca7442860d907b3e04211ad4f17bc65e054e71565599e54761c72ef3ce07ba4
+  content_hash: sha256:245b83c559d6e1b50dd0741843586f373596d20615d5e8c81d13dcc0ba1b41dc
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/wording.py
@@ -434,7 +714,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:ceaac6e85b911055cf009a103c296ff8432ae8000a0ad09f55562e11ba2b9675
+  content_hash: sha256:6edc698e15e712ccb057adf5cc421a7c2972bec67688eb240260a346ed8246bf
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/02-context.md
@@ -452,7 +732,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:75971b29e7577d44f2c560fd6bbc6d9d7b8cea764d7792380da477e2e7051277
+  content_hash: sha256:257f1e8c13216a7c4822321a22325c6ba48d55b47a96dc518a570a561608ff57
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/04-analysis.md
@@ -470,7 +750,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:4330f3cff3d0aed94222c7d9ceb4c4e4335b7fc6b1f566fa931a13024ac15c9c
+  content_hash: sha256:cff349df5f64df8cb55f50086a739336e60b7c0c2eb5e2fefdfa490e3d2062c4
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/06-facts.md
@@ -497,7 +777,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:68b753982b6f41b46eec56bd0b5efd42b487143af33fa8b95a6f6687fe69c590
+  content_hash: sha256:891fd935bf358af9c25681eae371ee04aa65874ee42f214d71aa71d31aeb80ed
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/09-storyline.md
@@ -506,7 +786,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:d7cff1ad3f55db2c3d94d981c9c10226bc251b5603a0fe61e2557b10b4e840e6
+  content_hash: sha256:0572539ac8c9249f1f7a1f5f0267841ab5ee5e79a701fa33c2b092a18b346572
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/10-detail.md
@@ -515,7 +795,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:e700b91ef4f4134a35940517e52b9547155ed823879f4049c8edd322c9f81a54
+  content_hash: sha256:35d9b9954eeb0ddcd8546e8798455232a89f168d6c0966e5a081d25d03e51364
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/11-writing.md
@@ -524,7 +804,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:4aa6cb29ea5303553887b5145501a0a12f1ad112a158f5966cc6e3cc27aad3a7
+  content_hash: sha256:66f53cb1dd72df60d82bc2bed8d9ad2fba39af3402f3f3c4f91813a22dfaf491
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/12-cogload.md
@@ -533,7 +813,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:d28f6f33f5e6c8cdb4aba744725e39e76eafd2c7a4aec4bc305722dfaa139bdc
+  content_hash: sha256:40a3914a3042269e615e9d9c5e36186de292c0aa1571ff1937fe5e71b559f143
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/13-wording.md
@@ -542,7 +822,997 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:8a1dee9138cb3147ae6f14300150c4880fb297eec6d4dc140e02d1dc5134cd3f
+  content_hash: sha256:4f168d786a7e8d5e3a42674de7bfcb7948a7d0e32d0f2409b76f3a2b8b9105ec
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f191f8a366629f3ef737d1ead898783b98c71001be5d87606fcbca8ea407fa4d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/data/index.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d6b49e3cba71af4653f336aba05e62e7ed479f1ad9fd1d25265bae16624a1a26
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/data/render-routes.json
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:41ac171f54171c58951b80546526d0ec2d78e1bd321482883f951f75d36a9569
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/arc-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9df321eeb6b6c462245477dcd8d8f2d8cc73ed9cccf8b6283fa0992671bcecfc
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/area-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:03024d3fd86fb0fb385c8ccaa0fd753e262fa3d591c24ab67e354b8a3dbcf150
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/bar-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d4c516a9c287cd66c171fc758fe4fd93470cde4ff23daf0189e2dd3514011865
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/barcode-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:017381f31b95dc819cab2fe7670e0ba59161a282144515d9caf9944cc9a02a2e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/box-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f6587f3c2b5c0ed5eb240f61f255a0a1904a1a8c2043c414009c7c08de3c3272
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/bubble-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e20b6e3dca71df4406d149aaa640a59a31fdb44f751979f080a4af1b9b343b6c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/bullet-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9e07733b6f662fadeb2475053102f3f694efd6f47d8938d694a322c319ba252e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/bump-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f7b621916b8bc624ddedaa01d223502283f3b1a42e49057d48c02cd3c6bde468
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/calendar-heatmap.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:3b64c9fb2836880e4fd23553cde24eb57b477126543b66e89b5a91797aee81a8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:529d4f5898ea5212d004f8419c5abdbfb5b5661843edd79c51ac5d1cfcb195e1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/chord.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:debd917db50074caffa5ee8c32326ef0121c4dd1e63b2de34bb98b4f06f5b447
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/choropleth-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:eba5bb672db0536dbb99c0222038739a46257dceafdb86fad0aafbeae8ba44d3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/circle-timeline.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6a99b98a38bc1c70b8f0dbfd9848369d2b5ca6f33314610e2d17c2342432f8c7
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/connected-scatter-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7c5259b91df5528ec425032628d284c4ff1d5260c4fbda2cc82de39fe230d105
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/contour-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:bef75f0a6e0fdad7843c9d699f59f9849a8fe9b1fa9ec2a425df224907241548
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/cumulative-curve.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c2414fd6734d2a883ed6bb76c3a91a9d28070b0810c4b131f836e7ffbb7138b8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/diverging-bar-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7a28a1e4a6a888fce5ff000326b905cd476ead92dcc71628c8b009b5382a86fd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/diverging-stacked-bar-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:4196c4aaee8cd9454925709c49d0431eb46fb209d2622d00e806b8866fd68e53
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/donut-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7ebe4c98e001265139bd3563850cbae156c2e5d9048d1cf8b8c9728a6124ebb3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/dot-density-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0675168cae9e57d8acdfd19ee29089509604c53db1f7404846f4042533a4f538
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/dot-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:19def6fb265a92e94a85a382b89a443e463660372a5f2505eaa196fd260fd737
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/dot-strip-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cc185dfa16ec5cfea3c8e1b76e06bad4ccd636d3b5a955c39e67bee075e08cc2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/equalised-cartogram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:31ea7a7b1ede14337629f539b5de7088d8b0870977bd9ce168be2ea54405b5fd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/fan-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:82c3a5c318277268298b2a9b0260818e6a46fbf01424c5011a23703937d2aad8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/flow-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1307dacb2646811598ceaeac96d389fd5faca7a4498416563db514e762d22c9c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/frequency-polygon.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:aef18634207b919bb37bc63530b9aab4cbccfbff09d7ff67eb589d2979f7835a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/gantt-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:373260cd8450a44cdba7e7699bdfb215c8036b7918ce6d3065c3698e1e3320bf
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/grid-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d024e4c8762ae175371313245bd823a1a7ec491eaac2d08821961cee18128cd0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/grouped-symbol.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:32bed5bf69819998230c17ff7589cf4ca553db4e57bc91de0af3f6b1c09a41aa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/histogram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ab7d68457087fdaa039c0f7a012f747fc19de30342eeb9a92a2cd110df583a60
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/isotype.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:18d0e36d201e0683a27bc912e52a6e6a3152e3e544e01aeb64c986f72a94ec42
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/line-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1811f4425322790253991e3cba800110731a718d6d944f117cd258846fb35d45
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/line-column-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:23e237487a8adbc16a1baf2d78d886ad29e8af8a4ec5b640b3f4391dd5cfdaf2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/lollipop-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1cfee7af4ee7553488fbc3f4d9316d39c5b384b7adb05c3a1f1614b6d574d3a5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/marimekko.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:194a91a5acdec3aea943ba8816e94b983f6bef0a55f79be2c5e115affa681ea0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/parallel-coordinates.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:bfb2d1877ae814e6e363374984e45565c5f8e369c04b476a41fdf0284edce651
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/pie-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:36c844f9ff54d0173a8bb8b0f63380f379956fad51ebff2718e65ad71c9d899a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/population-pyramid.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:c9c9890d13893f130a736dbd9af07dd9ba7da30858b1cc7539e0e1bfbe4b7c48
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/priestley-timeline.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:67f281599fe2166666f08b1468c05068e433091786f83c16caec37bc4f1bdd87
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:084293c1e80b1d6a914f5a399762e6ae16b1c3e9a7a90ef7d92b040bf8f61e87
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f11d236ac3b215fcd734a4bd758ebd9c9318798a21219333c69645975b21a4a5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/radar-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6493d9e97ab0363c3d5e703af5757a4aa85b3ba580c5830c177cbeac4ed2fbd3
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/sankey.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:76a17f86c9f1d3817cd6940618a505c10c321d2818b9bf54dc08065a51d8e5f6
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/scaled-cartogram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f48ba93444a19ef5d1ad20c51041657b54395def8fd7548320d7ff1e9ca81871
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/scatter-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0f4f847b88556ae5f5092b3bcbe7260dc5eb44550e5ab9dbfa3b52824b8ba29c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/seismogram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9a696f5982d92480f68b893828a05b993956345ca54121448d8c47da044892db
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/slope-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:528516d81882753dd16b9fad3f315a42d570bf7eb2f2ea4a8d25809d94791f0c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/spatial-heatmap.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6148feb9fcaab39d1b6629571c476c68c3d2da9ce98ad52aba064ad69769f09e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/spine-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:dd8fae9c14dfdaa3507376e0c4009c13548f802f8e529ae27e93813e93ff28c1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/stacked-column-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:43d436639eb3da754c435549772d03fd470216b1f96afe3315634d6040d394bd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/stock-price-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:13f1efee02c632840087e1566533a526cda13fdc53558b37b6bbfe43a4a033b5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/surplus-deficit-filled-line.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:7075fa8beb10f42d44da92a062bbb8bbb7ed57b0a509b57bb5d6b08dc4b9271f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/timeline.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ce0b57ce8f8d5b58b9582f43abcd3f525113f6d6f48d889f8eaea2c50b99aba8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/treemap.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:21e926f1492d92dc8fc0717d1e48e1789b4914a631d0dee40783ff99aea7f5af
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/vertical-timeline.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ba2389841806e1b6fa00ced65eda61bb4f664a7c830afe412950e991781a5e7c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/violin-plot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:de514c8e0c26e2c1e4764eaf62533d335c1c69d508b243e4ee6372637c579eab
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/voronoi.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:1057cee00d30b6435c90623f60030cfc3570118eb29ba8d45e9b1bd56d500083
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/waterfall-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fe304fa10c7af534c5badab56cbf2fddfbfa89b9ba8fdfc04a1d72e92cb76ac1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/chart/xy-heatmap.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:48fcf574813ddfb84410f0c6e080d9c99a42e2541e185483fba7989bbb3d738a
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/affinity-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fa87ef5f6394a929ecba1a9860822dd6814ffdcf9cdd482a88de8638f6737adb
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/cause-effect-chain.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9c398697c496b199e5b2105051341801a7503d180e2ccbef54c2a560842c9720
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/cluster-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f20e43a99d5ef8c098515d3c87c67244145dedbcab9f3dfe81fa7a1ab7d46b5b
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/communication-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:ff98e4465ccc6768bf7a5c57cffc0455daed7aaf3459ed02c70f7189d71d8c72
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/concentric-circles.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d362480dd4337011d8d07f1981d5931e3940c99a6de4655c671e7ffd6fa1d2a1
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/concept-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f88c8907371548363f121c7b03c62c12a5e41e5f7974a37bde944c036f0b2ed0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/continuum.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:55b6e1bd823f76dd1cd3dc6436c411757c2393cee9ecca9b9ff36894a807dd89
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/cycle-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:007755a9d41c5d6be20c23349b0af570f8281542520dd754ecb1b0d20c56046e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/data-flow-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d2428ba0652308779e138104f6a8aabae8c56ea52cb7c48b74990d24878c8ef6
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/decision-tree.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b8320fabc8d3df95d9b77a158231feb04515e44bd57feaaa35a68ece81ab3d52
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d33b3964dc57473ffc7b6e6ae451b94d31c3de6414f4cd1f6f42e2af9c90eacc
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/er-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:52bf954b3dd19dd552de592416d48e061afe252ae26f265ca56a2a455b0f99b2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/fault-tree.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:99acb1f7780e6a2afc5b46f32f90839cf87407278647308d6968bbe54b1eee77
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/feedback-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0673c09a64d4d268594f5b2efcef718c928b417b0150e6bba8029220f4a2066e
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/flowchart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e19d4254b6f6f76e41e497e05f76db1e80c80df65b4103ffe2c35ad1cd4cc1a5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/force-field-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:5087daf0fc98b4f0282a73a1d9ade3e2cdb0116a6f23fdaf9753447b324d122d
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/funnel.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a98c825d70dffe9e20482dbaa2291023bd4fe35a77da799a34514ba37753afb5
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/ibis-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b267f8a76e76fc41d8d7e05b68f6e2c7947aed438764e8c58aacd011759372a0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/iceberg.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b45e3e0309120a914998ac45bb7003b930e53b0ed1cbff8bce9b9c27fc0caaf7
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/ishikawa-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:0ffb280dcaab6b812e7c34ff8458bf9cbc2f07b27fd5fedb086202a153cc80c0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/layer-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:bfaab1bf406172be791f9d7414c6a3021167465f1eb27188d1ac701c63c62a4c
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/metro-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9ae960930dce9393071e21f82761407b9bda8b91cbc8b66e00e6d962b291462f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/mind-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a5563aff44f8a9aa8ffeb6ec48cad1241c3711676f89eb94c765b41c297369de
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/minto-pyramid.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:8afc7ac6dcaee8b0f4ebdec4ff1434b1eeb731dd42845693c540af8854a46311
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/network.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:de9b2aeda294cd76941c24b132bc0718bc540c5773a821fe1e490970705d8df8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/pert-chart.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:b3375c5ca6ee49e066504964a57f249d4eb707c03c8cb2750f09b5c32d76d8b8
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/quadrant-matrix.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fb95dd02d6cfef0833c4b1a99b8af955739443cec45f1e48cb9448b325969344
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/sequence-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fbd44447ed7248d24948bc60927da75e63dbf93590cafe7c13b54511d61c6309
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/stock-flow-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:4c56236b679b8504a62d317a071815a56768a72620ac27e3cd639b158b83bdbd
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/swim-lane-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:92a12818be85929f26251733153cfa72cb5d77ecbce17590f0e80830676b1347
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/technology-roadmap.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:82a2f7d940f7e4ca8c4692f91227cba462e1433378a67e3f7d20753fa3fbddd0
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/temple.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d4a18a229ec05af9aef94012b3151156aff882a607a90626496b37109e718c98
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/toulmin-map.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:a873702867a9c1488f7830f9814d13c5c0d563e2a3ac7792037b3a3a82abc5b2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/tree-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:72650dcaa177eab3a1dbf7323e3aaa21b5da024b5acb82b9ebd848825ffbe105
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/tree-metaphor.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d799ba1e61a990b2b307a7051cef65e79f5db60c9419746c5012247607db7522
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/diagram/venn-diagram.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e6e15cba7fa94c17263d301599915f8267f8e2428f6e512076ed37ce4943e9fa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/index.yaml
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:f61329ce2e6d369295bd840adf54c21f76706d044c2d5381ee38999e4d0af411
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/picture/photo.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:6eb211a0f8e249d65b5660328d1279acc9ae4a94566eee750a415a55505bd37f
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/picture/picture.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:fd4d4794956c18bbd490bd0d68185d6216db54dccd56a5e3dd6dfd7dcbe69207
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/picture/screenshot.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e1c1203f7bff3def3db99bd46f6b2fced818484184bbf344f884a1ff929fb8fa
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/table/comparison-table.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:cebce56219db5d293cb16c9c4e7ff0b87dc1e1f436bbadd641254a0d153c3db6
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/table/data-table.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:9c062ffc799ce5aa0fcf4e3abcf98ac9de459c069c97b2c004683a2db563d330
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/table/table.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:090c40d651860e48119ad71f627426edf680aac32db46d986bad0526a07ab2bf
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/catalog/taxonomy.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:2556689d689c2fdb22e9186f509abb0bf1a1176d44d66b5a0fc2efdd2eb56ff2
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/references/render.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:39ffdedb3de937696f3f1ff66e4019cd8bcd82fb43986cea603595c6de05c644
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/scripts/__pycache__/vp_figure.cpython-312.pyc
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:66cbbe4551d41d20e3cb8a635fa05ec4faf49fd24e7a82615c71956e55d09cba
+- kind: project-relative
+  target: claude
+  value: .claude/skills/visual-patterns/scripts/vp_figure.py
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:e0480d4016d83500c37035b89dfe670a83cd1198e4ec678760ee32fe0d165cec
 - kind: project-relative
   target: claude
   value: .claude/skills/yomiyasu
@@ -922,7 +2192,26 @@ local_deployed_files:
 - .claude/skills/cyrus/references/owner-principles.md
 - .claude/skills/cyrus/scripts/cyrus.py
 - .claude/skills/cyrus/scripts/cyruslib/__init__.py
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/figure.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/gates.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/leansrc.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/scaffold.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/visionreader.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/workspace.cpython-312.pyc
+- .claude/skills/cyrus/scripts/cyruslib/__pycache__/yomiyasu.cpython-312.pyc
 - .claude/skills/cyrus/scripts/cyruslib/cli.py
+- .claude/skills/cyrus/scripts/cyruslib/figure.py
 - .claude/skills/cyrus/scripts/cyruslib/gates.py
 - .claude/skills/cyrus/scripts/cyruslib/hooks.py
 - .claude/skills/cyrus/scripts/cyruslib/issues.py
@@ -954,8 +2243,118 @@ local_deployed_files:
 - .claude/skills/cyrus/stages/11-writing.md
 - .claude/skills/cyrus/stages/12-cogload.md
 - .claude/skills/cyrus/stages/13-wording.md
+- .claude/skills/visual-patterns
+- .claude/skills/visual-patterns/SKILL.md
+- .claude/skills/visual-patterns/data/index.json
+- .claude/skills/visual-patterns/data/render-routes.json
+- .claude/skills/visual-patterns/references/catalog/chart/arc-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/area-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/bar-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/barcode-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/box-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/bubble-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/bullet-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/bump-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/calendar-heatmap.md
+- .claude/skills/visual-patterns/references/catalog/chart/chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/chord.md
+- .claude/skills/visual-patterns/references/catalog/chart/choropleth-map.md
+- .claude/skills/visual-patterns/references/catalog/chart/circle-timeline.md
+- .claude/skills/visual-patterns/references/catalog/chart/connected-scatter-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/contour-map.md
+- .claude/skills/visual-patterns/references/catalog/chart/cumulative-curve.md
+- .claude/skills/visual-patterns/references/catalog/chart/diverging-bar-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/diverging-stacked-bar-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/donut-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/dot-density-map.md
+- .claude/skills/visual-patterns/references/catalog/chart/dot-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/dot-strip-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/equalised-cartogram.md
+- .claude/skills/visual-patterns/references/catalog/chart/fan-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/flow-map.md
+- .claude/skills/visual-patterns/references/catalog/chart/frequency-polygon.md
+- .claude/skills/visual-patterns/references/catalog/chart/gantt-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/grid-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/grouped-symbol.md
+- .claude/skills/visual-patterns/references/catalog/chart/histogram.md
+- .claude/skills/visual-patterns/references/catalog/chart/isotype.md
+- .claude/skills/visual-patterns/references/catalog/chart/line-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/line-column-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/lollipop-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/marimekko.md
+- .claude/skills/visual-patterns/references/catalog/chart/parallel-coordinates.md
+- .claude/skills/visual-patterns/references/catalog/chart/pie-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/population-pyramid.md
+- .claude/skills/visual-patterns/references/catalog/chart/priestley-timeline.md
+- .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol-map.md
+- .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol.md
+- .claude/skills/visual-patterns/references/catalog/chart/radar-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/sankey.md
+- .claude/skills/visual-patterns/references/catalog/chart/scaled-cartogram.md
+- .claude/skills/visual-patterns/references/catalog/chart/scatter-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/seismogram.md
+- .claude/skills/visual-patterns/references/catalog/chart/slope-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/spatial-heatmap.md
+- .claude/skills/visual-patterns/references/catalog/chart/spine-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/stacked-column-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/stock-price-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/surplus-deficit-filled-line.md
+- .claude/skills/visual-patterns/references/catalog/chart/timeline.md
+- .claude/skills/visual-patterns/references/catalog/chart/treemap.md
+- .claude/skills/visual-patterns/references/catalog/chart/vertical-timeline.md
+- .claude/skills/visual-patterns/references/catalog/chart/violin-plot.md
+- .claude/skills/visual-patterns/references/catalog/chart/voronoi.md
+- .claude/skills/visual-patterns/references/catalog/chart/waterfall-chart.md
+- .claude/skills/visual-patterns/references/catalog/chart/xy-heatmap.md
+- .claude/skills/visual-patterns/references/catalog/diagram/affinity-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/cause-effect-chain.md
+- .claude/skills/visual-patterns/references/catalog/diagram/cluster-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/communication-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/concentric-circles.md
+- .claude/skills/visual-patterns/references/catalog/diagram/concept-map.md
+- .claude/skills/visual-patterns/references/catalog/diagram/continuum.md
+- .claude/skills/visual-patterns/references/catalog/diagram/cycle-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/data-flow-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/decision-tree.md
+- .claude/skills/visual-patterns/references/catalog/diagram/diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/er-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/fault-tree.md
+- .claude/skills/visual-patterns/references/catalog/diagram/feedback-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/flowchart.md
+- .claude/skills/visual-patterns/references/catalog/diagram/force-field-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/funnel.md
+- .claude/skills/visual-patterns/references/catalog/diagram/ibis-map.md
+- .claude/skills/visual-patterns/references/catalog/diagram/iceberg.md
+- .claude/skills/visual-patterns/references/catalog/diagram/ishikawa-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/layer-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/metro-map.md
+- .claude/skills/visual-patterns/references/catalog/diagram/mind-map.md
+- .claude/skills/visual-patterns/references/catalog/diagram/minto-pyramid.md
+- .claude/skills/visual-patterns/references/catalog/diagram/network.md
+- .claude/skills/visual-patterns/references/catalog/diagram/pert-chart.md
+- .claude/skills/visual-patterns/references/catalog/diagram/quadrant-matrix.md
+- .claude/skills/visual-patterns/references/catalog/diagram/sequence-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/stock-flow-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/swim-lane-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/technology-roadmap.md
+- .claude/skills/visual-patterns/references/catalog/diagram/temple.md
+- .claude/skills/visual-patterns/references/catalog/diagram/toulmin-map.md
+- .claude/skills/visual-patterns/references/catalog/diagram/tree-diagram.md
+- .claude/skills/visual-patterns/references/catalog/diagram/tree-metaphor.md
+- .claude/skills/visual-patterns/references/catalog/diagram/venn-diagram.md
+- .claude/skills/visual-patterns/references/catalog/index.yaml
+- .claude/skills/visual-patterns/references/catalog/picture/photo.md
+- .claude/skills/visual-patterns/references/catalog/picture/picture.md
+- .claude/skills/visual-patterns/references/catalog/picture/screenshot.md
+- .claude/skills/visual-patterns/references/catalog/table/comparison-table.md
+- .claude/skills/visual-patterns/references/catalog/table/data-table.md
+- .claude/skills/visual-patterns/references/catalog/table/table.md
+- .claude/skills/visual-patterns/references/catalog/taxonomy.md
+- .claude/skills/visual-patterns/references/render.md
+- .claude/skills/visual-patterns/scripts/__pycache__/vp_figure.cpython-312.pyc
+- .claude/skills/visual-patterns/scripts/vp_figure.py
 local_deployed_file_hashes:
-  .claude/agents/cyrus-alignment-judge.md: sha256:2cf4baeef38d359b55c9a75fe15eb8d60c71a44dabf5f8eaaba1496e865bb0d5
+  .claude/agents/cyrus-alignment-judge.md: sha256:f23d70143ba31de7fb426ef40232bbf70d00ce21856c5705c2ac145fccd2d3bb
   .claude/agents/cyrus-fact-checker.md: sha256:d4d0f6d273bd294335c6fdeffa5895d7ed31ce120007163fc591491adc63de6c
   .claude/agents/cyrus-lean-writer.md: sha256:377bf46393cfed49bff23d4cde97df32e66b7580bc81ea4b49a94fa207480a18
   .claude/agents/cyrus-logic-planner.md: sha256:bba18d25da91d8cc5350e5012b49341886987e13d38540a22ff5b7f2a538e3eb
@@ -965,42 +2364,170 @@ local_deployed_file_hashes:
   .claude/commands/cyrus-status.md: sha256:f0cce7658bac76dfb65f8a670c6cddac7edba572f4a2e908a1bd8b5161d824dd
   .claude/commands/cyrus.md: sha256:76d8692125100e6f56cc251927f693a0c066249342cf7a10d1d1e5777f253794
   .claude/rules/cyrus-documents.md: sha256:1d59ecb32f396354559538e38316fad96726e2462578e4ac1dff4fa335cfc7f3
-  .claude/skills/cyrus/SKILL.md: sha256:8a4f9deeb8d9c95b85d0039d242342b311fcb3d7c82ac701aafe4597c20b9314
+  .claude/skills/cyrus/SKILL.md: sha256:56e2d7b4a0344cf1d479aad28cfcaa9ece910d05b047b4e5166713412a4c12d7
   .claude/skills/cyrus/data/wording-rules.json: sha256:81be47a833ed30a6e5bc3949a5c41fa0176ee867939d80c6ab507b48fa741376
-  .claude/skills/cyrus/references/japanese-style.md: sha256:332796ddc9970e184f61e11554dbd06268258e7a374398fa29865958178d2f41
+  .claude/skills/cyrus/references/japanese-style.md: sha256:c41b39b0d373f902e9231bc719556ef563034b57a7910bca5767d19d661d8180
   .claude/skills/cyrus/references/lean-modeling.md: sha256:974a2b18a7aded906ec27f1769a3e88571cc9ba6d2343caf4f575aa40daaac02
   .claude/skills/cyrus/references/owner-principles.md: sha256:67b2558f04890283d7a51548c1129e3a77ef31144c515969ddad15d8345664b3
   .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
-  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:b27755c21462555b0d91797307d95c2cc71a9dd4800d67071baaef5205e4e1e8
-  .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:871db3247bc929f62e4f113a8a00f952a09a491190643491d314076bb87151e2
-  .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:6938491f157fc2c2653e8c54076639e010be45533669c74bab60cf15573529eb
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:804756e38d02a2be56400e898afaadef51f44a03ca4384de709c53de04d6e83e
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc: sha256:0d89edb26ba701f4b90b5a5e037964def80ac687f09952708aca0daeeceddcba
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/figure.cpython-312.pyc: sha256:a743b9464ef60f2014d5e70826e8aaffae9d6d8268afd2a63619b81478bac5c2
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/gates.cpython-312.pyc: sha256:9cadc714954dab7f4576e1adcfe9615164b6ff75811c80864cf296c178941100
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/issues.cpython-312.pyc: sha256:7271013fff9339a9b5897f9df281971ad6ce340af2b522a296dc0bda1faaaeaa
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/jatext.cpython-312.pyc: sha256:3e8860c9e1380d0e64328edfda731663735faa001bfb3b4ae4ba331322ae5e65
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/leancheck.cpython-312.pyc: sha256:84b444dbddafa22325fca58d5f0570c6ca4f3e858ece0baa6d22a8e66cbe0d5f
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/leansrc.cpython-312.pyc: sha256:6adf6b477ded7e9f3fbbee613350da7dafea0e7e536e61e305c8fd92d52c1717
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/lint.cpython-312.pyc: sha256:03091f2ec875022fa2f5614376d9232093fcbc747edb6f3b186c9965abc47c26
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/mdparse.cpython-312.pyc: sha256:a625d33003cd316654b3a12238c28a21807aeb60ae6c6845b9496b74e8a84d30
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/reader.cpython-312.pyc: sha256:1c945fbe0452d78fb2b395d89488b73c58a843e4d8f11e9c410169350c9c94f3
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/scaffold.cpython-312.pyc: sha256:824d0d817eb93182cfc17aa3f1af23e67f989df829ffb9dbf9bd6c405ddfeff1
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/skim.cpython-312.pyc: sha256:0ea3cfe156812d665f82a623a03dac59b54cc7ea834ecc9569ca124846af6abe
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/terms.cpython-312.pyc: sha256:fd9e53b2f9f47ec7eab635d99364f5b105720189f657acf86539d2258df4e2c4
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/visionreader.cpython-312.pyc: sha256:086cc8aa3884dc9aa588fad46ecd9300104baac02340a6629a027f600995d4f8
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/visual.cpython-312.pyc: sha256:29466c2f7245561a7420f883f29d4628c3d34d082643b81e211f1c553d992b5e
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc: sha256:254db543ac17a255f4e7298d996286369142403aa2d28fffa737f52066463b41
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/workspace.cpython-312.pyc: sha256:444eab02f9feb2c1b81df53059fb2d47f5b910c3274ac1932234baad2c78217f
+  .claude/skills/cyrus/scripts/cyruslib/__pycache__/yomiyasu.cpython-312.pyc: sha256:a80a528c288aeeeed956ee99740707143d62937d5d73d719f1b5e94488591c16
+  .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:65439e27f784609db79cb1166d46b7f4a53dc502c734090a9d58668e39ec4e59
+  .claude/skills/cyrus/scripts/cyruslib/figure.py: sha256:a6c840440352b624ef3988a36c7967b7d743a01f0289646f7017bacc2fa53091
+  .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:0f5c37b7493691b7aabcd669aee98aa458062c141a0bcee4a447e7daf2a28a2e
   .claude/skills/cyrus/scripts/cyruslib/hooks.py: sha256:835034fad61bd05eb7ac3e1f34ab5e21ed44786e8dedc1c08849e703c3d8285c
   .claude/skills/cyrus/scripts/cyruslib/issues.py: sha256:31964f1bb2e42f5d53501327391c4898026093f3ebb652f857169753263ba8dd
-  .claude/skills/cyrus/scripts/cyruslib/jatext.py: sha256:4f667e1c17582d64776af9255b5f37067a7c92bbf986d9bfe635f7b8ca4f51f6
+  .claude/skills/cyrus/scripts/cyruslib/jatext.py: sha256:a6c7ab40f3c5f01b7ebdcfe02a2e83f22d89e32d940c76cfe75fb8f8e0112800
   .claude/skills/cyrus/scripts/cyruslib/leancheck.py: sha256:e90e36d0f3b303c0010dc8b3d6faf37c2fba6f76733aabb3a26d57ce93ad64c0
   .claude/skills/cyrus/scripts/cyruslib/leansrc.py: sha256:058e9e5039f833b02f2023f36e190604c25546f9a35b1c29fd84ecf3d3597e14
   .claude/skills/cyrus/scripts/cyruslib/lint.py: sha256:a7a578082d5ac05807a1103318738f26c0251efd6eeda5579355561f169215e2
   .claude/skills/cyrus/scripts/cyruslib/logicround.py: sha256:ba11ef09c239f4a6702ddb8c82351b1589bbaa01c9568634073a956ff28f8b2a
-  .claude/skills/cyrus/scripts/cyruslib/mdparse.py: sha256:9f2510c035a3e0bab672a567fc703219470b45f6707277cafbbf111f305317ef
-  .claude/skills/cyrus/scripts/cyruslib/reader.py: sha256:a0e78500f98bf05d98c15c2d02332812eb31db3ba8607dbf309a26d3d3360233
-  .claude/skills/cyrus/scripts/cyruslib/scaffold.py: sha256:52155dd942a7bbb2e468d2de84d93bf3a40ab4057f9f002b949b2b35b03bfa53
+  .claude/skills/cyrus/scripts/cyruslib/mdparse.py: sha256:72c802a4eafc581df80e5ae227296890421a3e3973b5e792697ac4c421472d88
+  .claude/skills/cyrus/scripts/cyruslib/reader.py: sha256:df7933df55d2ebb4395f51143b917d13a724c35b1a34adefdc4cde7530bfdeae
+  .claude/skills/cyrus/scripts/cyruslib/scaffold.py: sha256:0747569341f33d7b7c9177596573c20b2ffb736984774650ecb8d9ddae24372e
   .claude/skills/cyrus/scripts/cyruslib/skim.py: sha256:8900d931cfc691df862d9fe7b3232e07ce677d6bfe9cf8135c54e0cbf1a5824a
   .claude/skills/cyrus/scripts/cyruslib/terms.py: sha256:dbd331c8f292579b1cc435be28d69aa613a9a50f750771c5d51ed7b1525f9d02
-  .claude/skills/cyrus/scripts/cyruslib/visionreader.py: sha256:467c1e36307f43025d42eb36b57e868f8cb31c39091ffc92cff87fb59eb5584f
-  .claude/skills/cyrus/scripts/cyruslib/visual.py: sha256:eca7442860d907b3e04211ad4f17bc65e054e71565599e54761c72ef3ce07ba4
+  .claude/skills/cyrus/scripts/cyruslib/visionreader.py: sha256:216adba7b280907220d2fd92e45f38e35a182a74abb994630ea1fa1a919cfaf0
+  .claude/skills/cyrus/scripts/cyruslib/visual.py: sha256:245b83c559d6e1b50dd0741843586f373596d20615d5e8c81d13dcc0ba1b41dc
   .claude/skills/cyrus/scripts/cyruslib/wording.py: sha256:1528cb04f9f648f841ec69308ae9a35d43cbef7036a44418d7344a4da2785d58
   .claude/skills/cyrus/scripts/cyruslib/workspace.py: sha256:ea473f04dd04c28904b533de250d45620a48b4208495a437e19af5ae1e27382c
   .claude/skills/cyrus/scripts/cyruslib/yomiyasu.py: sha256:d274dc6260214a522b06a09156ad218a2ff5286576232dc806212ea1d62a3a9f
-  .claude/skills/cyrus/stages/01-intent.md: sha256:ceaac6e85b911055cf009a103c296ff8432ae8000a0ad09f55562e11ba2b9675
+  .claude/skills/cyrus/stages/01-intent.md: sha256:6edc698e15e712ccb057adf5cc421a7c2972bec67688eb240260a346ed8246bf
   .claude/skills/cyrus/stages/02-context.md: sha256:8ded718107da464bd7c5ea22d75dc028f550f7f8f5cfd5fe26782b957f5b6462
-  .claude/skills/cyrus/stages/03-reader.md: sha256:75971b29e7577d44f2c560fd6bbc6d9d7b8cea764d7792380da477e2e7051277
+  .claude/skills/cyrus/stages/03-reader.md: sha256:257f1e8c13216a7c4822321a22325c6ba48d55b47a96dc518a570a561608ff57
   .claude/skills/cyrus/stages/04-analysis.md: sha256:8de098cfab963d0ae9d3cd72f95d0794ffe427d5a58d4730629946a503de9201
-  .claude/skills/cyrus/stages/05-claims.md: sha256:4330f3cff3d0aed94222c7d9ceb4c4e4335b7fc6b1f566fa931a13024ac15c9c
+  .claude/skills/cyrus/stages/05-claims.md: sha256:cff349df5f64df8cb55f50086a739336e60b7c0c2eb5e2fefdfa490e3d2062c4
   .claude/skills/cyrus/stages/06-facts.md: sha256:40f9227c6b3a0aed3ea2bf6c51589e7a0c97565bea0e4deab20d8b179817e594
   .claude/skills/cyrus/stages/07-logic.md: sha256:d62b50449163848d6a3d42b5b1eba7b902ef3532d662253a373751ef5272b63d
-  .claude/skills/cyrus/stages/08-structure.md: sha256:68b753982b6f41b46eec56bd0b5efd42b487143af33fa8b95a6f6687fe69c590
-  .claude/skills/cyrus/stages/09-storyline.md: sha256:d7cff1ad3f55db2c3d94d981c9c10226bc251b5603a0fe61e2557b10b4e840e6
-  .claude/skills/cyrus/stages/10-detail.md: sha256:e700b91ef4f4134a35940517e52b9547155ed823879f4049c8edd322c9f81a54
-  .claude/skills/cyrus/stages/11-writing.md: sha256:4aa6cb29ea5303553887b5145501a0a12f1ad112a158f5966cc6e3cc27aad3a7
-  .claude/skills/cyrus/stages/12-cogload.md: sha256:d28f6f33f5e6c8cdb4aba744725e39e76eafd2c7a4aec4bc305722dfaa139bdc
-  .claude/skills/cyrus/stages/13-wording.md: sha256:8a1dee9138cb3147ae6f14300150c4880fb297eec6d4dc140e02d1dc5134cd3f
+  .claude/skills/cyrus/stages/08-structure.md: sha256:891fd935bf358af9c25681eae371ee04aa65874ee42f214d71aa71d31aeb80ed
+  .claude/skills/cyrus/stages/09-storyline.md: sha256:0572539ac8c9249f1f7a1f5f0267841ab5ee5e79a701fa33c2b092a18b346572
+  .claude/skills/cyrus/stages/10-detail.md: sha256:35d9b9954eeb0ddcd8546e8798455232a89f168d6c0966e5a081d25d03e51364
+  .claude/skills/cyrus/stages/11-writing.md: sha256:66f53cb1dd72df60d82bc2bed8d9ad2fba39af3402f3f3c4f91813a22dfaf491
+  .claude/skills/cyrus/stages/12-cogload.md: sha256:40a3914a3042269e615e9d9c5e36186de292c0aa1571ff1937fe5e71b559f143
+  .claude/skills/cyrus/stages/13-wording.md: sha256:4f168d786a7e8d5e3a42674de7bfcb7948a7d0e32d0f2409b76f3a2b8b9105ec
+  .claude/skills/visual-patterns/SKILL.md: sha256:f191f8a366629f3ef737d1ead898783b98c71001be5d87606fcbca8ea407fa4d
+  .claude/skills/visual-patterns/data/index.json: sha256:d6b49e3cba71af4653f336aba05e62e7ed479f1ad9fd1d25265bae16624a1a26
+  .claude/skills/visual-patterns/data/render-routes.json: sha256:41ac171f54171c58951b80546526d0ec2d78e1bd321482883f951f75d36a9569
+  .claude/skills/visual-patterns/references/catalog/chart/arc-chart.md: sha256:9df321eeb6b6c462245477dcd8d8f2d8cc73ed9cccf8b6283fa0992671bcecfc
+  .claude/skills/visual-patterns/references/catalog/chart/area-chart.md: sha256:03024d3fd86fb0fb385c8ccaa0fd753e262fa3d591c24ab67e354b8a3dbcf150
+  .claude/skills/visual-patterns/references/catalog/chart/bar-chart.md: sha256:d4c516a9c287cd66c171fc758fe4fd93470cde4ff23daf0189e2dd3514011865
+  .claude/skills/visual-patterns/references/catalog/chart/barcode-plot.md: sha256:017381f31b95dc819cab2fe7670e0ba59161a282144515d9caf9944cc9a02a2e
+  .claude/skills/visual-patterns/references/catalog/chart/box-plot.md: sha256:f6587f3c2b5c0ed5eb240f61f255a0a1904a1a8c2043c414009c7c08de3c3272
+  .claude/skills/visual-patterns/references/catalog/chart/bubble-chart.md: sha256:e20b6e3dca71df4406d149aaa640a59a31fdb44f751979f080a4af1b9b343b6c
+  .claude/skills/visual-patterns/references/catalog/chart/bullet-chart.md: sha256:9e07733b6f662fadeb2475053102f3f694efd6f47d8938d694a322c319ba252e
+  .claude/skills/visual-patterns/references/catalog/chart/bump-chart.md: sha256:f7b621916b8bc624ddedaa01d223502283f3b1a42e49057d48c02cd3c6bde468
+  .claude/skills/visual-patterns/references/catalog/chart/calendar-heatmap.md: sha256:3b64c9fb2836880e4fd23553cde24eb57b477126543b66e89b5a91797aee81a8
+  .claude/skills/visual-patterns/references/catalog/chart/chart.md: sha256:529d4f5898ea5212d004f8419c5abdbfb5b5661843edd79c51ac5d1cfcb195e1
+  .claude/skills/visual-patterns/references/catalog/chart/chord.md: sha256:debd917db50074caffa5ee8c32326ef0121c4dd1e63b2de34bb98b4f06f5b447
+  .claude/skills/visual-patterns/references/catalog/chart/choropleth-map.md: sha256:eba5bb672db0536dbb99c0222038739a46257dceafdb86fad0aafbeae8ba44d3
+  .claude/skills/visual-patterns/references/catalog/chart/circle-timeline.md: sha256:6a99b98a38bc1c70b8f0dbfd9848369d2b5ca6f33314610e2d17c2342432f8c7
+  .claude/skills/visual-patterns/references/catalog/chart/connected-scatter-plot.md: sha256:7c5259b91df5528ec425032628d284c4ff1d5260c4fbda2cc82de39fe230d105
+  .claude/skills/visual-patterns/references/catalog/chart/contour-map.md: sha256:bef75f0a6e0fdad7843c9d699f59f9849a8fe9b1fa9ec2a425df224907241548
+  .claude/skills/visual-patterns/references/catalog/chart/cumulative-curve.md: sha256:c2414fd6734d2a883ed6bb76c3a91a9d28070b0810c4b131f836e7ffbb7138b8
+  .claude/skills/visual-patterns/references/catalog/chart/diverging-bar-chart.md: sha256:7a28a1e4a6a888fce5ff000326b905cd476ead92dcc71628c8b009b5382a86fd
+  .claude/skills/visual-patterns/references/catalog/chart/diverging-stacked-bar-chart.md: sha256:4196c4aaee8cd9454925709c49d0431eb46fb209d2622d00e806b8866fd68e53
+  .claude/skills/visual-patterns/references/catalog/chart/donut-chart.md: sha256:7ebe4c98e001265139bd3563850cbae156c2e5d9048d1cf8b8c9728a6124ebb3
+  .claude/skills/visual-patterns/references/catalog/chart/dot-density-map.md: sha256:0675168cae9e57d8acdfd19ee29089509604c53db1f7404846f4042533a4f538
+  .claude/skills/visual-patterns/references/catalog/chart/dot-plot.md: sha256:19def6fb265a92e94a85a382b89a443e463660372a5f2505eaa196fd260fd737
+  .claude/skills/visual-patterns/references/catalog/chart/dot-strip-plot.md: sha256:cc185dfa16ec5cfea3c8e1b76e06bad4ccd636d3b5a955c39e67bee075e08cc2
+  .claude/skills/visual-patterns/references/catalog/chart/equalised-cartogram.md: sha256:31ea7a7b1ede14337629f539b5de7088d8b0870977bd9ce168be2ea54405b5fd
+  .claude/skills/visual-patterns/references/catalog/chart/fan-chart.md: sha256:82c3a5c318277268298b2a9b0260818e6a46fbf01424c5011a23703937d2aad8
+  .claude/skills/visual-patterns/references/catalog/chart/flow-map.md: sha256:1307dacb2646811598ceaeac96d389fd5faca7a4498416563db514e762d22c9c
+  .claude/skills/visual-patterns/references/catalog/chart/frequency-polygon.md: sha256:aef18634207b919bb37bc63530b9aab4cbccfbff09d7ff67eb589d2979f7835a
+  .claude/skills/visual-patterns/references/catalog/chart/gantt-chart.md: sha256:373260cd8450a44cdba7e7699bdfb215c8036b7918ce6d3065c3698e1e3320bf
+  .claude/skills/visual-patterns/references/catalog/chart/grid-plot.md: sha256:d024e4c8762ae175371313245bd823a1a7ec491eaac2d08821961cee18128cd0
+  .claude/skills/visual-patterns/references/catalog/chart/grouped-symbol.md: sha256:32bed5bf69819998230c17ff7589cf4ca553db4e57bc91de0af3f6b1c09a41aa
+  .claude/skills/visual-patterns/references/catalog/chart/histogram.md: sha256:ab7d68457087fdaa039c0f7a012f747fc19de30342eeb9a92a2cd110df583a60
+  .claude/skills/visual-patterns/references/catalog/chart/isotype.md: sha256:18d0e36d201e0683a27bc912e52a6e6a3152e3e544e01aeb64c986f72a94ec42
+  .claude/skills/visual-patterns/references/catalog/chart/line-chart.md: sha256:1811f4425322790253991e3cba800110731a718d6d944f117cd258846fb35d45
+  .claude/skills/visual-patterns/references/catalog/chart/line-column-chart.md: sha256:23e237487a8adbc16a1baf2d78d886ad29e8af8a4ec5b640b3f4391dd5cfdaf2
+  .claude/skills/visual-patterns/references/catalog/chart/lollipop-chart.md: sha256:1cfee7af4ee7553488fbc3f4d9316d39c5b384b7adb05c3a1f1614b6d574d3a5
+  .claude/skills/visual-patterns/references/catalog/chart/marimekko.md: sha256:194a91a5acdec3aea943ba8816e94b983f6bef0a55f79be2c5e115affa681ea0
+  .claude/skills/visual-patterns/references/catalog/chart/parallel-coordinates.md: sha256:bfb2d1877ae814e6e363374984e45565c5f8e369c04b476a41fdf0284edce651
+  .claude/skills/visual-patterns/references/catalog/chart/pie-chart.md: sha256:36c844f9ff54d0173a8bb8b0f63380f379956fad51ebff2718e65ad71c9d899a
+  .claude/skills/visual-patterns/references/catalog/chart/population-pyramid.md: sha256:c9c9890d13893f130a736dbd9af07dd9ba7da30858b1cc7539e0e1bfbe4b7c48
+  .claude/skills/visual-patterns/references/catalog/chart/priestley-timeline.md: sha256:67f281599fe2166666f08b1468c05068e433091786f83c16caec37bc4f1bdd87
+  .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol-map.md: sha256:084293c1e80b1d6a914f5a399762e6ae16b1c3e9a7a90ef7d92b040bf8f61e87
+  .claude/skills/visual-patterns/references/catalog/chart/proportional-symbol.md: sha256:f11d236ac3b215fcd734a4bd758ebd9c9318798a21219333c69645975b21a4a5
+  .claude/skills/visual-patterns/references/catalog/chart/radar-chart.md: sha256:6493d9e97ab0363c3d5e703af5757a4aa85b3ba580c5830c177cbeac4ed2fbd3
+  .claude/skills/visual-patterns/references/catalog/chart/sankey.md: sha256:76a17f86c9f1d3817cd6940618a505c10c321d2818b9bf54dc08065a51d8e5f6
+  .claude/skills/visual-patterns/references/catalog/chart/scaled-cartogram.md: sha256:f48ba93444a19ef5d1ad20c51041657b54395def8fd7548320d7ff1e9ca81871
+  .claude/skills/visual-patterns/references/catalog/chart/scatter-plot.md: sha256:0f4f847b88556ae5f5092b3bcbe7260dc5eb44550e5ab9dbfa3b52824b8ba29c
+  .claude/skills/visual-patterns/references/catalog/chart/seismogram.md: sha256:9a696f5982d92480f68b893828a05b993956345ca54121448d8c47da044892db
+  .claude/skills/visual-patterns/references/catalog/chart/slope-chart.md: sha256:528516d81882753dd16b9fad3f315a42d570bf7eb2f2ea4a8d25809d94791f0c
+  .claude/skills/visual-patterns/references/catalog/chart/spatial-heatmap.md: sha256:6148feb9fcaab39d1b6629571c476c68c3d2da9ce98ad52aba064ad69769f09e
+  .claude/skills/visual-patterns/references/catalog/chart/spine-chart.md: sha256:dd8fae9c14dfdaa3507376e0c4009c13548f802f8e529ae27e93813e93ff28c1
+  .claude/skills/visual-patterns/references/catalog/chart/stacked-column-chart.md: sha256:43d436639eb3da754c435549772d03fd470216b1f96afe3315634d6040d394bd
+  .claude/skills/visual-patterns/references/catalog/chart/stock-price-chart.md: sha256:13f1efee02c632840087e1566533a526cda13fdc53558b37b6bbfe43a4a033b5
+  .claude/skills/visual-patterns/references/catalog/chart/surplus-deficit-filled-line.md: sha256:7075fa8beb10f42d44da92a062bbb8bbb7ed57b0a509b57bb5d6b08dc4b9271f
+  .claude/skills/visual-patterns/references/catalog/chart/timeline.md: sha256:ce0b57ce8f8d5b58b9582f43abcd3f525113f6d6f48d889f8eaea2c50b99aba8
+  .claude/skills/visual-patterns/references/catalog/chart/treemap.md: sha256:21e926f1492d92dc8fc0717d1e48e1789b4914a631d0dee40783ff99aea7f5af
+  .claude/skills/visual-patterns/references/catalog/chart/vertical-timeline.md: sha256:ba2389841806e1b6fa00ced65eda61bb4f664a7c830afe412950e991781a5e7c
+  .claude/skills/visual-patterns/references/catalog/chart/violin-plot.md: sha256:de514c8e0c26e2c1e4764eaf62533d335c1c69d508b243e4ee6372637c579eab
+  .claude/skills/visual-patterns/references/catalog/chart/voronoi.md: sha256:1057cee00d30b6435c90623f60030cfc3570118eb29ba8d45e9b1bd56d500083
+  .claude/skills/visual-patterns/references/catalog/chart/waterfall-chart.md: sha256:fe304fa10c7af534c5badab56cbf2fddfbfa89b9ba8fdfc04a1d72e92cb76ac1
+  .claude/skills/visual-patterns/references/catalog/chart/xy-heatmap.md: sha256:48fcf574813ddfb84410f0c6e080d9c99a42e2541e185483fba7989bbb3d738a
+  .claude/skills/visual-patterns/references/catalog/diagram/affinity-diagram.md: sha256:fa87ef5f6394a929ecba1a9860822dd6814ffdcf9cdd482a88de8638f6737adb
+  .claude/skills/visual-patterns/references/catalog/diagram/cause-effect-chain.md: sha256:9c398697c496b199e5b2105051341801a7503d180e2ccbef54c2a560842c9720
+  .claude/skills/visual-patterns/references/catalog/diagram/cluster-diagram.md: sha256:f20e43a99d5ef8c098515d3c87c67244145dedbcab9f3dfe81fa7a1ab7d46b5b
+  .claude/skills/visual-patterns/references/catalog/diagram/communication-diagram.md: sha256:ff98e4465ccc6768bf7a5c57cffc0455daed7aaf3459ed02c70f7189d71d8c72
+  .claude/skills/visual-patterns/references/catalog/diagram/concentric-circles.md: sha256:d362480dd4337011d8d07f1981d5931e3940c99a6de4655c671e7ffd6fa1d2a1
+  .claude/skills/visual-patterns/references/catalog/diagram/concept-map.md: sha256:f88c8907371548363f121c7b03c62c12a5e41e5f7974a37bde944c036f0b2ed0
+  .claude/skills/visual-patterns/references/catalog/diagram/continuum.md: sha256:55b6e1bd823f76dd1cd3dc6436c411757c2393cee9ecca9b9ff36894a807dd89
+  .claude/skills/visual-patterns/references/catalog/diagram/cycle-diagram.md: sha256:007755a9d41c5d6be20c23349b0af570f8281542520dd754ecb1b0d20c56046e
+  .claude/skills/visual-patterns/references/catalog/diagram/data-flow-diagram.md: sha256:d2428ba0652308779e138104f6a8aabae8c56ea52cb7c48b74990d24878c8ef6
+  .claude/skills/visual-patterns/references/catalog/diagram/decision-tree.md: sha256:b8320fabc8d3df95d9b77a158231feb04515e44bd57feaaa35a68ece81ab3d52
+  .claude/skills/visual-patterns/references/catalog/diagram/diagram.md: sha256:d33b3964dc57473ffc7b6e6ae451b94d31c3de6414f4cd1f6f42e2af9c90eacc
+  .claude/skills/visual-patterns/references/catalog/diagram/er-diagram.md: sha256:52bf954b3dd19dd552de592416d48e061afe252ae26f265ca56a2a455b0f99b2
+  .claude/skills/visual-patterns/references/catalog/diagram/fault-tree.md: sha256:99acb1f7780e6a2afc5b46f32f90839cf87407278647308d6968bbe54b1eee77
+  .claude/skills/visual-patterns/references/catalog/diagram/feedback-diagram.md: sha256:0673c09a64d4d268594f5b2efcef718c928b417b0150e6bba8029220f4a2066e
+  .claude/skills/visual-patterns/references/catalog/diagram/flowchart.md: sha256:e19d4254b6f6f76e41e497e05f76db1e80c80df65b4103ffe2c35ad1cd4cc1a5
+  .claude/skills/visual-patterns/references/catalog/diagram/force-field-diagram.md: sha256:5087daf0fc98b4f0282a73a1d9ade3e2cdb0116a6f23fdaf9753447b324d122d
+  .claude/skills/visual-patterns/references/catalog/diagram/funnel.md: sha256:a98c825d70dffe9e20482dbaa2291023bd4fe35a77da799a34514ba37753afb5
+  .claude/skills/visual-patterns/references/catalog/diagram/ibis-map.md: sha256:b267f8a76e76fc41d8d7e05b68f6e2c7947aed438764e8c58aacd011759372a0
+  .claude/skills/visual-patterns/references/catalog/diagram/iceberg.md: sha256:b45e3e0309120a914998ac45bb7003b930e53b0ed1cbff8bce9b9c27fc0caaf7
+  .claude/skills/visual-patterns/references/catalog/diagram/ishikawa-diagram.md: sha256:0ffb280dcaab6b812e7c34ff8458bf9cbc2f07b27fd5fedb086202a153cc80c0
+  .claude/skills/visual-patterns/references/catalog/diagram/layer-diagram.md: sha256:bfaab1bf406172be791f9d7414c6a3021167465f1eb27188d1ac701c63c62a4c
+  .claude/skills/visual-patterns/references/catalog/diagram/metro-map.md: sha256:9ae960930dce9393071e21f82761407b9bda8b91cbc8b66e00e6d962b291462f
+  .claude/skills/visual-patterns/references/catalog/diagram/mind-map.md: sha256:a5563aff44f8a9aa8ffeb6ec48cad1241c3711676f89eb94c765b41c297369de
+  .claude/skills/visual-patterns/references/catalog/diagram/minto-pyramid.md: sha256:8afc7ac6dcaee8b0f4ebdec4ff1434b1eeb731dd42845693c540af8854a46311
+  .claude/skills/visual-patterns/references/catalog/diagram/network.md: sha256:de9b2aeda294cd76941c24b132bc0718bc540c5773a821fe1e490970705d8df8
+  .claude/skills/visual-patterns/references/catalog/diagram/pert-chart.md: sha256:b3375c5ca6ee49e066504964a57f249d4eb707c03c8cb2750f09b5c32d76d8b8
+  .claude/skills/visual-patterns/references/catalog/diagram/quadrant-matrix.md: sha256:fb95dd02d6cfef0833c4b1a99b8af955739443cec45f1e48cb9448b325969344
+  .claude/skills/visual-patterns/references/catalog/diagram/sequence-diagram.md: sha256:fbd44447ed7248d24948bc60927da75e63dbf93590cafe7c13b54511d61c6309
+  .claude/skills/visual-patterns/references/catalog/diagram/stock-flow-diagram.md: sha256:4c56236b679b8504a62d317a071815a56768a72620ac27e3cd639b158b83bdbd
+  .claude/skills/visual-patterns/references/catalog/diagram/swim-lane-diagram.md: sha256:92a12818be85929f26251733153cfa72cb5d77ecbce17590f0e80830676b1347
+  .claude/skills/visual-patterns/references/catalog/diagram/technology-roadmap.md: sha256:82a2f7d940f7e4ca8c4692f91227cba462e1433378a67e3f7d20753fa3fbddd0
+  .claude/skills/visual-patterns/references/catalog/diagram/temple.md: sha256:d4a18a229ec05af9aef94012b3151156aff882a607a90626496b37109e718c98
+  .claude/skills/visual-patterns/references/catalog/diagram/toulmin-map.md: sha256:a873702867a9c1488f7830f9814d13c5c0d563e2a3ac7792037b3a3a82abc5b2
+  .claude/skills/visual-patterns/references/catalog/diagram/tree-diagram.md: sha256:72650dcaa177eab3a1dbf7323e3aaa21b5da024b5acb82b9ebd848825ffbe105
+  .claude/skills/visual-patterns/references/catalog/diagram/tree-metaphor.md: sha256:d799ba1e61a990b2b307a7051cef65e79f5db60c9419746c5012247607db7522
+  .claude/skills/visual-patterns/references/catalog/diagram/venn-diagram.md: sha256:e6e15cba7fa94c17263d301599915f8267f8e2428f6e512076ed37ce4943e9fa
+  .claude/skills/visual-patterns/references/catalog/index.yaml: sha256:f61329ce2e6d369295bd840adf54c21f76706d044c2d5381ee38999e4d0af411
+  .claude/skills/visual-patterns/references/catalog/picture/photo.md: sha256:6eb211a0f8e249d65b5660328d1279acc9ae4a94566eee750a415a55505bd37f
+  .claude/skills/visual-patterns/references/catalog/picture/picture.md: sha256:fd4d4794956c18bbd490bd0d68185d6216db54dccd56a5e3dd6dfd7dcbe69207
+  .claude/skills/visual-patterns/references/catalog/picture/screenshot.md: sha256:e1c1203f7bff3def3db99bd46f6b2fced818484184bbf344f884a1ff929fb8fa
+  .claude/skills/visual-patterns/references/catalog/table/comparison-table.md: sha256:cebce56219db5d293cb16c9c4e7ff0b87dc1e1f436bbadd641254a0d153c3db6
+  .claude/skills/visual-patterns/references/catalog/table/data-table.md: sha256:9c062ffc799ce5aa0fcf4e3abcf98ac9de459c069c97b2c004683a2db563d330
+  .claude/skills/visual-patterns/references/catalog/table/table.md: sha256:090c40d651860e48119ad71f627426edf680aac32db46d986bad0526a07ab2bf
+  .claude/skills/visual-patterns/references/catalog/taxonomy.md: sha256:2556689d689c2fdb22e9186f509abb0bf1a1176d44d66b5a0fc2efdd2eb56ff2
+  .claude/skills/visual-patterns/references/render.md: sha256:39ffdedb3de937696f3f1ff66e4019cd8bcd82fb43986cea603595c6de05c644
+  .claude/skills/visual-patterns/scripts/__pycache__/vp_figure.cpython-312.pyc: sha256:66cbbe4551d41d20e3cb8a635fa05ec4faf49fd24e7a82615c71956e55d09cba
+  .claude/skills/visual-patterns/scripts/vp_figure.py: sha256:e0480d4016d83500c37035b89dfe670a83cd1198e4ec678760ee32fe0d165cec

@@ -1,0 +1,727 @@
+{
+ "_comment": "パターンごとの描き方。route が既定、alt はほかに使える描き方。mermaid_type は Mermaid の図の種類、vega_mark は Vega-Lite の mark。verified は、ヘッドレス Chrome で実際に描けたことを確かめたか。fidelity は full（パターンのデザインの文法をそのまま守れる）/ approximate（一部の規則を守れない。notes に何か）/ unavailable（描く手段がない）。 caveats は、描き方（route か alt）ごとの注意で、check が VP073 の警告として出す。",
+ "comparison-table": {
+  "route": "markdown-table",
+  "fidelity": "approximate",
+  "verified": true,
+  "notes": "既定の向き（対象を列、観点を行）では一つの列に数値と文字が混ざり、GFM の揃えは列単位（`:---` / `---:`）だけなので「数値は右揃え、文字は左揃え」を守れない（対象を行、観点を列に転置すれば守れる）。GFM にキャプションの要素はなく、答えの一文と○△× の凡例は表の直後の段落に書く。",
+  "caveats": {
+   "markdown-table": "GFM の揃えは列ごと。数値を右揃え・文字を左揃えにするなら、対象を行・観点を列にする（転置）。"
+  }
+ },
+ "decision-tree": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart TD で問いをひし形、答えを辺ラベル、葉を角丸と classDef の塗りで描ける。枝を合流させない規則は作者が守る。"
+ },
+ "sequence-diagram": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "sequenceDiagram",
+  "notes": "participant の別名、->>（同期）・-)（非同期）・-->>（応答）、+/- の活性帯、loop の条件文まで描ける。宣言順が左からの並びになる。"
+ },
+ "flowchart": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "角丸の開始・終了、矩形の処理、ひし形の判断と出口の条件ラベルをそのまま描ける。向きは TD か LR の一方向に固定する。",
+  "caveats": {
+   "mermaid": "合流は一本の矢印にまとめる。二本の矢印が同じノードに入るなら、合流点のノード（@{ shape: f-circ }）を置いてから一本で入れる。"
+  }
+ },
+ "screenshot": {
+  "route": "image",
+  "fidelity": "full",
+  "verified": false,
+  "notes": "描画エンジンを使わない。実際の画面の取り込みが要り、ハーネスは作れない。秘密の情報はダミーに置き換えてから取る。強調は一色の枠か矢印で3か所まで。"
+ },
+ "photo": {
+  "route": "image",
+  "fidelity": "full",
+  "verified": false,
+  "notes": "描画エンジンを使わない。実物の写真の素材が要り、ハーネスは作れない。デザインの文法（被写体を中央に、背景を単純に、強調は一色の枠か矢印で3か所まで）は素材を用意するときに守る。"
+ },
+ "tree-diagram": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart TD（幅が広ければ LR）で --- の線を使い、兄弟は宣言順に同じ段へ並ぶ。節の形は一種類にそろえ、色は classDef で段の区別だけに使う。",
+  "caveats": {
+   "mermaid": "親子を直線で結ぶには、先頭に %%{init: {\"flowchart\": {\"curve\": \"linear\"}}}%% を置く（既定は曲線）。"
+  }
+ },
+ "mind-map": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "mindmap",
+  "notes": "枝を均等に配する・深さを中心からの距離で示す・文字を枝に沿って置く、は自動レイアウト（cose-bilkent）に任せるしかなく、保証されない。"
+ },
+ "venn-diagram": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "point (filled circles, size 40000, opacity 0.45) + text (group names outside, item names inside regions)",
+  "notes": "同じ大きさの塗り円を opacity で重ね、項目は座標で領域の中に手で置く。重ならないグループは中心をずらして離す。"
+ },
+ "affinity-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "subgraph を枠、ノードを札にして描けるが、札の大きさは文字量で変わり、見出しも札と同じ大きさになる。枠が縦に並ぶので順序の意味がないことをキャプションで断る。"
+ },
+ "cluster-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "mindmap",
+  "notes": "mindmap で中心・グループ・項目を描けるが、均等な角度と中心からの距離を揃える保証はなく、グループの枠も描けない。色は theme default で付く。"
+ },
+ "concept-map": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart TD で辺ラベル付きの --- と --> を使い分け、一般的な概念を辺の起点に書いて上に置く。近接の制御は自動配置任せになる。",
+  "caveats": {
+   "mermaid": "関連の強い概念の近接は自動レイアウト任せ。一般的な概念を上に置くには、辺を一般→具体の向きで宣言する。"
+  }
+ },
+ "er-diagram": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "erDiagram",
+  "notes": "erDiagram の IE 記法で多重度・PK/FK・関係名を描け、日本語名も通る。別名構文 c[\"顧客\"] は Syntax error になるので名前を直接書く。",
+  "caveats": {
+   "mermaid": "別名構文（c[\"顧客\"]）は使えない。実体名をそのまま書く。"
+  }
+ },
+ "network": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart の --- と classDef で描けるが、階層レイアウトのため向きがあるように見え、つながりの数をノードの大きさに写せない。力学モデルの配置には Vega が要る。"
+ },
+ "cause-effect-chain": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart LR/TD で一方向の連鎖を描き、主な連鎖は linkStyle で強調する。合流の AND・OR は本文で述べる。"
+ },
+ "ishikawa-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart LR で原因→分類→結果と引くと結果が右端の木になるが、背骨と大骨の幾何は失われる。確認済みの原因は classDef で色分けする。"
+ },
+ "fault-tree": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart TD で事象を矩形、基本事象を円、ゲートを {{AND}}/{{OR}} の六角形として描けるが、標準のゲート記号は使えない。凡例は文字で添える。"
+ },
+ "feedback-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart で極性付きのループは描けるが、R/B の印がループの外に浮き、円環状の配置と遅れの二重線は出せない。極性は辺の中ほどに付く。"
+ },
+ "stock-flow-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart で ==> の太線と {{ }} の弁ノード、-.-> の細線で代用して描ける。弁付きの二重線と雲の記号は出せないので凡例で補う。"
+ },
+ "cycle-diagram": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "arc (ring segments between stages, theta from computed angles) + point (triangle-up with angle encoding as arrowheads; circle nodes) + text",
+  "notes": "Vega-Lite で段階番号から角度を計算し、12 時起点・時計回り・等間隔に描ける。Mermaid の flowchart でも描けるが四角いループになり近似になる。"
+ },
+ "quadrant-matrix": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "quadrantChart",
+  "notes": "quadrantChart で軸名・高低の向き・象限名・名前付きの点をそのまま描ける。目盛りは出ないので評価の位置が測定値に見えない。",
+  "caveats": {
+   "mermaid": "象限の名前は隅ではなく象限の中央に描かれる。"
+  }
+ },
+ "continuum": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rule (pole to pole) + tick (centre mark) + point + text (poles, item names)",
+  "notes": "Vega-Lite の rule・tick・point・text で、目盛りのない両極の線と対象の位置を描ける。グループ分けは color と凡例で付ける。"
+ },
+ "timeline": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "point on temporal x at y=0 + rule ticks alternating up/down + text alternating above/below (row_number % 2), color by category",
+  "notes": "時間軸は時間に比例し、文法をそのまま守れる。Mermaid の timeline は期間を等間隔に並べるため近似になる。",
+  "caveats": {
+   "mermaid": "timeline は期間を等間隔に並べ、時間に比例しない。比例が要るなら Vega-Lite。"
+  },
+  "alt": [
+   "mermaid"
+  ],
+  "mermaid_type": "timeline"
+ },
+ "gantt-chart": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "gantt",
+  "notes": "依存の矢印（先行作業の右端から後続作業の左端）は描かれず、本文で補う。section・milestone・todayMarker・after は使える。",
+  "caveats": {
+   "mermaid": "依存の矢印は描けない。依存は本文で言うか、PERT 図にする。"
+  }
+ },
+ "pert-chart": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart LR で <br/> 付きラベルに作業名・所要・ES/EF・LS/LF・余裕を固定順で書き、最長経路を classDef と linkStyle で赤にする。3×3 の枠は文字行に簡略化される。"
+ },
+ "technology-roadmap": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "gantt",
+  "notes": "gantt の section をレーン、タスクを帯にして粗い目盛りで描けるが、層をまたぐ対応の線は引けず、帯は一行一本になる。日付は日単位で書く必要がある。"
+ },
+ "minto-pyramid": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart TD で結論を先に宣言し、--- で支える関係を結ぶ。同じ段は横に揃い、左右の順は宣言順になる。"
+ },
+ "toulmin-map": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "datasets + rect (boxes at fixed x/x2/y/y2 per role) + rule (arrow/support lines) + point (triangle-right heads) + text (lineBreak body, role labels) + legend",
+  "notes": "Vega-Lite の固定座標で根拠→限定→主張と論拠・裏付け・反証の決まった配置をそのまま描ける。Mermaid では論拠が矢印の左に置かれ配置が崩れる。"
+ },
+ "ibis-map": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart LR で論点を {{ }}、立場と論拠を [ ] に記号付きで書き、賛否を classDef の色と凡例で分ける。論点を先に宣言して左に置く。"
+ },
+ "layer-diagram": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "block-beta",
+  "notes": "block-beta の入れ子ブロックで層ごとの帯を等幅・等高に描ける。宣言順が上から下なので土台を最後に書く。"
+ },
+ "concentric-circles": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "arc (theta 0..1 full ring, radius/radius2 per layer) + text at theta 0 / mid radius",
+  "notes": "Vega-Lite の arc で等幅の環を描き、層の名前を 12 時の位置に置ける。resolve.scale.color を independent にしないと文字が消える。"
+ },
+ "communication-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart で主体を矩形、「番号: 内容」を辺ラベルにして描けるが、配置が辺の向きに沿って段になり順番に見える。同じ線の複数メッセージは平行な辺か <br/> で重ねる。"
+ },
+ "swim-lane-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart の subgraph を担当ごとのレーンにして描けるが、帯状の平行なレーンにはならず、同じレーンの節点が離れて置かれることがある。"
+ },
+ "data-table": {
+  "route": "markdown-table",
+  "fidelity": "full",
+  "verified": true,
+  "notes": "項目が行、属性が列なので、数値の列の区切り行に列単位の `---:` を付ければ「数値は右揃え、文字は左揃え」を守れる。GFM にキャプションの要素はなく、探してほしい値の一文は表の直後の段落に書く。"
+ },
+ "metro-map": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart で系列ごとに linkStyle の色と太さを付け、駅を円、交わる節目を二重丸で描けるが、線は曲線になり水平・垂直・45 度の折れ線と時期の目盛りは出せない。"
+ },
+ "temple": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "block-beta",
+  "notes": "block-beta で屋根を台形、柱を等幅の矩形、土台を全列にまたがる矩形として描ける。柱と土台は形では区別できず、幅と色だけの違いになる。"
+ },
+ "iceberg": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "rect (one per layer, equal area) + rule (dashed waterline) + text (layer names, '水面')",
+  "notes": "Vega-Lite の rect と破線の rule で水面の上下と色の対比を描けるが、輪郭は積み上げた長方形になる。resolve.scale.color を independent にしないと文字が見えない。"
+ },
+ "funnel": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar (x=-count/2, x2=count/2, y ordinal by stage order) + text (count at x=0)",
+  "notes": "Vega-Lite の中央寄せの bar で幅を残る量に比例させ、段差状に描ける。色は段階の区別だけに使い、減少率は本文に書く。"
+ },
+ "tree-metaphor": {
+  "route": "none",
+  "fidelity": "unavailable",
+  "verified": false,
+  "notes": "根・幹・枝・葉の形で役割を区別する規則を守れる描画手段がなく、手描きの画像でしか実現できない。tree-diagram か mind-map に切り替えるか、文章で対応を述べる。"
+ },
+ "data-flow-diagram": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "flowchart",
+  "notes": "flowchart で処理を円、外部実体を矩形、データ名付きの矢印と subgraph の境界を描けるが、データストアの開いた長方形は lin-rect か cyl で代用し凡例で補う。"
+ },
+ "force-field-diagram": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar (signed length from 0) + point (shape field triangle-right/left with scale null, at x=0) + rule (centre line)",
+  "notes": "Vega-Lite の符号付き bar と triangle の point で、中央線に向く推進・抑制の矢印を固定の段階で描ける。色は側ごとに固定し凡例を付ける。"
+ },
+ "diverging-bar-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar with conditional color by sign + thick rule at 0, sort by value",
+  "notes": "左右の目盛範囲は scale.domain を対称に明示してそろえる。基準の値は軸の見出しに書く。"
+ },
+ "diverging-stacked-bar-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "calculate neutral/2 split + fold + stack transform (ordered categories) → bar x/x2 with diverging color scale + rule at 0",
+  "notes": "中立は半分ずつに割って中央線をまたがせ、否定側は鏡写しに積む。設問の並べ替えは joinaggregate で肯定の合計を出して行う。"
+ },
+ "spine-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "one series negated → bar on nominal y with abs() axis labels, two colors with legend, thick centre rule at 0 (shares bar-pyramid)",
+  "notes": "人口ピラミッドと同じ符号化で、中央線は x=0 の rule 層で太くする。左右の範囲は scale.domain を対称にそろえる。"
+ },
+ "surplus-deficit-filled-line": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "layered area (positive part / negative part with y2 datum 0) + line + thick rule at baseline",
+  "notes": "ゼロ交差点は標本の間で補間されるため、交差点の値をデータに加えないと上下の面が折れ線に接しない。基準値は rule と添え書きで示す。"
+ },
+ "scatter-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "point (filled, small, one shape), color only for groups, text layer for named outliers",
+  "notes": "軸は原点を含めなくてよいが、切った範囲が目盛で分かるようにする。名前は filter で絞った text 層で注目点だけに書く。"
+ },
+ "line-column-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "layer bar (left axis, zero-based) + line (right axis), resolve.scale.y independent, axis titleColor matched to marks",
+  "notes": "左右二軸は resolve.scale.y independent で実現し、軸見出しの色をマークに合わせる。Mermaid の xychart-beta は y 軸が一本しかないため近似。"
+ },
+ "connected-scatter-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "line with order by time + point colored by time (sequential) + text labels for years",
+  "notes": "時間の向きは point の sequential な色で示す。矢印の追加は point 層が別に要り、未確認。"
+ },
+ "bubble-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "circle with size (area-proportional), opacity, order descending by size, size legend values",
+  "notes": "size は面積に対応するので「面積に比例」をそのまま満たす。order を size の降順にして大きい円を奥に描く。"
+ },
+ "xy-heatmap": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rect on nominal x/y with white stroke, sequential single-hue color (diverging only around a baseline)",
+  "notes": "行と列の順序は axis の sort で与える。色は単一色相とし、基準からの正負を見せるときだけ発散配色にする。"
+ },
+ "dot-strip-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "circle on quantitative x with nominal y strips, opacity, conditional color",
+  "notes": "重なりは opacity で見せ、線と直角のずらしは calculate の random() による yOffset で加える。強調は color の condition で一つか二つに絞る。"
+ },
+ "slope-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "line on 2–3 ordinal time points with detail per item, direction via joinaggregate argmin/argmax → color (3 values), strokeWidth condition, text labels at both ends",
+  "notes": "軸は隠し、項目名と値は線の両端の text に書く。向きは argmin/argmax で求めて三色に固定し、強調以外は細線にする。"
+ },
+ "lollipop-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rule 0→value (thin, light) + circle at value (constant size), sort by value, color by series",
+  "notes": "線は細く薄い rule、点は大きさ一定の circle にする。ゼロ以外を起点にするなら起点の値を明記する。"
+ },
+ "bump-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "line+point on ordinal rank y (1 at top) and ordinal x, text labels at line end, opacity/strokeWidth conditions",
+  "notes": "順位は ordinal y で等間隔に並べ、名前は線の右端の text に書いて凡例は使わない。強調以外は condition で細く薄くする。"
+ },
+ "histogram": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar with bin x and aggregate count y, single color; rule layer for mean/median",
+  "notes": "bin と aggregate count で隙間のない棒とゼロ起点の縦軸になる。平均や中央値は aggregate 付きの rule で重ねる。"
+ },
+ "box-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "boxplot composite (extent 1.5 or 'min-max', median strokeWidth)",
+  "notes": "ひげの定義は凡例に出せないため title/subtitle か添え書きに書く。箱の幅は既定で全集団同じ。"
+ },
+ "violin-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "row facet → density transform (bandwidth, extent) → area with stack center + tick for median (aggregate)",
+  "notes": "density の bandwidth と extent を観測範囲に合わせて決める。最大幅は密度の尺度に従い件数を表さない。"
+ },
+ "population-pyramid": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "calculate signed value → bar on ordinal age y, x axis labelExpr abs(), color by sex",
+  "notes": "一方の区分を負にして描き、軸ラベルは abs() で絶対値にする。左右の範囲は scale.domain を対称に明示する。"
+ },
+ "dot-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rule min→max + circle min/max + point median on shared x, nominal y sorted by range",
+  "notes": "点の種類は色と塗りで分け、凡例か添え書きで示す。つなぐ rule は点より細く薄くする。"
+ },
+ "barcode-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "tick with opacity and conditional color on shared x, nominal y rows",
+  "notes": "同じ高さ・太さの tick を半透明で重ね、強調は color の condition で行う。集団名は y 軸ラベルで示し凡例は置かない。"
+ },
+ "cumulative-curve": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "window cumulative sum → line on 0–100% axes + dashed diagonal line layer + rule at the chosen quantile",
+  "notes": "両軸は [0,1] に固定し、対角線と節目の rule を層で重ねる。系列名は線の端の text で書く。"
+ },
+ "frequency-polygon": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bin → class midpoint → aggregate count → line per series, zero-based y",
+  "notes": "bin を一度かけて階級を全系列で共通にし、縦軸はゼロ起点にする。系列名は線の端の text で書く。"
+ },
+ "line-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "line on temporal x, color by series with legend off and text labels at the right end, opacity condition for emphasis",
+  "notes": "系列名は右端の text、主題は opacity の condition で濃くする。Mermaid の xychart-beta は凡例しか出せず強調もできないため近似。",
+  "caveats": {
+   "mermaid": "xychart-beta は系列ごとの色分けと注釈ができない。軸の日本語ラベルは二重引用符で囲む。"
+  },
+  "alt": [
+   "mermaid"
+  ],
+  "mermaid_type": "xychart-beta"
+ },
+ "stock-price-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rule low→high + bar open→close (fixed size), conditional color by open<close, ordinal yearmonthdate x, y zero false",
+  "notes": "ordinal の x で休場日を詰め、rule のひげと bar の実体を重ねる。上昇・下降の色の意味は必ず凡例か添え書きに書く。"
+ },
+ "area-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "area (stack zero, zero-based y) + color by series; line layer for the total outline",
+  "notes": "積み上げ順は order で固定し、総量の輪郭は合計の line 層で縁取る。Mermaid の xychart-beta には積み上げも面も無い。"
+ },
+ "fan-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "layered area bands (y/y2 per probability level, lighter outward) + median line + rule/text at the forecast boundary",
+  "notes": "帯は水準ごとに別の area 層で同系色の濃淡にする。凡例は text で書くか fold で color に割り当てる。"
+ },
+ "calendar-heatmap": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rect, x timeUnit yearweek, y timeUnit day, column facet by month, binned single-hue color",
+  "notes": "週×曜日の rect を月の column facet で区切る。ゼロと欠損の色分けは condition か null 行で明示し、週のラベルは隠す。"
+ },
+ "priestley-timeline": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar with x/x2 temporal, nominal y sorted by start, color by group; rule for today (shares bar-temporal-span)",
+  "notes": "temporal の x/x2 の bar で期間を描く。継続中は x2 を軸の端まで伸ばすか三角の point 層を足す。"
+ },
+ "circle-timeline": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "circle, x temporal, y nominal (one row per category), size area-proportional with legend values, opacity",
+  "notes": "size は面積なので面積比例を満たし、基準の円は legend.values で 3 つ出す。横軸は全行で共有される。"
+ },
+ "vertical-timeline": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "point on temporal y with scale.reverse (past at top) + rule axis + bold heading text + description text as string arrays, color by category",
+  "notes": "説明の複数行は自動で折り返されず、文字列の配列に分けて渡す。文章優先なら日付・出来事・説明の表で代替できる。"
+ },
+ "seismogram": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "rule from baseline (y2 datum 0) to value, row facet per series with shared x, conditional color for spikes",
+  "notes": "基準線からの rule を row facet で段に分け、突出は color の condition で強調する。400 本で確認済み。"
+ },
+ "bar-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "alt": [
+   "mermaid"
+  ],
+  "vega_mark": "bar with sort, zero-based x, conditional color for emphasis (swap x/y for horizontal)",
+  "notes": "Vega-Lite は文法をそのまま守れる。Mermaid の xychart-beta は日本語ラベルを二重引用符で囲む必要があり、棒ごとの色分けができないため近似。",
+  "caveats": {
+   "mermaid": "xychart-beta は単一系列で、棒ごとの色分け（強調）と基準線を描けない。軸の日本語ラベルは二重引用符で囲む。強調や基準線が要るなら Vega-Lite。"
+  }
+ },
+ "marimekko": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "joinaggregate totals → normalized stack per segment → window cumulative width → rect x/x2 and y/y2 + text labels",
+  "notes": "幅は joinaggregate と window の累積、高さは割合の stack で作る。区画内の数値は幅のしきい値で filter して幅が足りる区画だけに書く。"
+ },
+ "proportional-symbol": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "circle on a shared baseline (y datum), size (area) by value, text layer for name and value, size legend",
+  "notes": "size は面積なので面積比例を満たし、同じ基準線上に一種類の記号を並べる。代表値の凡例は legend.values で出す。"
+ },
+ "isotype": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "point with custom SVG path shape repeated per unit (sequence+flatten), same size/spacing, left-aligned rows",
+  "notes": "端数の記号を切り取って示すことができないため、整数に丸めるか単位を小さくする。記号一つの数量は凡例か題名に書く。"
+ },
+ "radar-chart": {
+  "route": "mermaid",
+  "fidelity": "full",
+  "verified": true,
+  "mermaid_type": "radar-beta",
+  "notes": "config の curveTension を 0 にしないと多角形が丸まる。Vega-Lite の代替は極座標の尺度が無く近似。"
+ },
+ "parallel-coordinates": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "window index + fold + joinaggregate min/max per axis → normalized value → line per item (detail) + rule per axis + text min/max",
+  "notes": "軸ごとの独立した尺度は min/max で正規化して代用し、各軸に最小・最大を text で書く。強調は color と strokeWidth の condition で行う。"
+ },
+ "bullet-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "row facet of layered bars (3 grey bands + thin dark measure) + tick for target",
+  "notes": "指標ごとの尺度は resolve.scale.x independent で分ける。帯は無彩色三段階、実績は細く濃い bar、目標は tick にする。"
+ },
+ "grouped-symbol": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "sequence+flatten per item → point with custom SVG shape on a 10-column ordinal grid, row facet per item, conditional color",
+  "notes": "10 列の格子に同じ大きさの記号を並べ、強調は color の condition で行う。項目名と合計は facet の見出しか text で添える。"
+ },
+ "stacked-column-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "bar with stack zero, order encoding for consistent stacking, color by part",
+  "notes": "積み上げ順は order で固定し、重要な部分を基線側に置く。凡例の順は scale.domain で積み上げ順に合わせる。"
+ },
+ "pie-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "arc with theta stacked, order descending with 'その他' last, text at radius for direct labels, no legend",
+  "notes": "並び順は calculate した列を order に渡し、ラベルは radius 付きの text で直接書く。Mermaid の pie は並べ替え・直接ラベル・部分ごとの色が利かず近似。",
+  "caveats": {
+   "mermaid": "値のラベルは凡例に出る（扇の中に名前を書けない）。"
+  },
+  "alt": [
+   "mermaid"
+  ],
+  "mermaid_type": "pie"
+ },
+ "donut-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "arc with innerRadius + text at radius for direct labels + centre text layers",
+  "notes": "innerRadius で環を作り、中心には別データの text 層で値と短い見出しだけ置く。ラベルは radius 付きの text で直接書く。"
+ },
+ "treemap": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "treemap-beta",
+  "notes": "余白を上位ほど広くする規則は padding が全体で一つのため守れない。色は classDef と :::クラス名 で付け、クラス名は 2 文字以上にする。",
+  "caveats": {
+   "mermaid": "treemap-beta の classDef 名は2文字以上にする。"
+  }
+ },
+ "arc-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "arc (theta stacked, scale.range [-π/2, π/2], innerRadius) + text at radius + rule at apex",
+  "notes": "半円は theta の scale.range で作り、過半の線は頂点の rule 層で引く。Mermaid の pie に半円は無い。"
+ },
+ "grid-plot": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "sequence 0..99 → calculate col/row → rect 10×10 with conditional color",
+  "notes": "sequence から 10×10 の rect を作り、i < n の判定で連続した塊を塗る。割合とラベルは title か text で添える。"
+ },
+ "waterfall-chart": {
+  "route": "vega-lite",
+  "fidelity": "full",
+  "verified": true,
+  "vega_mark": "window sum + lead → bar y/y2 floating from the previous cumulative, color by kind (total/increase/decrease), rule connectors with xOffset, text labels per delta",
+  "notes": "window の sum と lead で累計を出し、bar の y/y2 を浮かせて rule で端をつなぐ。要素の順は sort null でデータ順を保つ。"
+ },
+ "choropleth-map": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "geoshape with binned single-hue color (3–7 classes) on mercator projection",
+  "notes": "区域の GeoJSON/TopoJSON は素材として渡し、環は時計回りに書く。階級の境界の決め方と「データなし」の凡例は添え書きで補う。"
+ },
+ "proportional-symbol-map": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "circle with longitude/latitude and size (area) over geoshape base, order descending, size legend",
+  "notes": "文法は守れるが下地の TopoJSON/GeoJSON は素材として渡す必要がある。最小・中間・最大の凡例は legend.values で出す。"
+ },
+ "flow-map": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "rule with longitude/latitude + longitude2/latitude2, strokeWidth by volume, over geoshape base",
+  "notes": "rule に矢じりが無く、向き（矢印または先細り）を示せない。三角の point 層による矢じりは未確認で、向きは添え書きで補う。"
+ },
+ "contour-map": {
+  "route": "none",
+  "fidelity": "unavailable",
+  "verified": false,
+  "notes": "等値線を求める transform が無く、点のデータからは描けない。spatial-heatmap への切り替えか、計算済みの等値線 GeoJSON を geoshape で描く。"
+ },
+ "equalised-cartogram": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "rect + text on ordinal (col,row) grid coordinates, color by group",
+  "notes": "タイルの配置（北が上・隣接が隣り合う）は自動で作れず、座標を手で決めてデータに持たせる。タイルの大きさと地区名の記入は守れる。"
+ },
+ "scaled-cartogram": {
+  "route": "none",
+  "fidelity": "unavailable",
+  "verified": false,
+  "notes": "変形の計算手段が無く描けない。choropleth-map か proportional-symbol-map に切り替えるか、計算済みの GeoJSON を geoshape で描く。"
+ },
+ "dot-density-map": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "circle with longitude/latitude (constant small size, opacity) over geoshape base",
+  "notes": "点一つの件数の凡例は添え書きで補い、下地の TopoJSON は素材として渡す。一点一件はデータ側で保証する。"
+ },
+ "spatial-heatmap": {
+  "route": "vega-lite",
+  "fidelity": "approximate",
+  "verified": true,
+  "vega_mark": "calculate grid cell from lon/lat + aggregate count → square with longitude/latitude and sequential color over geoshape base",
+  "notes": "カーネル平滑化（平滑化の半径）は再現できず、格子の集計で代用する。格子の大きさを添え書きに書き、最も薄い段階は透明にする。"
+ },
+ "voronoi": {
+  "route": "none",
+  "fidelity": "unavailable",
+  "verified": false,
+  "notes": "ボロノイ分割の transform が無く、点から領域を生成できない。計算済みの多角形を GeoJSON で渡すか、点の地図と表に切り替える。"
+ },
+ "sankey": {
+  "route": "mermaid",
+  "fidelity": "approximate",
+  "verified": true,
+  "mermaid_type": "sankey-beta",
+  "notes": "節の名前は ASCII のみで、日本語は Syntax error になる。基準の幅の凡例は無く、節の順は自動配置に任せる。",
+  "caveats": {
+   "mermaid": "sankey-beta はノード名に ASCII しか使えない（日本語を含むと Syntax error）。日本語の名前が要るなら、ASCII の短い記号にして対応を本文に書くか、別の候補か表にする。"
+  }
+ },
+ "chord": {
+  "route": "none",
+  "fidelity": "unavailable",
+  "verified": false,
+  "notes": "弦グラフの形はどちらのツールにも無い。同じ行列は sankey（一方向）か xy-heatmap に切り替える。"
+ }
+}

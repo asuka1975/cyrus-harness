@@ -32,6 +32,7 @@ class Block:
     items: list[ListItem] = field(default_factory=list)
     rows: list[list[str]] = field(default_factory=list)
     lang: str = ""
+    src: str = ""  # image のリンク先
     end_line: int = 0
 
 
@@ -44,6 +45,13 @@ class Section:
     @property
     def title(self) -> str:
         return self.heading.text if self.heading else "（冒頭）"
+
+
+def _image_src(inner: str) -> str:
+    """画像のリンク先。任意のタイトル（"説明"）と、リンク先を囲む山括弧を外す。"""
+    s = inner.strip()
+    m = re.match(r"""^<([^<>]*)>(?:\s+(?:"[^"]*"|'[^']*'))?$""", s) or re.match(r"""^(\S+)(?:\s+(?:"[^"]*"|'[^']*'))?$""", s)
+    return m.group(1).strip() if m else s
 
 
 def _split_row(line: str) -> list[str]:
@@ -116,7 +124,7 @@ def parse(text: str) -> list[Block]:
         m = IMAGE_LINE_RE.match(line)
         if m:
             flush_para(i)
-            blocks.append(Block("image", i + 1, m.group(1), end_line=i + 1))
+            blocks.append(Block("image", i + 1, m.group(1), src=_image_src(m.group(2)), end_line=i + 1))
             i += 1
             continue
 

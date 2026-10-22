@@ -113,7 +113,7 @@ _TRAILING_PAREN = re.compile(r"[（(][^（）()]*[）)]$")
 def sentence_style(sentence: str) -> str:
     """文末の文体を判定する。desumasu（です・ます）/ plain（だ・である）/ neutral（体言止めなど）。"""
     s = sentence.strip()
-    s = s.rstrip(SENTENCE_END + CLOSERS + "　 ")
+    s = s.rstrip(SENTENCE_END + "　 ")                # 「…（表1）。」の ） を先に落とすと括弧を外せないので、句点だけを取る
     s = _TRAILING_PAREN.sub("", s).rstrip()
     s = s.rstrip(SENTENCE_END + CLOSERS + "　 ")
     if not s:

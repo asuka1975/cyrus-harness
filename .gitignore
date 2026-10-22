@@ -3,6 +3,7 @@
 apm_modules/
 # 依存パッケージが .claude/ に展開したもの（apm install で入る。中身はこのリポジトリに含めない）
 .claude/skills/yomiyasu/
+.claude/skills/constructivism/
 
 # Python
 __pycache__/

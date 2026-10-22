@@ -1,0 +1,5194 @@
+{
+ "source": {
+  "name": "visual-patterns",
+  "synced_at": "2026-10-22",
+  "commit": "9320790",
+  "dirty": false
+ },
+ "intents": {
+  "magnitude-comparison": {
+   "name": "大小比較",
+   "category": "比較",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "bar-chart",
+     "when": ""
+    },
+    {
+     "pattern": "lollipop-chart",
+     "when": "値を目立たせたい、またはゼロを起点にできない"
+    },
+    {
+     "pattern": "proportional-symbol",
+     "when": "値の差が極端に大きい（微妙な差には不向き）"
+    },
+    {
+     "pattern": "isotype",
+     "when": "整数の個数を直感的に見せる"
+    },
+    {
+     "pattern": "grouped-symbol",
+     "when": "個数を数えさせる、または一部の要素を目立たせる"
+    },
+    {
+     "pattern": "bullet-chart",
+     "when": "目標値に対する達成度を示す"
+    },
+    {
+     "pattern": "radar-chart",
+     "when": "複数の項目を一覧で比べる（違いが読み取れる場合に限る）"
+    },
+    {
+     "pattern": "parallel-coordinates",
+     "when": "項目が多く、レーダーチャートでは線が重なる"
+    },
+    {
+     "pattern": "marimekko",
+     "when": "大きさと割合を同時に見せる"
+    }
+   ]
+  },
+  "deviation": {
+   "name": "偏差",
+   "category": "比較",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "diverging-bar-chart",
+     "when": ""
+    },
+    {
+     "pattern": "diverging-stacked-bar-chart",
+     "when": "賛成・中立・反対のような態度を含む調査結果"
+    },
+    {
+     "pattern": "spine-chart",
+     "when": "一つのデータを対照的な二要素に分ける（男性／女性など）"
+    },
+    {
+     "pattern": "surplus-deficit-filled-line",
+     "when": "基準線からの隔たりの推移を見せる"
+    }
+   ]
+  },
+  "ranking": {
+   "name": "順位",
+   "category": "比較",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "bar-chart",
+     "when": ""
+    },
+    {
+     "pattern": "lollipop-chart",
+     "when": "順位と値の両方を目立たせる"
+    },
+    {
+     "pattern": "proportional-symbol",
+     "when": "値の差が極端に大きい"
+    },
+    {
+     "pattern": "dot-strip-plot",
+     "when": "複数の分野にわたる順位を省スペースで見せる"
+    },
+    {
+     "pattern": "slope-chart",
+     "when": "二時点または二条件の間で順位がどう変わったかを見せる"
+    },
+    {
+     "pattern": "bump-chart",
+     "when": "複数時点にわたる順位の変動を見せる"
+    }
+   ]
+  },
+  "attribute-comparison": {
+   "name": "属性比較",
+   "category": "比較",
+   "family_doc": "table/table.md",
+   "candidates": [
+    {
+     "pattern": "comparison-table",
+     "when": ""
+    }
+   ]
+  },
+  "time-series-change": {
+   "name": "時系列変化",
+   "category": "変化",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "line-chart",
+     "when": ""
+    },
+    {
+     "pattern": "bar-chart",
+     "when": "期間が少なく、系列が一つ"
+    },
+    {
+     "pattern": "line-column-chart",
+     "when": "量と比率の変化を同時に見せる"
+    },
+    {
+     "pattern": "stock-price-chart",
+     "when": "始値・終値・高値・安値を示す"
+    },
+    {
+     "pattern": "slope-chart",
+     "when": "二つか三つの時点に絞って比べる"
+    },
+    {
+     "pattern": "area-chart",
+     "when": "総量の変化を見せる（内訳の変化は読みにくい）"
+    },
+    {
+     "pattern": "fan-chart",
+     "when": "不確かさを伴う予測値を示す"
+    },
+    {
+     "pattern": "connected-scatter-plot",
+     "when": "二つの変数の変化を同時に辿らせる"
+    },
+    {
+     "pattern": "calendar-heatmap",
+     "when": "暦単位（日・週・月）の傾向を大まかに示す"
+    },
+    {
+     "pattern": "priestley-timeline",
+     "when": "日付と期間（在任期間など）が重要"
+    },
+    {
+     "pattern": "circle-timeline",
+     "when": "複数カテゴリにわたる離散的な出来事と大きさを示す"
+    },
+    {
+     "pattern": "vertical-timeline",
+     "when": "詳細な時系列を縦に並べる（スクロール向き）"
+    },
+    {
+     "pattern": "seismogram",
+     "when": "大きな変動を含むひとかたまりの出来事を示す"
+    }
+   ]
+  },
+  "correlation": {
+   "name": "相関",
+   "category": "関係",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "scatter-plot",
+     "when": ""
+    },
+    {
+     "pattern": "bubble-chart",
+     "when": "第三の変数を円の大きさで加える"
+    },
+    {
+     "pattern": "connected-scatter-plot",
+     "when": "二つの変数の関係の時間変化を見せる"
+    },
+    {
+     "pattern": "line-column-chart",
+     "when": "量と割合の関係を見せる"
+    },
+    {
+     "pattern": "xy-heatmap",
+     "when": "両軸がカテゴリで、組み合わせごとの傾向を見せる"
+    }
+   ]
+  },
+  "part-to-whole": {
+   "name": "構成",
+   "category": "構造",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "stacked-column-chart",
+     "when": ""
+    },
+    {
+     "pattern": "pie-chart",
+     "when": "項目が少なく、正確な比較を求めない。中心に値を置かない"
+    },
+    {
+     "pattern": "donut-chart",
+     "when": "中心に合計などの関連情報を添える"
+    },
+    {
+     "pattern": "treemap",
+     "when": "階層構造を伴う構成割合を見せる"
+    },
+    {
+     "pattern": "marimekko",
+     "when": "大きさと割合を同時に見せる"
+    },
+    {
+     "pattern": "arc-chart",
+     "when": "議会構成など、構成比を半円で見せる"
+    },
+    {
+     "pattern": "grid-plot",
+     "when": "全体に占める割合を整数の升目で見せる"
+    },
+    {
+     "pattern": "waterfall-chart",
+     "when": "構成要素にマイナスの値がある"
+    }
+   ]
+  },
+  "step-order": {
+   "name": "実行順",
+   "category": "プロセス",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "sequence-diagram",
+     "when": ""
+    },
+    {
+     "pattern": "communication-diagram",
+     "when": "主体間のつながりを優先し、順序は番号で示す"
+    }
+   ]
+  },
+  "branching": {
+   "name": "分岐",
+   "category": "プロセス",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "flowchart",
+     "when": ""
+    },
+    {
+     "pattern": "swim-lane-diagram",
+     "when": "担当（主体）が複数あり、誰がどの段階を行うかの分担が主題"
+    }
+   ]
+  },
+  "flow": {
+   "name": "流量",
+   "category": "プロセス",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "sankey",
+     "when": ""
+    },
+    {
+     "pattern": "waterfall-chart",
+     "when": "過程に沿った増減の累積を見せる"
+    },
+    {
+     "pattern": "chord",
+     "when": "双方向の流れを見せる"
+    },
+    {
+     "pattern": "funnel",
+     "when": "比喩で示す（一本の経路で段階ごとに減る量を見せる）"
+    }
+   ]
+  },
+  "distribution": {
+   "name": "分布の形",
+   "category": "分布",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "histogram",
+     "when": ""
+    },
+    {
+     "pattern": "box-plot",
+     "when": "複数の集団の中央値と幅をまとめて比べる"
+    },
+    {
+     "pattern": "violin-plot",
+     "when": "単純な要約では表せない複雑な分布を見せる"
+    },
+    {
+     "pattern": "population-pyramid",
+     "when": "年齢別・男女別の人口分布を見せる"
+    },
+    {
+     "pattern": "dot-strip-plot",
+     "when": "個々の値を一本の線上に見せる（同じ値の点が多すぎない）"
+    },
+    {
+     "pattern": "dot-plot",
+     "when": "カテゴリごとの値の幅（最小／最大）を示す"
+    },
+    {
+     "pattern": "barcode-plot",
+     "when": "全データを見せつつ個々の値を目立たせる"
+    },
+    {
+     "pattern": "cumulative-curve",
+     "when": "分布の不均衡さを見せる"
+    },
+    {
+     "pattern": "frequency-polygon",
+     "when": "複数の分布を重ねて比べる（3〜4本まで）"
+    }
+   ]
+  },
+  "geographic": {
+   "name": "地理",
+   "category": "空間",
+   "family_doc": "chart/chart.md",
+   "candidates": [
+    {
+     "pattern": "choropleth-map",
+     "when": ""
+    },
+    {
+     "pattern": "proportional-symbol-map",
+     "when": "割合ではなく数値そのものを比べる"
+    },
+    {
+     "pattern": "dot-density-map",
+     "when": "個々の出来事の位置を見せる"
+    },
+    {
+     "pattern": "spatial-heatmap",
+     "when": "行政区域と連動しない連続的な濃淡を見せる"
+    },
+    {
+     "pattern": "contour-map",
+     "when": "等値線で領域を示す"
+    },
+    {
+     "pattern": "equalised-cartogram",
+     "when": "地区を同サイズの形に置き換えて同価値のグループを示す"
+    },
+    {
+     "pattern": "scaled-cartogram",
+     "when": "領域の面積を値に比例させる"
+    },
+    {
+     "pattern": "flow-map",
+     "when": "地図上の移動を示す"
+    },
+    {
+     "pattern": "voronoi",
+     "when": "空間内の点ごとに最も近い領域を分割して見せる"
+    }
+   ]
+  },
+  "conditional-outcome": {
+   "name": "条件判定",
+   "category": "参照",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "decision-tree",
+     "when": ""
+    }
+   ]
+  },
+  "appearance": {
+   "name": "外観",
+   "category": "実物",
+   "family_doc": "picture/picture.md",
+   "candidates": [
+    {
+     "pattern": "screenshot",
+     "when": ""
+    },
+    {
+     "pattern": "photo",
+     "when": "対象が画面ではない"
+    }
+   ]
+  },
+  "positioning": {
+   "name": "位置づけ",
+   "category": "比較",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "quadrant-matrix",
+     "when": ""
+    },
+    {
+     "pattern": "continuum",
+     "when": "軸が一つ"
+    }
+   ]
+  },
+  "chronology": {
+   "name": "経緯",
+   "category": "変化",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "timeline",
+     "when": ""
+    },
+    {
+     "pattern": "priestley-timeline",
+     "when": "日付と期間（在任期間など）が重要"
+    },
+    {
+     "pattern": "circle-timeline",
+     "when": "複数カテゴリにわたる離散的な出来事と大きさを示す"
+    },
+    {
+     "pattern": "vertical-timeline",
+     "when": "詳細な時系列を縦に並べる（スクロール向き）"
+    }
+   ]
+  },
+  "relationship": {
+   "name": "関連",
+   "category": "関係",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "concept-map",
+     "when": ""
+    },
+    {
+     "pattern": "er-diagram",
+     "when": "対象がデータの実体で、多重度を示す"
+    },
+    {
+     "pattern": "network",
+     "when": "関係の種類より、つながりの全体像（密度や中心）を見せる"
+    }
+   ]
+  },
+  "causation": {
+   "name": "因果",
+   "category": "関係",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "cause-effect-chain",
+     "when": ""
+    },
+    {
+     "pattern": "ishikawa-diagram",
+     "when": "一つの結果に対する原因を分類して洗い出す"
+    },
+    {
+     "pattern": "fault-tree",
+     "when": "原因の組み合わせ（AND・OR）を論理的に示す"
+    },
+    {
+     "pattern": "feedback-diagram",
+     "when": "因果がループする"
+    },
+    {
+     "pattern": "stock-flow-diagram",
+     "when": "蓄積と流量の因果を示す"
+    }
+   ]
+  },
+  "parent-child": {
+   "name": "親子関係",
+   "category": "構造",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "tree-diagram",
+     "when": ""
+    },
+    {
+     "pattern": "mind-map",
+     "when": "中心の主題から放射状に広げ、階層が浅く幅が広い"
+    },
+    {
+     "pattern": "tree-metaphor",
+     "when": "比喩で示す（根・幹・枝のように、土台からの派生を見せる）"
+    }
+   ]
+  },
+  "membership": {
+   "name": "所属",
+   "category": "構造",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "venn-diagram",
+     "when": ""
+    },
+    {
+     "pattern": "affinity-diagram",
+     "when": "項目が多く、重ならないグループに見出しを付けて並べる"
+    },
+    {
+     "pattern": "cluster-diagram",
+     "when": "中心の主題に対するグループを放射状に置き、重なりを示さない"
+    }
+   ]
+  },
+  "layering": {
+   "name": "層",
+   "category": "構造",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "layer-diagram",
+     "when": ""
+    },
+    {
+     "pattern": "concentric-circles",
+     "when": "層が入れ子で、中心からの距離に意味がある"
+    },
+    {
+     "pattern": "temple",
+     "when": "比喩で示す（複数の要素が並んで一つの目標を支える）"
+    },
+    {
+     "pattern": "iceberg",
+     "when": "比喩で示す（見えている部分と隠れた部分を対比する）"
+    }
+   ]
+  },
+  "argumentation": {
+   "name": "論証",
+   "category": "構造",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "minto-pyramid",
+     "when": ""
+    },
+    {
+     "pattern": "toulmin-map",
+     "when": "根拠から主張への推論の正当性（論拠・反証）を示す"
+    },
+    {
+     "pattern": "ibis-map",
+     "when": "論点に対する複数の立場と賛否を記録する"
+    }
+   ]
+  },
+  "schedule": {
+   "name": "工程",
+   "category": "プロセス",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "gantt-chart",
+     "when": ""
+    },
+    {
+     "pattern": "pert-chart",
+     "when": "作業間の依存と最長経路が主題"
+    },
+    {
+     "pattern": "technology-roadmap",
+     "when": "年単位の粗い時期で方向性を示す"
+    },
+    {
+     "pattern": "metro-map",
+     "when": "比喩で示す（複数の系列が交わる節目を見せ、時期の正確さを求めない）"
+    }
+   ]
+  },
+  "cycle": {
+   "name": "循環",
+   "category": "プロセス",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "cycle-diagram",
+     "when": ""
+    }
+   ]
+  },
+  "lookup": {
+   "name": "値検索",
+   "category": "参照",
+   "family_doc": "table/table.md",
+   "candidates": [
+    {
+     "pattern": "data-table",
+     "when": ""
+    }
+   ]
+  },
+  "dependency": {
+   "name": "依存",
+   "category": "関係",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "data-flow-diagram",
+     "when": ""
+    }
+   ]
+  },
+  "opposing-forces": {
+   "name": "対立",
+   "category": "関係",
+   "family_doc": "diagram/diagram.md",
+   "candidates": [
+    {
+     "pattern": "force-field-diagram",
+     "when": ""
+    }
+   ]
+  }
+ },
+ "patterns": {
+  "comparison-table": {
+   "name": "比較表",
+   "layer": "primitive",
+   "family": "table",
+   "path": "table/comparison-table.md",
+   "status": "available",
+   "aliases": [
+    "comparison-matrix",
+    "feature-comparison-table",
+    "comparison-chart"
+   ],
+   "primary_intent": "attribute-comparison",
+   "secondary_intents": [],
+   "shape": "matrix",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "items": "2〜6",
+    "categories": "3〜12"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "target": "alignment",
+    "criterion": "alignment"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の対象を同じ観点で見比べ、どれがどの観点で優れるかを読み手に判断させる",
+    "観点が三つ以上あり、対象ごとの文章では見比べにくい"
+   ],
+   "avoid_when": [
+    "対象が 7 つ以上、または観点が 13 を超え、一画面や一ページで見渡せない",
+    "観点が一つの量だけで、大小の知覚で足りる"
+   ],
+   "alternatives": [
+    "decision-tree"
+   ],
+   "has_intent_means": false
+  },
+  "decision-tree": {
+   "name": "ディシジョン・ツリー",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/decision-tree.md",
+   "status": "available",
+   "aliases": [
+    "decision-chart",
+    "decision-diagram"
+   ],
+   "primary_intent": "conditional-outcome",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜5",
+    "nodes": "〜30"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "branch": "connection",
+    "condition-order": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "いくつかの条件に順に答えると、結論が一つに決まることを示す",
+    "読み手が自分の状況に当てはめて、該当する結論を探す"
+   ],
+   "avoid_when": [
+    "結論が一つに決まらず、判断を読み手に委ねる",
+    "条件の間に作業や処理が挟まり、判定だけでは終わらない"
+   ],
+   "alternatives": [
+    "comparison-table"
+   ],
+   "has_intent_means": false
+  },
+  "sequence-diagram": {
+   "name": "シーケンス図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/sequence-diagram.md",
+   "status": "available",
+   "aliases": [
+    "uml-sequence-diagram",
+    "message-sequence-chart",
+    "interaction-diagram"
+   ],
+   "primary_intent": "step-order",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "actors": "2〜7",
+    "steps": "3〜25"
+   },
+   "precision": "exact",
+   "complexity": "high",
+   "visual_encoding": {
+    "actor": "position",
+    "order": "position",
+    "message": "connection"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の主体の間で、誰が誰に何をどの順で渡すかを示す",
+    "呼び出しと応答の対応を、時間の流れに沿って追わせる"
+   ],
+   "avoid_when": [
+    "主体が一つで、順序が番号付きリストで足りる",
+    "読み手がライフラインとメッセージの記法を知らず、凡例を付けられない"
+   ],
+   "alternatives": [
+    "communication-diagram",
+    "flowchart"
+   ],
+   "has_intent_means": false
+  },
+  "flowchart": {
+   "name": "フローチャート",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/flowchart.md",
+   "status": "available",
+   "aliases": [
+    "flow-chart",
+    "process-flow-diagram",
+    "process-flowchart"
+   ],
+   "primary_intent": "branching",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [],
+   "scale": {
+    "steps": "3〜20",
+    "edges": "〜30"
+   },
+   "precision": "exact",
+   "complexity": "medium",
+   "visual_encoding": {
+    "flow": "connection",
+    "node-type": "shape",
+    "order": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "条件によって処理の流れがどう分かれ、どこで合流するかを示す",
+    "開始から終了までの経路を、判断の箇所ごとに辿らせる"
+   ],
+   "avoid_when": [
+    "分岐がなく、順序が番号付きリストで足りる",
+    "判断の条件だけを辿って結論を一つに決めさせ、途中に作業がない"
+   ],
+   "alternatives": [
+    "swim-lane-diagram",
+    "decision-tree"
+   ],
+   "has_intent_means": false
+  },
+  "visual-exact-values": {
+   "name": "Visual + Exact Values",
+   "layer": "composition",
+   "family": "",
+   "path": "",
+   "status": "planned"
+  },
+  "screenshot": {
+   "name": "スクリーンショット",
+   "layer": "primitive",
+   "family": "picture",
+   "path": "picture/screenshot.md",
+   "status": "available",
+   "aliases": [
+    "screen-capture",
+    "screen-shot",
+    "screengrab"
+   ],
+   "primary_intent": "appearance",
+   "secondary_intents": [],
+   "shape": "object",
+   "attributes": [],
+   "scale": {
+    "items": "1 画面",
+    "regions": "〜3"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "element-location": "position",
+    "highlight": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "concrete",
+   "best_for": [
+    "画面がどう見えるかを、読み手が自分の画面と照合できるように示す",
+    "操作する箇所や確認すべき表示を、画面上の位置で指し示す"
+   ],
+   "avoid_when": [
+    "画面を取得できない、または取得した画面に秘匿情報が写り込む",
+    "画面の構造や項目の値だけを伝えればよく、見た目そのものは要らない"
+   ],
+   "alternatives": [
+    "photo"
+   ],
+   "has_intent_means": false
+  },
+  "photo": {
+   "name": "写真",
+   "layer": "primitive",
+   "family": "picture",
+   "path": "picture/photo.md",
+   "status": "available",
+   "aliases": [
+    "photograph",
+    "photographic-image"
+   ],
+   "primary_intent": "appearance",
+   "secondary_intents": [],
+   "shape": "object",
+   "attributes": [],
+   "scale": {
+    "items": "1 対象",
+    "regions": "〜3"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "subject-location": "position",
+    "highlight": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "concrete",
+   "best_for": [
+    "画面ではない実物（機器、部品、場所）がどう見えるかを示す",
+    "読み手が手元の実物と照合して、正しい状態かを確かめる"
+   ],
+   "avoid_when": [
+    "実物を撮影できない、または撮影した素材を載せる許可がない",
+    "外観ではなく構造や寸法を伝えればよく、図面や表で足りる"
+   ],
+   "alternatives": [
+    "screenshot"
+   ],
+   "has_intent_means": false
+  },
+  "tree-diagram": {
+   "name": "樹形図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/tree-diagram.md",
+   "status": "available",
+   "aliases": [
+    "hierarchy-diagram",
+    "tree-chart"
+   ],
+   "primary_intent": "parent-child",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "5〜50",
+    "levels": "2〜5"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "parent-child-relationship": "connection",
+    "depth": "position",
+    "siblings": "alignment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの根から枝分かれする構造を一望させる",
+    "各項目がただ一つの親を持ち、下位がどう分かれるかを辿らせる",
+    "深さと幅がともに一枚に収まる階層"
+   ],
+   "avoid_when": [
+    "項目が複数の親に属する",
+    "各部分が全体に占める割合も読ませる",
+    "節が多く、文字が読める大きさで一枚に収まらない"
+   ],
+   "alternatives": [
+    "mind-map",
+    "tree-metaphor",
+    "minto-pyramid"
+   ],
+   "has_intent_means": false
+  },
+  "mind-map": {
+   "name": "マインドマップ",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/mind-map.md",
+   "status": "available",
+   "aliases": [
+    "mindmap",
+    "spray-diagram",
+    "radial-tree",
+    "radial-map"
+   ],
+   "primary_intent": "parent-child",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "10〜60",
+    "levels": "2〜4"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "parent-child-relationship": "connection",
+    "depth": "position",
+    "branch": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの主題から派生する話題を放射状に広げて一望させる",
+    "階層が浅く、第一階層の枝が多い",
+    "主題を中心に置き、どの枝にどの話題が属するかを示す"
+   ],
+   "avoid_when": [
+    "階層が深く、外周の文字が読めなくなる",
+    "枝の間の順序や序列を読ませる",
+    "項目が複数の枝に属する"
+   ],
+   "alternatives": [
+    "tree-diagram",
+    "tree-metaphor"
+   ],
+   "has_intent_means": false
+  },
+  "venn-diagram": {
+   "name": "ベン図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/venn-diagram.md",
+   "status": "available",
+   "aliases": [
+    "venn",
+    "euler-diagram",
+    "set-diagram",
+    "overlap-diagram"
+   ],
+   "primary_intent": "membership",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "groups": "2〜3",
+    "items": "0〜20"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "group": "containment",
+    "shared-membership": "position",
+    "group-identity": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "二つか三つのグループが重なり、どの項目が複数に属するかを示す",
+    "グループの重なりの有無そのものが答えである",
+    "項目が少なく、領域の中に名前が収まる"
+   ],
+   "avoid_when": [
+    "グループが四つ以上あり、重なりの領域を描き分けられない",
+    "項目が多く、領域の中に収まらない",
+    "領域の面積から項目数や割合を読ませる"
+   ],
+   "alternatives": [
+    "affinity-diagram",
+    "cluster-diagram",
+    "tree-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "affinity-diagram": {
+   "name": "親和図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/affinity-diagram.md",
+   "status": "available",
+   "aliases": [
+    "affinity-map",
+    "affinity-chart",
+    "kj-method",
+    "kj-diagram"
+   ],
+   "primary_intent": "membership",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "items": "10〜100",
+    "groups": "3〜12"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "group": "proximity",
+    "group-boundary": "containment",
+    "heading": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "多数の項目を重ならないグループに分け、見出しを付けて一覧させる",
+    "各グループに何が入り、どのグループが大きいかを見せる",
+    "項目が短い句で書け、並べて読める"
+   ],
+   "avoid_when": [
+    "項目が複数のグループに属する",
+    "グループの間の順序や階層を読ませる",
+    "項目が少なく、見出し付きの箇条書きで足りる"
+   ],
+   "alternatives": [
+    "venn-diagram",
+    "cluster-diagram",
+    "tree-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "cluster-diagram": {
+   "name": "クラスター図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/cluster-diagram.md",
+   "status": "available",
+   "aliases": [
+    "clustering",
+    "cluster-map",
+    "radial-cluster"
+   ],
+   "primary_intent": "membership",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "groups": "3〜8",
+    "items": "5〜40"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "group": "proximity",
+    "relation-to-subject": "connection",
+    "group-identity": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "中心の対象に対して、周囲の項目をグループごとに分けて見せる",
+    "グループが重ならず、どのグループも中心と関係する",
+    "グループの数が 8 以下で、放射状に配せる"
+   ],
+   "avoid_when": [
+    "項目が複数のグループに属する",
+    "中心に置く対象がなく、グループ同士の関係が主題である",
+    "中心からの距離や角度に意味を読ませる"
+   ],
+   "alternatives": [
+    "venn-diagram",
+    "affinity-diagram",
+    "tree-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "concept-map": {
+   "name": "コンセプトマップ",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/concept-map.md",
+   "status": "available",
+   "aliases": [
+    "semantic-network",
+    "concept-mapping"
+   ],
+   "primary_intent": "relationship",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "5〜25",
+    "edges": "5〜40"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "relation": "connection",
+    "generality": "position",
+    "cluster": "proximity"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "概念同士がどの種類の関係で結ばれるかを一望させる",
+    "関係が多対多で、文章にすると前後の参照が頻発する"
+   ],
+   "avoid_when": [
+    "関係が原因から結果への向きを持ち、連鎖が主題である",
+    "ノードが 30 を超え、辺のラベルが読めなくなる",
+    "関係の種類より、つながりの密度や中心が主題である"
+   ],
+   "alternatives": [
+    "er-diagram",
+    "network"
+   ],
+   "has_intent_means": false
+  },
+  "er-diagram": {
+   "name": "ER図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/er-diagram.md",
+   "status": "available",
+   "aliases": [
+    "entity-relationship-diagram",
+    "erd"
+   ],
+   "primary_intent": "relationship",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "3〜20",
+    "edges": "2〜30"
+   },
+   "precision": "exact",
+   "complexity": "high",
+   "visual_encoding": {
+    "relationship": "connection",
+    "cardinality": "shape",
+    "attribute-ownership": "containment"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "データの実体（エンティティ）同士の関係と多重度を正確に読ませる",
+    "テーブル設計やドメインモデルを、属性と識別子を含めて共有する"
+   ],
+   "avoid_when": [
+    "読み手が多重度の記法（鳥の足など）を知らない",
+    "対象がデータの実体ではなく、概念や組織である",
+    "実体が 30 を超え、線が交差して追えない"
+   ],
+   "alternatives": [
+    "concept-map",
+    "data-flow-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "network": {
+   "name": "ネットワーク図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/network.md",
+   "status": "available",
+   "aliases": [
+    "network-diagram",
+    "network-graph",
+    "node-link-diagram"
+   ],
+   "primary_intent": "relationship",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "10〜100",
+    "edges": "10〜300"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "relation": "connection",
+    "community": "proximity",
+    "centrality": "size",
+    "group": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "つながりの密度・中心・孤立した部分など、関係の全体像を見せる",
+    "ノードが多く、個々の関係より構造の形が答えである"
+   ],
+   "avoid_when": [
+    "個々の関係の種類や向きを読ませたい",
+    "ノードが数百を超え、線が重なって毛玉になる",
+    "配置に意味がないのに、読み手が位置を意味として読む恐れがある"
+   ],
+   "alternatives": [
+    "concept-map",
+    "er-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "cause-effect-chain": {
+   "name": "因果連鎖図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/cause-effect-chain.md",
+   "status": "available",
+   "aliases": [
+    "cause-effect-chains",
+    "causal-chain",
+    "causal-chain-diagram"
+   ],
+   "primary_intent": "causation",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [],
+   "scale": {
+    "nodes": "3〜20",
+    "edges": "3〜30"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "cause-effect": "connection",
+    "order": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "原因から結果へ至る連鎖を、分岐や合流を含めて辿らせる",
+    "障害や施策の波及を、何が何を引き起こしたかの順に示す"
+   ],
+   "avoid_when": [
+    "連動の有無を示すにとどまり、原因と結果の向きを主張できない",
+    "因果がループし、始点と終点が決まらない",
+    "原因の組み合わせ条件（AND・OR）を正確に読ませたい"
+   ],
+   "alternatives": [
+    "ishikawa-diagram",
+    "feedback-diagram",
+    "fault-tree"
+   ],
+   "has_intent_means": false
+  },
+  "ishikawa-diagram": {
+   "name": "特性要因図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/ishikawa-diagram.md",
+   "status": "available",
+   "aliases": [
+    "fishbone-diagram",
+    "cause-and-effect-diagram",
+    "fishbone-chart"
+   ],
+   "primary_intent": "causation",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "categories": "4〜8",
+    "levels": "2〜3",
+    "items": "10〜40"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "cause-effect": "connection",
+    "level": "alignment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの結果に対する原因を、分類ごとに洗い出して網羅する",
+    "原因の候補がどの分類に偏っているかを見せる"
+   ],
+   "avoid_when": [
+    "結果が複数あり、原因が結果の間で共有される",
+    "原因同士の連鎖や組み合わせ条件が主題である",
+    "原因が 50 を超え、骨に書ききれない"
+   ],
+   "alternatives": [
+    "cause-effect-chain",
+    "fault-tree"
+   ],
+   "has_intent_means": false
+  },
+  "fault-tree": {
+   "name": "故障の木",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/fault-tree.md",
+   "status": "available",
+   "aliases": [
+    "failure-tree",
+    "fault-tree-diagram",
+    "fault-tree-analysis"
+   ],
+   "primary_intent": "causation",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜6",
+    "nodes": "5〜40"
+   },
+   "precision": "exact",
+   "complexity": "high",
+   "visual_encoding": {
+    "gate-type": "shape",
+    "cause-effect": "connection",
+    "level": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "頂上の事象がどの原因の組み合わせ（AND・OR）で起きるかを論理的に示す",
+    "単一の原因で致命的な結果に至る経路を見つけさせる"
+   ],
+   "avoid_when": [
+    "読み手が論理ゲートの記号を知らない",
+    "原因の組み合わせ条件が定まらず、因果の向きだけを示したい",
+    "因果がループする"
+   ],
+   "alternatives": [
+    "cause-effect-chain",
+    "ishikawa-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "feedback-diagram": {
+   "name": "因果ループ図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/feedback-diagram.md",
+   "status": "available",
+   "aliases": [
+    "causal-loop-diagram",
+    "feedback-loop-diagram",
+    "cld"
+   ],
+   "primary_intent": "causation",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "4〜15",
+    "edges": "5〜25"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "cause-effect": "connection",
+    "polarity": "shape",
+    "loop": "proximity"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "変数同士の因果が巡り、自己強化や均衡のループを作ることを示す",
+    "施策の効果が時間をおいて自分に跳ね返る構造を説明する"
+   ],
+   "avoid_when": [
+    "因果が一方向で、ループがない",
+    "蓄積される量と流入出の速さを区別して読ませたい",
+    "読み手が極性（+・−）とループの記号を知らない"
+   ],
+   "alternatives": [
+    "cause-effect-chain",
+    "stock-flow-diagram",
+    "cycle-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "stock-flow-diagram": {
+   "name": "ストック・フロー図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/stock-flow-diagram.md",
+   "status": "available",
+   "aliases": [
+    "system-dynamics-diagram",
+    "stock-and-flow-diagram",
+    "system-dynamics"
+   ],
+   "primary_intent": "causation",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "3〜15",
+    "edges": "3〜25"
+   },
+   "precision": "overview",
+   "complexity": "high",
+   "visual_encoding": {
+    "element-type": "shape",
+    "material-flow": "connection",
+    "information-link": "connection"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "蓄積される量（ストック）と、それを増減させる速さ（フロー）の因果を示す",
+    "流入と流出の差が蓄積を変える構造を、シミュレーションの前提として共有する"
+   ],
+   "avoid_when": [
+    "蓄積と流量を区別する必要がなく、因果の向きだけを示したい",
+    "読み手がストック・フローの記法を知らない",
+    "実際の流量や蓄積の値を正確に比べさせたい"
+   ],
+   "alternatives": [
+    "feedback-diagram",
+    "cause-effect-chain"
+   ],
+   "has_intent_means": false
+  },
+  "cycle-diagram": {
+   "name": "サイクル図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/cycle-diagram.md",
+   "status": "available",
+   "aliases": [
+    "cycle-chart",
+    "circular-process-diagram",
+    "loop-diagram"
+   ],
+   "primary_intent": "cycle",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "steps": "3〜8"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "stage-order": "position",
+    "transition": "connection"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "段階が繰り返し、末尾が先頭へ戻ることを示す",
+    "繰り返しの一周に含まれる段階と、その順序を覚えさせる"
+   ],
+   "avoid_when": [
+    "戻りがなく、順序が一方向で終わる",
+    "段階が 9 つ以上、または途中に分岐や複数の戻り先がある"
+   ],
+   "alternatives": [
+    "sequence-diagram",
+    "cause-effect-chain"
+   ],
+   "has_intent_means": false
+  },
+  "quadrant-matrix": {
+   "name": "2軸マトリクス",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/quadrant-matrix.md",
+   "status": "available",
+   "aliases": [
+    "two-by-two-matrix",
+    "quadrant-chart",
+    "four-quadrant-matrix"
+   ],
+   "primary_intent": "positioning",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "ordinal"
+   ],
+   "scale": {
+    "items": "3〜20",
+    "cells": "4（象限）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "horizontal-criterion": "position",
+    "vertical-criterion": "position",
+    "quadrant": "containment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "対象を二つの評価軸で位置づけ、どの象限に入るかを見せる",
+    "象限ごとの方針（投資・撤退など）を対象と結び付けて示す"
+   ],
+   "avoid_when": [
+    "軸が測定値で、二つの量の連動が主題である",
+    "評価の観点が三つ以上ある",
+    "評価の根拠が示せず、位置が恣意的に見える"
+   ],
+   "alternatives": [
+    "continuum",
+    "scatter-plot",
+    "comparison-table"
+   ],
+   "has_intent_means": false
+  },
+  "continuum": {
+   "name": "両極スケール",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/continuum.md",
+   "status": "available",
+   "aliases": [
+    "bipolar-scale",
+    "spectrum-diagram",
+    "continuum-scale"
+   ],
+   "primary_intent": "positioning",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "ordinal"
+   ],
+   "scale": {
+    "items": "2〜10"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "rating": "position",
+    "group": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "対象を一つの観点で両極の間に位置づける",
+    "二つの極の間に段階があることを示し、対象の相対的な位置を見せる"
+   ],
+   "avoid_when": [
+    "観点が二つ以上ある",
+    "位置が測定値で、正確に比べさせたい",
+    "両極が対立せず、一方向の大小しかない"
+   ],
+   "alternatives": [
+    "quadrant-matrix",
+    "comparison-table"
+   ],
+   "has_intent_means": false
+  },
+  "timeline": {
+   "name": "タイムライン",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/timeline.md",
+   "status": "available",
+   "aliases": [
+    "time-line",
+    "event-timeline",
+    "horizontal-timeline"
+   ],
+   "primary_intent": "chronology",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "categorical"
+   ],
+   "scale": {
+    "items": "3〜20",
+    "categories": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "category": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "出来事がいつ、どの順で起きたかを一本の時間軸で見せる",
+    "出来事の間隔の長短や、集中した時期を読ませる",
+    "全体の経緯を一枚で一覧させる"
+   ],
+   "avoid_when": [
+    "出来事が期間を持ち、重なりや並行が主題である",
+    "出来事が 20 を超え、ラベルが重なって読めない",
+    "日付を正確に読ませる（位置からは概算しか読めない）"
+   ],
+   "alternatives": [
+    "priestley-timeline",
+    "vertical-timeline",
+    "gantt-chart"
+   ],
+   "has_intent_means": false
+  },
+  "gantt-chart": {
+   "name": "ガントチャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/gantt-chart.md",
+   "status": "available",
+   "aliases": [
+    "gantt",
+    "gantt-diagram"
+   ],
+   "primary_intent": "schedule",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "temporal"
+   ],
+   "scale": {
+    "items": "5〜30",
+    "groups": "1〜6",
+    "edges": "0〜20"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "task": "position",
+    "start-end": "position",
+    "duration": "length",
+    "dependency": "connection",
+    "milestone": "shape"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "作業の開始と終了、並行する作業、節目を一枚の計画として見せる",
+    "作業の前後の依存を、棒の並びと矢印で示す",
+    "計画と実績を同じ軸に重ね、遅れを見せる"
+   ],
+   "avoid_when": [
+    "作業が一列で、並行も依存もない",
+    "作業が 30 を超え、行が細くて読めない（段階ごとに分ける）",
+    "作業間の依存と最長経路が主題で、時期は二の次である"
+   ],
+   "alternatives": [
+    "pert-chart",
+    "technology-roadmap",
+    "timeline"
+   ],
+   "has_intent_means": false
+  },
+  "pert-chart": {
+   "name": "PERT 図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/pert-chart.md",
+   "status": "available",
+   "aliases": [
+    "pert-diagram",
+    "activity-network-diagram",
+    "critical-path-diagram",
+    "cpm-chart"
+   ],
+   "primary_intent": "schedule",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical",
+    "temporal"
+   ],
+   "scale": {
+    "nodes": "5〜30",
+    "edges": "〜50"
+   },
+   "precision": "exact",
+   "complexity": "high",
+   "visual_encoding": {
+    "dependency": "connection",
+    "order": "position",
+    "critical-path": "color"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "作業間の依存関係から、全体の完了日を決める最長経路を示す",
+    "どの作業の遅れが完了日を遅らせ、どの作業に余裕があるかを読ませる"
+   ],
+   "avoid_when": [
+    "作業間に依存がなく、時期と並行だけを見せれば足りる",
+    "読み手が最早開始・最遅終了などの記法を知らず、凡例を付けられない"
+   ],
+   "alternatives": [
+    "gantt-chart"
+   ],
+   "has_intent_means": false
+  },
+  "technology-roadmap": {
+   "name": "ロードマップ",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/technology-roadmap.md",
+   "status": "available",
+   "aliases": [
+    "roadmap",
+    "product-roadmap",
+    "strategic-roadmap"
+   ],
+   "primary_intent": "schedule",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "temporal"
+   ],
+   "scale": {
+    "periods": "3〜6",
+    "series": "2〜5"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "lane": "containment",
+    "duration": "length"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "年や四半期の粗い時期で、何をいつごろ行うかの方向性を示す",
+    "市場・製品・技術などの層をそろえ、層の間の時期の対応を見せる"
+   ],
+   "avoid_when": [
+    "日付や所要期間を正確に読ませる必要がある",
+    "作業間の依存や待ちが主題で、遅れの影響を判断させたい"
+   ],
+   "alternatives": [
+    "gantt-chart"
+   ],
+   "has_intent_means": false
+  },
+  "minto-pyramid": {
+   "name": "ピラミッドストラクチャー",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/minto-pyramid.md",
+   "status": "available",
+   "aliases": [
+    "pyramid-structure",
+    "pyramid-principle",
+    "minto-pyramid-principle",
+    "argument-pyramid"
+   ],
+   "primary_intent": "argumentation",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜4",
+    "nodes": "3〜15"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "support-relationship": "connection",
+    "level": "position",
+    "sibling-order": "alignment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの結論と、それを支える根拠の階層を示す",
+    "根拠が 2〜4 の群にまとまり、各群がさらに事実で支えられる",
+    "反論を含めず、結論の支えだけを見せる"
+   ],
+   "avoid_when": [
+    "反論や反証を示す必要がある",
+    "根拠と結論の間の推論の正当性そのものを問う",
+    "階層が深く、または根拠が多く、一枚に収まらない"
+   ],
+   "alternatives": [
+    "toulmin-map",
+    "ibis-map",
+    "tree-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "toulmin-map": {
+   "name": "トゥールミン図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/toulmin-map.md",
+   "status": "available",
+   "aliases": [
+    "toulmin-model",
+    "toulmin-diagram",
+    "toulmin-argument-model",
+    "argument-slide"
+   ],
+   "primary_intent": "argumentation",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "3〜8",
+    "edges": "2〜8"
+   },
+   "precision": "exact",
+   "complexity": "medium",
+   "visual_encoding": {
+    "inference": "connection",
+    "role": "position"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの主張について、根拠から主張への推論がなぜ成り立つか（論拠）を示す",
+    "主張の限定（確からしさ）と、成り立たない条件（反証）を併せて示す",
+    "読み手に推論の妥当性を検討させる"
+   ],
+   "avoid_when": [
+    "主張が複数あり、それぞれの根拠の階層を一望させる",
+    "論点に対する複数の立場を並べて比べる",
+    "読み手が論拠・反証という役割の区別を知らず、凡例を添えられない"
+   ],
+   "alternatives": [
+    "minto-pyramid",
+    "ibis-map"
+   ],
+   "has_intent_means": false
+  },
+  "ibis-map": {
+   "name": "IBIS 図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/ibis-map.md",
+   "status": "available",
+   "aliases": [
+    "ibis",
+    "issue-based-information-system",
+    "ibis-argumentation-map",
+    "dialogue-map",
+    "issue-map"
+   ],
+   "primary_intent": "argumentation",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "5〜40",
+    "levels": "2〜5"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "node-type": "shape",
+    "response-relationship": "connection",
+    "depth": "position",
+    "stance": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの論点に対する複数の立場と、各立場への賛成・反対の論拠を記録する",
+    "議論の経過を、誰が何に応答したかの構造として残す",
+    "結論が出ていない、または複数の立場が併存する論点"
+   ],
+   "avoid_when": [
+    "結論が一つに決まっており、その根拠だけを示す",
+    "読み手が論点・立場・論拠の記法を知らず、凡例を添えられない",
+    "節が多く、一枚で応答の線を辿れない"
+   ],
+   "alternatives": [
+    "minto-pyramid",
+    "toulmin-map"
+   ],
+   "has_intent_means": false
+  },
+  "layer-diagram": {
+   "name": "レイヤー図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/layer-diagram.md",
+   "status": "available",
+   "aliases": [
+    "layer-chart",
+    "layered-diagram",
+    "stack-diagram",
+    "layered-architecture-diagram"
+   ],
+   "primary_intent": "layering",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜7",
+    "items": "各層 1〜6"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "layer-order": "position",
+    "layer": "containment",
+    "adjacency": "proximity"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "何が何の上に成り立つかを、積み重ねた帯で見せる",
+    "層の数が 7 以下で、各層の要素が少ない",
+    "層の順序が一列に決まる"
+   ],
+   "avoid_when": [
+    "層の中が枝分かれし、親子関係を読ませる",
+    "各層が全体に占める割合を読ませる",
+    "層をまたぐ依存や呼び出しの向きを正確に読ませる"
+   ],
+   "alternatives": [
+    "concentric-circles",
+    "temple",
+    "iceberg"
+   ],
+   "has_intent_means": false
+  },
+  "concentric-circles": {
+   "name": "同心円図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/concentric-circles.md",
+   "status": "available",
+   "aliases": [
+    "concentric-circle-diagram",
+    "onion-diagram",
+    "ring-diagram",
+    "nested-circles"
+   ],
+   "primary_intent": "layering",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜5",
+    "items": "各層 1〜8"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "layer-order": "position",
+    "nesting": "containment",
+    "layer-identity": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "層が入れ子で、中心からの距離に意味がある",
+    "中心に核となる対象があり、外側ほど遠い・広い・間接的である",
+    "層が 5 以下で、環の中に文字が収まる"
+   ],
+   "avoid_when": [
+    "層が入れ子でなく、上下の積み重ねである",
+    "環の面積から量や割合を読ませる",
+    "層の中の要素が多く、環の中に収まらない"
+   ],
+   "alternatives": [
+    "layer-diagram",
+    "venn-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "communication-diagram": {
+   "name": "コミュニケーション図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/communication-diagram.md",
+   "status": "available",
+   "aliases": [
+    "collaboration-diagram",
+    "uml-communication-diagram"
+   ],
+   "primary_intent": "step-order",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "actors": "3〜8",
+    "steps": "3〜15"
+   },
+   "precision": "exact",
+   "complexity": "high",
+   "visual_encoding": {
+    "actor": "position",
+    "link": "connection",
+    "related-actors": "proximity"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "どの主体とどの主体が直接やり取りするかのつながりを一目で示す",
+    "主体の配置を固定したまま、メッセージの順序を番号で読ませる"
+   ],
+   "avoid_when": [
+    "メッセージが 15 を超え、番号を辿る負担が大きい",
+    "呼び出しと応答の対応や待ち時間など、時間の流れそのものを読ませたい"
+   ],
+   "alternatives": [
+    "sequence-diagram",
+    "flowchart"
+   ],
+   "has_intent_means": true
+  },
+  "swim-lane-diagram": {
+   "name": "スイムレーン図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/swim-lane-diagram.md",
+   "status": "available",
+   "aliases": [
+    "swimlane-diagram",
+    "swim-lane-flowchart",
+    "cross-functional-flowchart"
+   ],
+   "primary_intent": "branching",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "actors": "2〜6",
+    "steps": "5〜25"
+   },
+   "precision": "exact",
+   "complexity": "medium",
+   "visual_encoding": {
+    "actor": "containment",
+    "flow": "connection",
+    "node-type": "shape"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の担当にまたがる処理で、誰がどの段階を行い、どこで引き継ぐかを示す",
+    "担当の間を行き来する回数や、待ちが生じる箇所を見せる"
+   ],
+   "avoid_when": [
+    "担当が一つで、分担を示す必要がない",
+    "担当が 7 つ以上あり、レーンが細くなって段階を書き込めない"
+   ],
+   "alternatives": [
+    "flowchart",
+    "sequence-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "data-table": {
+   "name": "表",
+   "layer": "primitive",
+   "family": "table",
+   "path": "table/data-table.md",
+   "status": "available",
+   "aliases": [
+    "table",
+    "reference-table",
+    "lookup-table",
+    "data-grid"
+   ],
+   "primary_intent": "lookup",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "items": "2〜50",
+    "categories": "2〜8"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "item": "alignment",
+    "attribute": "alignment"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "項目ごとの値を、読み手が探して正確に参照する",
+    "同じ属性の値を縦にそろえ、該当する行を見つけやすくする"
+   ],
+   "avoid_when": [
+    "読み手に通読させる情報で、探して参照する読み方ではない",
+    "値の大小や傾向を知覚させたい"
+   ],
+   "alternatives": [
+    "comparison-table",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "metro-map": {
+   "name": "メトロマップ",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/metro-map.md",
+   "status": "available",
+   "aliases": [
+    "subway-map",
+    "tube-map",
+    "transit-map-metaphor"
+   ],
+   "primary_intent": "schedule",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical",
+    "temporal"
+   ],
+   "scale": {
+    "series": "2〜6",
+    "nodes": "5〜30"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "series": "color",
+    "order": "position",
+    "succession": "connection"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の系列（取り組みの流れ）が節目で交わることを、路線図の比喩で示す",
+    "時期の正確さを求めず、系列の数と交わりの全体像を一目で見せる"
+   ],
+   "avoid_when": [
+    "時期や期間を正確に読ませる必要がある",
+    "系列が一本で、交わる節目がない"
+   ],
+   "alternatives": [
+    "gantt-chart",
+    "technology-roadmap"
+   ],
+   "has_intent_means": false
+  },
+  "temple": {
+   "name": "神殿の比喩",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/temple.md",
+   "status": "available",
+   "aliases": [
+    "temple-diagram",
+    "pillar-diagram",
+    "pillars-diagram",
+    "house-diagram"
+   ],
+   "primary_intent": "layering",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜4",
+    "items": "柱 2〜6"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "layer-order": "position",
+    "role": "shape",
+    "parallel-elements": "alignment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の要素が並んで一つの目標を支える構造を、比喩で印象づける",
+    "土台・柱・屋根の三段に内容が収まる",
+    "読み手が専門家でなく、記法より印象を優先する場面"
+   ],
+   "avoid_when": [
+    "柱が 6 を超え、文字が収まらない",
+    "要素の間に順序や依存があり、並列でない",
+    "土台や支えるという比喩が内容に合わない"
+   ],
+   "alternatives": [
+    "layer-diagram",
+    "concentric-circles"
+   ],
+   "has_intent_means": false
+  },
+  "iceberg": {
+   "name": "氷山の比喩",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/iceberg.md",
+   "status": "available",
+   "aliases": [
+    "iceberg-diagram",
+    "iceberg-model",
+    "iceberg-chart"
+   ],
+   "primary_intent": "layering",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "levels": "2〜4",
+    "items": "各層 1〜5"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "layer-order": "position",
+    "visibility": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "見えている部分と、その下にある隠れた部分を対比して見せる",
+    "表に出る層が一つで、その下に 1〜3 の層がある",
+    "読み手が専門家でなく、記法より印象を優先する場面"
+   ],
+   "avoid_when": [
+    "見える・見えないという対比が内容にない",
+    "各層の大きさや割合を正確に読ませる",
+    "層が 4 を超える、または各層の要素が多い"
+   ],
+   "alternatives": [
+    "layer-diagram",
+    "concentric-circles"
+   ],
+   "has_intent_means": false
+  },
+  "funnel": {
+   "name": "漏斗の比喩",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/funnel.md",
+   "status": "available",
+   "aliases": [
+    "funnel-chart",
+    "funnel-diagram",
+    "conversion-funnel"
+   ],
+   "primary_intent": "flow",
+   "secondary_intents": [],
+   "shape": "sequence",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "steps": "3〜7"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "stage": "position",
+    "remaining-amount": "length"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "一本の経路を進むにつれて段階ごとに量が減ることを、漏斗の形で直感的に見せる",
+    "どの段階で最も減るかを、段階の順序とともに示す"
+   ],
+   "avoid_when": [
+    "経路が分岐・合流し、一本でない",
+    "各段階の値や減少率を正確に読ませたい",
+    "量が段階の途中で増える"
+   ],
+   "alternatives": [
+    "sankey",
+    "waterfall-chart",
+    "chord"
+   ],
+   "has_intent_means": false
+  },
+  "tree-metaphor": {
+   "name": "樹木の比喩",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/tree-metaphor.md",
+   "status": "available",
+   "aliases": [
+    "tree",
+    "tree-illustration",
+    "growth-tree",
+    "roots-and-branches"
+   ],
+   "primary_intent": "parent-child",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "5〜20",
+    "levels": "2〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "parent-child-relationship": "connection",
+    "depth": "position",
+    "role": "shape"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "土台（根）から幹を経て枝へ派生する構造を、比喩で印象づける",
+    "階層が浅く、項目が少ない",
+    "読み手が専門家でなく、記法より印象を優先する場面"
+   ],
+   "avoid_when": [
+    "項目が多く、枝や葉に文字が収まらない",
+    "土台や派生という比喩が内容に合わない",
+    "個々の項目の関係を正確に読ませる"
+   ],
+   "alternatives": [
+    "tree-diagram",
+    "mind-map"
+   ],
+   "has_intent_means": false
+  },
+  "data-flow-diagram": {
+   "name": "データフロー図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/data-flow-diagram.md",
+   "status": "available",
+   "aliases": [
+    "dfd",
+    "dataflow-diagram"
+   ],
+   "primary_intent": "dependency",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "nodes": "3〜20",
+    "edges": "3〜30"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "data-movement": "connection",
+    "element-type": "shape",
+    "boundary": "containment"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "処理がどのデータを受け取り、どのデータストアを読み書きするかを示す",
+    "あるデータの変更が、どの処理と保存先に及ぶかを辿らせる"
+   ],
+   "avoid_when": [
+    "処理の順序や条件分岐が主題である",
+    "データの量や移動した件数を比べさせたい",
+    "読み手が処理・データストア・外部実体の記号を知らない"
+   ],
+   "alternatives": [
+    "cause-effect-chain",
+    "concept-map",
+    "gantt-chart"
+   ],
+   "has_intent_means": false
+  },
+  "force-field-diagram": {
+   "name": "フォースフィールド図",
+   "layer": "primitive",
+   "family": "diagram",
+   "path": "diagram/force-field-diagram.md",
+   "status": "available",
+   "aliases": [
+    "force-field-analysis",
+    "lewin-force-field-diagram"
+   ],
+   "primary_intent": "opposing-forces",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "ordinal"
+   ],
+   "scale": {
+    "items": "4〜16",
+    "groups": "2（推進・抑制）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "side": "position",
+    "direction": "shape",
+    "strength": "length"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "変化を推進する要因と妨げる要因を対置し、どちらが優勢かを見せる",
+    "施策の実行前に、強めるべき要因と弱めるべき要因を共有する"
+   ],
+   "avoid_when": [
+    "要因の強さを測定値として正確に比べさせたい",
+    "要因同士の因果の連鎖が主題である",
+    "要因が一方にしかなく、対立の構図がない"
+   ],
+   "alternatives": [
+    "cause-effect-chain",
+    "diverging-bar-chart",
+    "comparison-table"
+   ],
+   "has_intent_means": false
+  },
+  "diverging-bar-chart": {
+   "name": "分岐横棒グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/diverging-bar-chart.md",
+   "status": "available",
+   "aliases": [
+    "diverging-bar",
+    "diverging-column-chart",
+    "positive-negative-bar-chart"
+   ],
+   "primary_intent": "deviation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜30",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "deviation": "length",
+    "direction": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "正負の値が混在する増減・損益・差を項目ごとに示す",
+    "基準値（ゼロ・目標・平均）からの隔たりを強調する",
+    "項目を隔たりの順に並べて最大のプラスとマイナスを見せる"
+   ],
+   "avoid_when": [
+    "値がすべて同符号で分岐の意味がない",
+    "基準からの隔たりではなく量そのものを比べる",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "diverging-stacked-bar-chart",
+    "spine-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "diverging-stacked-bar-chart": {
+   "name": "分岐対称積み上げ横棒グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/diverging-stacked-bar-chart.md",
+   "status": "available",
+   "aliases": [
+    "diverging-stacked-bar",
+    "diverging-stacked-column-chart",
+    "likert-chart"
+   ],
+   "primary_intent": "deviation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "ordinal",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜15",
+    "categories": "3〜7"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "category": "position",
+    "response": "color",
+    "share": "length",
+    "balance": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "賛成・中立・反対のような態度を含む調査結果を示す",
+    "複数の設問の傾きを一覧で比べる",
+    "回答区分が三〜七段階の順序尺度である"
+   ],
+   "avoid_when": [
+    "回答区分に順序がない",
+    "中立の区分がなく中央を決められない",
+    "個々の割合を正確に読ませる必要がある",
+    "単色の媒体で区分の濃淡が区別できない"
+   ],
+   "alternatives": [
+    "diverging-bar-chart",
+    "spine-chart"
+   ],
+   "has_intent_means": false
+  },
+  "spine-chart": {
+   "name": "対称棒グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/spine-chart.md",
+   "status": "available",
+   "aliases": [
+    "spine-graph",
+    "back-to-back-bar-chart",
+    "mirrored-bar-chart"
+   ],
+   "primary_intent": "deviation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜20",
+    "series": "2"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "length",
+    "element": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つのデータを対照的な二要素（男性／女性など）に分けて比べる",
+    "複数の項目で二要素の偏りを一覧する",
+    "二要素の合計を項目の全体として割合で見せる"
+   ],
+   "avoid_when": [
+    "要素が三つ以上ある",
+    "二要素が対照的でなく左右に置く根拠がない",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "diverging-bar-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "surplus-deficit-filled-line": {
+   "name": "損益面グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/surplus-deficit-filled-line.md",
+   "status": "available",
+   "aliases": [
+    "surplus-deficit-filled-line-chart",
+    "surplus-deficit-line-chart",
+    "difference-area-chart"
+   ],
+   "primary_intent": "deviation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "periods": "10〜300",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "value": "position",
+    "deviation": "area",
+    "sign": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "基準線からの隔たりの推移（損益・収支・目標との差）を見せる",
+    "正負が入れ替わる時期を目立たせる",
+    "期間が多く棒では細かすぎる"
+   ],
+   "avoid_when": [
+    "基準線が定まらない",
+    "値が基準の片側にしか振れない",
+    "個々の時点の値を正確に読ませる必要がある",
+    "単色の媒体で上下の面の色が区別できない"
+   ],
+   "alternatives": [
+    "diverging-bar-chart",
+    "line-chart"
+   ],
+   "has_intent_means": false
+  },
+  "scatter-plot": {
+   "name": "散布図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/scatter-plot.md",
+   "status": "available",
+   "aliases": [
+    "scatterplot",
+    "scatter-chart",
+    "scatter-graph",
+    "xy-plot"
+   ],
+   "primary_intent": "correlation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative",
+    "quantitative"
+   ],
+   "scale": {
+    "points": "10〜数千（重なりが読める範囲）",
+    "series": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "x-variable": "position",
+    "y-variable": "position",
+    "group": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "二つの数値変数の間に連動があるか、どの向きにあるかを見せる",
+    "全体の傾向から外れた項目を目立たせる"
+   ],
+   "avoid_when": [
+    "一方の変数が時間で、推移そのものが答えである",
+    "点が重なって密度が読めないほど件数が多い",
+    "個々の値を正確に読ませる"
+   ],
+   "alternatives": [
+    "bubble-chart",
+    "xy-heatmap"
+   ],
+   "has_intent_means": false
+  },
+  "line-column-chart": {
+   "name": "棒と折れ線グラフの複合グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/line-column-chart.md",
+   "status": "available",
+   "aliases": [
+    "line-column",
+    "line-and-column-chart",
+    "combo-chart",
+    "bar-line-chart"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [
+    "correlation"
+   ],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative",
+    "quantitative"
+   ],
+   "scale": {
+    "periods": "3〜30",
+    "series": "2（棒と線で一つずつ）"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "period": "position",
+    "amount": "length",
+    "rate": "position",
+    "series": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "量（売上など）と比率（成長率など）の推移を同じ期間で並べて見せる",
+    "量と割合の関係が時期によってどう変わるかを見せる"
+   ],
+   "avoid_when": [
+    "二つの系列が同じ単位で、一つの軸で描ける",
+    "二つの軸の目盛を操作しないと関係が見えない",
+    "期間が三十を超え、棒が細くなって読めない"
+   ],
+   "alternatives": [
+    "line-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "connected-scatter-plot": {
+   "name": "つなげた散布図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/connected-scatter-plot.md",
+   "status": "available",
+   "aliases": [
+    "connected-scatterplot",
+    "connected-scatter-chart"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [
+    "correlation"
+   ],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative",
+    "quantitative"
+   ],
+   "scale": {
+    "periods": "5〜30",
+    "series": "1〜2"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "x-variable": "position",
+    "y-variable": "position",
+    "time-order": "connection",
+    "series": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "二つの変数が時間とともにどう連動して変化したかを一本の軌跡で見せる",
+    "変化の方向が途中で反転した時期を見せる"
+   ],
+   "avoid_when": [
+    "読み手がこの読み方に慣れておらず、説明を添えられない",
+    "時点が多く、軌跡が交差して順序を追えない",
+    "一方の変数の推移だけが答えである"
+   ],
+   "alternatives": [
+    "line-chart",
+    "scatter-plot"
+   ],
+   "has_intent_means": false
+  },
+  "bubble-chart": {
+   "name": "バブルチャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/bubble-chart.md",
+   "status": "available",
+   "aliases": [
+    "bubble",
+    "bubble-plot",
+    "bubble-scatter-plot"
+   ],
+   "primary_intent": "correlation",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative",
+    "quantitative",
+    "quantitative"
+   ],
+   "scale": {
+    "points": "5〜100（円が重なって読めなくなる前まで）",
+    "series": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "x-variable": "position",
+    "y-variable": "position",
+    "third-variable": "area",
+    "group": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "二変数の関係に、規模（人口・売上など）を円の大きさで加える",
+    "規模の大きい項目が関係のどの位置にあるかを目立たせる"
+   ],
+   "avoid_when": [
+    "第三の変数を正確に比べさせる（面積の差は読み取りにくい）",
+    "点が多く、円が重なって位置が読めない",
+    "第三の変数が規模ではなく、大きさで表す意味がない"
+   ],
+   "alternatives": [
+    "scatter-plot",
+    "xy-heatmap"
+   ],
+   "has_intent_means": false
+  },
+  "xy-heatmap": {
+   "name": "ヒートマップ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/xy-heatmap.md",
+   "status": "available",
+   "aliases": [
+    "heatmap",
+    "heat-map",
+    "matrix-heatmap",
+    "grid-heatmap"
+   ],
+   "primary_intent": "correlation",
+   "secondary_intents": [],
+   "shape": "matrix",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "各軸 3〜30",
+    "cells": "900 程度まで"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "row-category": "position",
+    "column-category": "position",
+    "value": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "二つのカテゴリの組み合わせごとに、値が高い・低い領域の傾向を見せる",
+    "曜日と時間帯のような格子で、集中している組み合わせを見せる"
+   ],
+   "avoid_when": [
+    "値の差を正確に読ませる（色の濃淡は細かい差を表せない）",
+    "白黒印刷など、色の濃淡を再現できない媒体で見せる",
+    "一方の軸が連続する数値で、格子に区切る意味がない"
+   ],
+   "alternatives": [
+    "scatter-plot",
+    "bubble-chart"
+   ],
+   "has_intent_means": false
+  },
+  "dot-strip-plot": {
+   "name": "線状の散布図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/dot-strip-plot.md",
+   "status": "available",
+   "aliases": [
+    "dot-strip",
+    "strip-plot",
+    "strip-chart",
+    "one-dimensional-scatter-plot"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [
+    "ranking"
+   ],
+   "shape": "items",
+   "attributes": [
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "categories": "1〜12（線の本数）",
+    "points": "1本あたり 3〜50"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "value": "position",
+    "category": "position",
+    "highlighted-item": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "個々の値が一本の軸上のどこに集まり、どこが空いているかを見せる",
+    "複数の分野にわたる順位や値を、分野ごとに一本の線で省スペースに並べる"
+   ],
+   "avoid_when": [
+    "同じ値や近い値の点が多く、重なって個々の点が見分けられない",
+    "個々の値を正確に読ませる必要がある",
+    "一本の線あたりの点が数百を超え、密度しか読めなくなる"
+   ],
+   "alternatives": [
+    "barcode-plot",
+    "dot-plot"
+   ],
+   "has_intent_means": false
+  },
+  "slope-chart": {
+   "name": "スロープ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/slope-chart.md",
+   "status": "available",
+   "aliases": [
+    "slope",
+    "slope-graph",
+    "slopegraph"
+   ],
+   "primary_intent": "ranking",
+   "secondary_intents": [
+    "time-series-change"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜20（線の本数）",
+    "periods": "2〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "period": "position",
+    "value": "position",
+    "identity": "connection",
+    "change": "angle"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "二時点または二条件の間で、項目の順位がどう入れ替わったかを見せる",
+    "推移の途中を省き、始点と終点の差だけに注目させる"
+   ],
+   "avoid_when": [
+    "時点が四つ以上あり、途中の推移が答えに含まれる",
+    "項目が多く、線が交差して追えない",
+    "個々の値を正確に読ませる"
+   ],
+   "alternatives": [
+    "bump-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": true
+  },
+  "lollipop-chart": {
+   "name": "ロリポップチャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/lollipop-chart.md",
+   "status": "available",
+   "aliases": [
+    "lollipop-plot",
+    "lollipop-graph"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [
+    "ranking"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜30",
+    "series": "1〜2"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "position",
+    "series": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "値そのものを点で目立たせて項目ごとに比べる",
+    "軸をゼロから始められない値の範囲で大小を比べる",
+    "順位と値の両方を目立たせる"
+   ],
+   "avoid_when": [
+    "値の差が小さく点の位置の差が読めない",
+    "同じ項目に重ねる系列が三つ以上ある",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "bar-chart",
+    "proportional-symbol"
+   ],
+   "has_intent_means": false
+  },
+  "bump-chart": {
+   "name": "順位変動グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/bump-chart.md",
+   "status": "available",
+   "aliases": [
+    "bump",
+    "bump-plot",
+    "ranking-line-chart"
+   ],
+   "primary_intent": "ranking",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "temporal",
+    "ordinal"
+   ],
+   "scale": {
+    "items": "3〜12（線の本数）",
+    "periods": "3〜15"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "period": "position",
+    "rank": "position",
+    "identity": "connection",
+    "highlighted-item": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の時点にわたって、各項目の順位がどう入れ替わったかを見せる",
+    "値の差ではなく、順位の上下だけに注目させる"
+   ],
+   "avoid_when": [
+    "順位の差ではなく値の差を読ませる",
+    "項目が十数を超え、線が交差して追えない",
+    "時点が二つしかない"
+   ],
+   "alternatives": [
+    "slope-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "histogram": {
+   "name": "ヒストグラム",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/histogram.md",
+   "status": "available",
+   "aliases": [
+    "frequency-histogram",
+    "histogram-chart"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "points": "30 以上（元データの件数）",
+    "groups": "5〜30（階級の数）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "value-range": "position",
+    "frequency": "length"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの数値の分布の形（山の数・偏り・裾の長さ）を見せる",
+    "値がどの範囲に集中し、外れ値がどこにあるかを見せる"
+   ],
+   "avoid_when": [
+    "件数が少なく、階級ごとの頻度が安定しない",
+    "複数の集団を重ねて比べる（棒が重なって読めない）",
+    "個々の項目の値を読ませる"
+   ],
+   "alternatives": [
+    "frequency-polygon",
+    "box-plot"
+   ],
+   "has_intent_means": false
+  },
+  "box-plot": {
+   "name": "箱ひげ図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/box-plot.md",
+   "status": "available",
+   "aliases": [
+    "boxplot",
+    "box-and-whisker-plot",
+    "box-whisker-plot"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "groups": "2〜20",
+    "points": "1集団あたり 5 以上"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "group": "position",
+    "median": "position",
+    "quartile-range": "length",
+    "outlier": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の集団の中央値と値の幅を、同じ軸で並べて比べる",
+    "集団ごとの外れ値の有無と位置を見せる"
+   ],
+   "avoid_when": [
+    "分布に山が二つ以上あり、五数要約では形を表せない",
+    "読み手が箱とひげの意味を知らず、凡例を添えられない",
+    "集団あたりの件数が数件しかない"
+   ],
+   "alternatives": [
+    "violin-plot",
+    "dot-plot"
+   ],
+   "has_intent_means": false
+  },
+  "violin-plot": {
+   "name": "バイオリンプロット",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/violin-plot.md",
+   "status": "available",
+   "aliases": [
+    "violin",
+    "violin-chart"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "groups": "1〜10",
+    "points": "1集団あたり 30 以上"
+   },
+   "precision": "overview",
+   "complexity": "high",
+   "visual_encoding": {
+    "group": "position",
+    "value": "position",
+    "density": "length",
+    "median": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "山が二つ以上ある分布や、裾の非対称な分布の形を集団ごとに見せる",
+    "五数要約では失われる形の違いを集団間で比べる"
+   ],
+   "avoid_when": [
+    "読み手が密度の幅の意味を知らず、説明を添えられない",
+    "集団あたりの件数が少なく、密度の推定が安定しない",
+    "中央値と幅だけで答えに届く"
+   ],
+   "alternatives": [
+    "box-plot",
+    "histogram"
+   ],
+   "has_intent_means": false
+  },
+  "population-pyramid": {
+   "name": "人口ピラミッド",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/population-pyramid.md",
+   "status": "available",
+   "aliases": [
+    "age-sex-pyramid",
+    "age-pyramid",
+    "back-to-back-histogram"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "ordinal",
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "5〜20（年齢階級）",
+    "groups": "2（左右に分ける区分）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "age-band": "position",
+    "population": "length",
+    "sex": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "年齢階級ごとの人数を男女で左右に分け、年齢構成の形を見せる",
+    "二つの区分の年齢分布が対称か、どちらにどの年齢層が多いかを見せる"
+   ],
+   "avoid_when": [
+    "左右に分ける区分が二つでない",
+    "年齢階級ごとの人数を正確に読ませる",
+    "年齢ではなく、時間の推移が答えである"
+   ],
+   "alternatives": [
+    "histogram",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "dot-plot": {
+   "name": "ドット・プロット",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/dot-plot.md",
+   "status": "available",
+   "aliases": [
+    "dumbbell-chart",
+    "dumbbell-plot",
+    "range-plot"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "2〜30",
+    "points": "1行あたり 2〜5"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "position",
+    "range": "length",
+    "value-type": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "カテゴリごとの値の幅（最小と最大）を一本の線分で並べて比べる",
+    "各カテゴリの代表的な数点（最小・中央・最大）の位置を同時に見せる"
+   ],
+   "avoid_when": [
+    "カテゴリあたりの値が多く、点が重なる",
+    "幅の中の分布の形が答えに含まれる",
+    "個々の値を正確に読ませる"
+   ],
+   "alternatives": [
+    "box-plot",
+    "dot-strip-plot"
+   ],
+   "has_intent_means": false
+  },
+  "barcode-plot": {
+   "name": "バーコード・プロット",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/barcode-plot.md",
+   "status": "available",
+   "aliases": [
+    "barcode-chart",
+    "rug-plot",
+    "tick-plot"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "categories": "1〜20（行数）",
+    "points": "1行あたり 10〜数百"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "value": "position",
+    "category": "position",
+    "highlighted-item": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "全データの値を一本の軸上に細い線で並べ、密集と空白を見せる",
+    "全体の中で特定の項目の位置を目立たせる"
+   ],
+   "avoid_when": [
+    "個々の値を正確に読ませる",
+    "一行あたりの点が数千を超え、線がつながって帯になる",
+    "分布の形（山の数）を要約して見せる"
+   ],
+   "alternatives": [
+    "dot-strip-plot",
+    "histogram"
+   ],
+   "has_intent_means": false
+  },
+  "cumulative-curve": {
+   "name": "累積曲線",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/cumulative-curve.md",
+   "status": "available",
+   "aliases": [
+    "cumulative-frequency-curve",
+    "cumulative-distribution-chart",
+    "lorenz-curve",
+    "ogive"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "points": "20 以上",
+    "series": "1〜4"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "value": "position",
+    "cumulative-frequency": "position",
+    "series": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "分布の不均衡（少数の項目が全体の大半を占める）を一本の曲線で見せる",
+    "ある値以下に全体の何割が入るかを読ませる"
+   ],
+   "avoid_when": [
+    "読み手が累積の読み方に慣れておらず、添え書きで補えない",
+    "山の数や偏りの形そのものが答えである",
+    "個々の項目の値を読ませる"
+   ],
+   "alternatives": [
+    "histogram",
+    "frequency-polygon"
+   ],
+   "has_intent_means": false
+  },
+  "frequency-polygon": {
+   "name": "度数折れ線図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/frequency-polygon.md",
+   "status": "available",
+   "aliases": [
+    "frequency-polygons",
+    "frequency-line-chart"
+   ],
+   "primary_intent": "distribution",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "series": "1〜4",
+    "groups": "5〜30（階級の数）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "value-range": "position",
+    "frequency": "position",
+    "series": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "複数の集団の分布の形を同じ軸に重ねて比べる",
+    "山の位置や裾の長さが集団間でどうずれているかを見せる"
+   ],
+   "avoid_when": [
+    "系列が五本以上あり、線が絡んで読めない",
+    "集団ごとの件数が少なく、階級ごとの頻度が安定しない",
+    "一つの分布の形だけを見せる"
+   ],
+   "alternatives": [
+    "histogram",
+    "violin-plot"
+   ],
+   "has_intent_means": false
+  },
+  "line-chart": {
+   "name": "折れ線グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/line-chart.md",
+   "status": "available",
+   "aliases": [
+    "line-graph",
+    "line-plot"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "series": "1〜4",
+    "points": "3〜200（1 系列あたり）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "value": "position",
+    "series": "color",
+    "continuity": "connection"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "連続する時点の値から、傾向や転換点を読ませる",
+    "同じ単位の系列を数本重ね、推移の違いを見せる",
+    "時点が多く、個々の値より全体の形が主題である"
+   ],
+   "avoid_when": [
+    "時点が 3 つ以下で、線の形が読めない",
+    "個々の値を正確に読ませる必要がある",
+    "系列が 5 本以上あり、線が重なって追えない"
+   ],
+   "alternatives": [
+    "area-chart",
+    "bar-chart",
+    "slope-chart"
+   ],
+   "has_intent_means": false
+  },
+  "stock-price-chart": {
+   "name": "株価チャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/stock-price-chart.md",
+   "status": "available",
+   "aliases": [
+    "candlestick-chart",
+    "ohlc-chart"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "series": "1",
+    "periods": "20〜250"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "time": "position",
+    "price": "position",
+    "open-close-range": "length",
+    "high-low-range": "length",
+    "direction": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "期間ごとの始値・終値・高値・安値を一つの図形にまとめ、推移を見せる",
+    "上昇と下降の勢いや、期間内の値幅の変化を読ませる",
+    "日次や週次など、等間隔の期間が数十〜数百並ぶ"
+   ],
+   "avoid_when": [
+    "期間ごとに値が一つしかなく、値幅の情報がない",
+    "読み手がローソク足の読み方を知らず、凡例も付けられない",
+    "白黒印刷で、上昇と下降を色で区別できない（塗りと白抜きで代える）"
+   ],
+   "alternatives": [
+    "line-chart",
+    "fan-chart"
+   ],
+   "has_intent_means": false
+  },
+  "area-chart": {
+   "name": "階層グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/area-chart.md",
+   "status": "available",
+   "aliases": [
+    "stacked-area-chart",
+    "area-graph"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "series": "2〜5",
+    "periods": "5〜100"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "total": "position",
+    "component": "color",
+    "component-value": "area"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "内訳を持つ総量が、時間とともにどう増減したかを見せる",
+    "総量の変化が主題で、内訳の推移は補足にとどまる",
+    "系列が同じ単位で、足し合わせると全体になる"
+   ],
+   "avoid_when": [
+    "内訳それぞれの推移を正確に比べさせる",
+    "系列に負の値があり、積み上げると意味が崩れる",
+    "系列が 6 本以上あり、帯が細く色の区別がつかない"
+   ],
+   "alternatives": [
+    "line-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "fan-chart": {
+   "name": "ファンチャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/fan-chart.md",
+   "status": "available",
+   "aliases": [
+    "confidence-band-chart",
+    "forecast-fan"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "series": "1〜2",
+    "levels": "2〜4",
+    "periods": "10〜60"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "time": "position",
+    "central-value": "position",
+    "interval": "length",
+    "confidence-level": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "予測値に幅があり、先になるほど不確かさが広がることを見せる",
+    "実績と予測を一つの時間軸でつなぎ、予測の中心と幅を示す",
+    "複数の確率水準の区間を同時に示す"
+   ],
+   "avoid_when": [
+    "予測に区間がなく、点推定しかない",
+    "読み手が確率区間の意味を知らず、凡例でも補えない",
+    "白黒印刷で、濃淡の段階を区別できない"
+   ],
+   "alternatives": [
+    "line-chart",
+    "stock-price-chart"
+   ],
+   "has_intent_means": false
+  },
+  "calendar-heatmap": {
+   "name": "カレンダー・ヒートマップ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/calendar-heatmap.md",
+   "status": "available",
+   "aliases": [
+    "calendar-heat-map",
+    "calendar-chart"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "cells": "30〜400",
+    "periods": "1〜3年"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "week": "position",
+    "weekday": "position",
+    "value": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "日ごとの値を暦の形に並べ、曜日や季節の傾向を見せる",
+    "1 年程度の日次データを省スペースで一覧する",
+    "値の大小より、活動の有無や密度の偏りが主題である"
+   ],
+   "avoid_when": [
+    "個々の日の値を正確に読ませる",
+    "データが日次でなく、暦の升目に対応しない",
+    "白黒印刷で、色の濃淡を再現できない"
+   ],
+   "alternatives": [
+    "line-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "priestley-timeline": {
+   "name": "プリーストリー・タイムライン図表",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/priestley-timeline.md",
+   "status": "available",
+   "aliases": [
+    "priestley-chart",
+    "chart-of-biography"
+   ],
+   "primary_intent": "chronology",
+   "secondary_intents": [
+    "time-series-change"
+   ],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "categorical"
+   ],
+   "scale": {
+    "items": "5〜40",
+    "groups": "1〜5"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "item": "position",
+    "start-end": "position",
+    "duration": "length",
+    "group": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "在任期間や存続期間など、開始と終了を持つ項目を時間軸に並べる",
+    "期間の重なりや空白、入れ替わりの時期を見せる",
+    "項目ごとの期間の長さを比べさせる"
+   ],
+   "avoid_when": [
+    "項目に期間がなく、時点しかない",
+    "項目が 40 を超え、行が細くラベルが読めない",
+    "開始や終了の日付を正確に読ませる"
+   ],
+   "alternatives": [
+    "timeline",
+    "gantt-chart"
+   ],
+   "has_intent_means": false
+  },
+  "circle-timeline": {
+   "name": "サークル・タイムライン",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/circle-timeline.md",
+   "status": "available",
+   "aliases": [
+    "bubble-timeline",
+    "dot-timeline"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [
+    "chronology"
+   ],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "10〜100",
+    "categories": "2〜8"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "category": "position",
+    "magnitude": "area"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "離散的な出来事がいつ起き、どれほどの大きさだったかを分類ごとに見せる",
+    "出来事の時期の集中や間隔を、分類の間で比べさせる",
+    "大きな出来事が少数あり、大きさの差が極端である"
+   ],
+   "avoid_when": [
+    "出来事が連続的な測定値で、離散的な事象ではない",
+    "大きさを正確に比べさせる（面積からは概算しか読めない）",
+    "同時期の出来事が多く、円が重なって数えられない"
+   ],
+   "alternatives": [
+    "timeline",
+    "line-chart"
+   ],
+   "has_intent_means": false
+  },
+  "vertical-timeline": {
+   "name": "縦型タイムライン",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/vertical-timeline.md",
+   "status": "available",
+   "aliases": [
+    "vertical-time-line",
+    "scrolling-timeline"
+   ],
+   "primary_intent": "chronology",
+   "secondary_intents": [
+    "time-series-change"
+   ],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "categorical"
+   ],
+   "scale": {
+    "items": "5〜50",
+    "categories": "1〜4"
+   },
+   "precision": "exact",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "category": "color"
+   },
+   "text_dependency": "high",
+   "abstraction": "abstract",
+   "best_for": [
+    "出来事ごとに説明文が長く、時系列に沿って詳しく読ませる",
+    "縦にスクロールする画面で、上から下へ時間を辿らせる",
+    "出来事の数が多く、横に並べると文字が入らない"
+   ],
+   "avoid_when": [
+    "出来事の間隔や密度を、位置から読ませる",
+    "紙や固定の高さの図版に収める（縦に長くなり、一覧できない）",
+    "出来事ごとの説明が一語で済み、横に並べて足りる"
+   ],
+   "alternatives": [
+    "timeline",
+    "priestley-timeline"
+   ],
+   "has_intent_means": false
+  },
+  "seismogram": {
+   "name": "サイスモグラム",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/seismogram.md",
+   "status": "available",
+   "aliases": [
+    "seismograph-chart",
+    "spike-chart"
+   ],
+   "primary_intent": "time-series-change",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "temporal",
+    "quantitative"
+   ],
+   "scale": {
+    "series": "1〜4",
+    "points": "200〜10000"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "time": "position",
+    "amplitude": "length",
+    "series": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "高頻度の時系列の中で、突発的な大きな変動を目立たせる",
+    "一日の取引や一回の計測など、ひとかたまりの出来事の全体を一枚に収める",
+    "平常時との差が極端で、通常の縮尺では小さな値がつぶれてよい"
+   ],
+   "avoid_when": [
+    "変動が緩やかで、目立つ突発がない",
+    "個々の値を正確に読ませる",
+    "横幅が狭く、点の密度を保てない媒体に載せる"
+   ],
+   "alternatives": [
+    "line-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "bar-chart": {
+   "name": "棒グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/bar-chart.md",
+   "status": "available",
+   "aliases": [
+    "column-chart",
+    "ordered-bar-chart",
+    "ordered-column-chart",
+    "paired-bar-chart",
+    "paired-column-chart",
+    "bar-graph",
+    "horizontal-bar-chart",
+    "vertical-bar-chart"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [
+    "ranking",
+    "time-series-change"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜30",
+    "series": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "length",
+    "series": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "数えられる量（金額・人数・件数）を項目ごとに比べる",
+    "項目を値の順に並べて上位・下位を見せる",
+    "期間が少なく系列が一つの推移を期間ごとの量として見せる"
+   ],
+   "avoid_when": [
+    "軸をゼロから始められない（対数軸が要る）",
+    "系列が四つ以上あり項目ごとに棒が並びきらない",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "lollipop-chart",
+    "line-chart",
+    "comparison-table"
+   ],
+   "has_intent_means": true
+  },
+  "marimekko": {
+   "name": "マリメッコ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/marimekko.md",
+   "status": "available",
+   "aliases": [
+    "marimekko-chart",
+    "mekko-chart",
+    "mosaic-plot"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [
+    "magnitude-comparison"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "3〜10",
+    "groups": "2〜6"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "category": "position",
+    "total": "length",
+    "share": "length",
+    "sub-category": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "項目の大きさと内訳の割合を同時に見せる",
+    "市場の規模と占有率のように二段階の構成を一つに示す",
+    "項目の幅の合計が全体を表す"
+   ],
+   "avoid_when": [
+    "項目または内訳が多く細い区画にラベルが入らない",
+    "内訳の割合だけ（または大きさだけ）が主題である",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "stacked-column-chart",
+    "treemap",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "proportional-symbol": {
+   "name": "プロポーショナル・シンボル",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/proportional-symbol.md",
+   "status": "available",
+   "aliases": [
+    "ordered-proportional-symbol",
+    "proportional-symbol-chart",
+    "proportional-circle-chart"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [
+    "ranking"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜12",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "area"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "値の差が極端に大きく最大値に合わせた軸では小さい値が見えない",
+    "おおまかな規模の違いを伝える",
+    "記号を値の順に並べて規模の順位を見せる"
+   ],
+   "avoid_when": [
+    "値の差が小さく面積の違いが読めない",
+    "個々の値を正確に読ませる必要がある",
+    "項目が十を超えて記号が重なる"
+   ],
+   "alternatives": [
+    "bar-chart",
+    "lollipop-chart"
+   ],
+   "has_intent_means": false
+  },
+  "isotype": {
+   "name": "アイソタイプ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/isotype.md",
+   "status": "available",
+   "aliases": [
+    "isotype-chart",
+    "pictogram-chart",
+    "pictograph"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜10",
+    "series": "1〜2"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "length",
+    "unit": "shape"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "整数の個数（人数・台数・件数）を直感的に見せる",
+    "数字になじみのない読み手に規模を伝える",
+    "項目が十以下で記号を数えられる"
+   ],
+   "avoid_when": [
+    "値が連続量で記号一つ分に丸めると誤差が大きい",
+    "項目が多く記号の行が収まらない",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "grouped-symbol",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "radar-chart": {
+   "name": "レーダーチャート",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/radar-chart.md",
+   "status": "available",
+   "aliases": [
+    "spider-chart",
+    "web-chart",
+    "star-plot",
+    "radar-plot"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "4〜8",
+    "series": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "attribute": "angle",
+    "value": "position",
+    "series": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "四〜八の項目にわたる値を一覧で比べる",
+    "同じ項目で二〜三の対象の違いを形で見せる",
+    "項目の尺度と向き（大きいほど良い）がそろっている"
+   ],
+   "avoid_when": [
+    "項目が三つ以下または九つ以上",
+    "対象が四つ以上で多角形が重なる",
+    "項目の単位や向きがそろわない",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "parallel-coordinates",
+    "comparison-table",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "parallel-coordinates": {
+   "name": "平行座標プロット",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/parallel-coordinates.md",
+   "status": "available",
+   "aliases": [
+    "parallel-coordinates-plot",
+    "parallel-coordinate-chart",
+    "pcp"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "categories": "4〜12",
+    "items": "5〜100"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "attribute": "position",
+    "value": "position",
+    "item": "connection",
+    "group": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "項目が多く（四〜十二）一覧で比べる",
+    "対象が多く（数十〜百）傾向のある群を見つける",
+    "特定の対象を目立たせて全体の中での位置を示す"
+   ],
+   "avoid_when": [
+    "項目が三つ以下",
+    "対象が数百を超えて線が塗りつぶされる",
+    "個々の値を正確に読ませる必要がある",
+    "読み手がこの記法に慣れておらず凡例を置けない"
+   ],
+   "alternatives": [
+    "radar-chart",
+    "comparison-table",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "bullet-chart": {
+   "name": "ブレットグラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/bullet-chart.md",
+   "status": "available",
+   "aliases": [
+    "bullet-graph"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "1〜10",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "measure": "length",
+    "target": "position",
+    "rating-band": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "目標値に対する達成度を示す",
+    "複数の指標の達成度を同じ形式で縦に並べて一覧する",
+    "狭い領域に指標を置く"
+   ],
+   "avoid_when": [
+    "目標値がない（または期間ごとに変わり一本の線で示せない）",
+    "評価の段階に合意がなく帯の境界を決められない",
+    "読み手が目標線と帯の記法を知らず凡例を置く余地がない"
+   ],
+   "alternatives": [
+    "bar-chart",
+    "diverging-bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "grouped-symbol": {
+   "name": "グループシンボル",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/grouped-symbol.md",
+   "status": "available",
+   "aliases": [
+    "grouped-symbol-chart",
+    "unit-chart",
+    "symbol-grid-chart"
+   ],
+   "primary_intent": "magnitude-comparison",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "1〜8",
+    "points": "10〜500"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "category": "position",
+    "value": "area",
+    "highlight": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "要素を数えさせる（議席・人数・案件）",
+    "一部の要素を色で目立たせて全体の中の位置を示す",
+    "要素一つの単位に意味があり個別に指し示せる"
+   ],
+   "avoid_when": [
+    "値が連続量で要素に分けられない",
+    "要素が数千を超えて記号が点の集まりにしか見えない",
+    "個々の値を正確に読ませる必要がある"
+   ],
+   "alternatives": [
+    "isotype",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "stacked-column-chart": {
+   "name": "積み上げ縦棒グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/stacked-column-chart.md",
+   "status": "available",
+   "aliases": [
+    "stacked-column",
+    "stacked-bar-chart",
+    "stacked-bar"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "series": "2〜5",
+    "categories": "1〜10"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "whole": "position",
+    "part": "color",
+    "value": "length"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの全体が何から成り、各部分がどれだけを占めるかを示す",
+    "複数の全体（年度・部門など）を並べ、構成の違いや推移を比べる",
+    "部分の値と全体の量を同時に読ませる"
+   ],
+   "avoid_when": [
+    "内訳が 6 つ以上あり、小さな部分が判読できない",
+    "下端以外の部分同士を正確に比べさせる",
+    "部分にマイナスの値がある"
+   ],
+   "alternatives": [
+    "pie-chart",
+    "treemap",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "pie-chart": {
+   "name": "円グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/pie-chart.md",
+   "status": "available",
+   "aliases": [
+    "pie",
+    "pie-graph",
+    "circle-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜5",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "part": "color",
+    "share": "angle",
+    "part-order": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "一つの部分が過半か、あるいは全体の大半を占めることを一目で示す",
+    "内訳が 2〜5 つで、おおよその割合が伝われば足りる",
+    "読み手に記法の知識を求めない"
+   ],
+   "avoid_when": [
+    "部分同士の差が小さく、角度では大小が読めない",
+    "各部分の割合を正確に読ませる",
+    "複数の全体を比べる。円を並べても角度の比較は難しい"
+   ],
+   "alternatives": [
+    "stacked-column-chart",
+    "donut-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "donut-chart": {
+   "name": "ドーナツ型円グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/donut-chart.md",
+   "status": "available",
+   "aliases": [
+    "donut",
+    "doughnut-chart",
+    "ring-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜5",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "part": "color",
+    "share": "angle",
+    "part-order": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "構成割合と、合計や主要な一つの値を一つの図で示す",
+    "内訳が 2〜5 つで、おおよその割合が伝われば足りる",
+    "小さな領域に収める図（カードや一覧の一部）"
+   ],
+   "avoid_when": [
+    "部分同士の差が小さく、弧の長さでは大小が読めない",
+    "各部分の割合を正確に読ませる",
+    "中心に置く値がなく、環にする理由がない"
+   ],
+   "alternatives": [
+    "pie-chart",
+    "stacked-column-chart",
+    "arc-chart"
+   ],
+   "has_intent_means": false
+  },
+  "treemap": {
+   "name": "ツリーマップ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/treemap.md",
+   "status": "available",
+   "aliases": [
+    "tree-map",
+    "treemap-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "hierarchy",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "5〜100",
+    "levels": "1〜3"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "value": "area",
+    "parent-child-relationship": "containment",
+    "group": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "階層のある構成で、上位の区分と下位の項目の割合を一つの図で示す",
+    "項目が多く、大きい項目と小さい項目の差が極端である",
+    "全体のどこに量が集中しているかを示す"
+   ],
+   "avoid_when": [
+    "各項目の割合を正確に読ませる。面積の比較は粗い",
+    "階層が 4 段以上、または項目が数百を超え、小さな矩形が読めない",
+    "静止画や紙で、小さな矩形のラベルを拡大や操作なしに読ませる"
+   ],
+   "alternatives": [
+    "stacked-column-chart",
+    "pie-chart",
+    "tree-diagram"
+   ],
+   "has_intent_means": false
+  },
+  "arc-chart": {
+   "name": "半円グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/arc-chart.md",
+   "status": "available",
+   "aliases": [
+    "arc",
+    "half-donut-chart",
+    "semicircle-chart",
+    "parliament-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "2〜8",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "part": "color",
+    "share": "angle",
+    "part-order": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "議会の会派別議席数のように、過半を境に構成を示す",
+    "部分の並び順に意味があり（左右の立場など）、それを位置で示す",
+    "横長の領域に構成を収める"
+   ],
+   "avoid_when": [
+    "部分同士の差が小さく、弧の長さでは大小が読めない",
+    "各部分の割合を正確に読ませる",
+    "並び順や過半の境に意味がなく、半円にする理由がない"
+   ],
+   "alternatives": [
+    "pie-chart",
+    "donut-chart",
+    "stacked-column-chart"
+   ],
+   "has_intent_means": false
+  },
+  "grid-plot": {
+   "name": "グリッドプロット",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/grid-plot.md",
+   "status": "available",
+   "aliases": [
+    "gridplot",
+    "waffle-chart",
+    "square-pie-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "items": "1〜4",
+    "cells": "100（10×10 が標準）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "part": "color",
+    "share": "area",
+    "fill-order": "position"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "「100 人中 23 人」のように、整数の升目で割合を示す",
+    "一つか二つの部分の割合を強調する",
+    "同じ升目を複数並べ、割合を見比べる"
+   ],
+   "avoid_when": [
+    "割合が整数に丸められず、升目の数で表せない",
+    "部分が 5 つ以上あり、色の塊が入り混じって数えられない",
+    "各部分の割合を小数点以下まで正確に読ませる"
+   ],
+   "alternatives": [
+    "pie-chart",
+    "stacked-column-chart",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "waterfall-chart": {
+   "name": "滝グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/waterfall-chart.md",
+   "status": "available",
+   "aliases": [
+    "waterfall",
+    "bridge-chart",
+    "cascade-chart"
+   ],
+   "primary_intent": "part-to-whole",
+   "secondary_intents": [
+    "flow"
+   ],
+   "shape": "items",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "steps": "3〜12",
+    "series": "1"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "step-order": "position",
+    "change": "length",
+    "sign": "color",
+    "running-total": "position"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "構成要素にマイナスの値があり、単純に積むと全体を表せない",
+    "期首から期末へ、増減の要因を順に足し引きして着地を示す",
+    "売上から利益までのように、段階ごとに差し引かれる過程を示す"
+   ],
+   "avoid_when": [
+    "要素がすべて正で、順序にも意味がない",
+    "要素が 13 以上あり、浮いた棒が細かくなって読めない",
+    "読み手が浮いた棒を累計の増減として読む慣習を知らない"
+   ],
+   "alternatives": [
+    "stacked-column-chart",
+    "sankey",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "choropleth-map": {
+   "name": "コロプレス地図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/choropleth-map.md",
+   "status": "available",
+   "aliases": [
+    "basic-choropleth",
+    "choropleth",
+    "shaded-area-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "regions": "5〜300",
+    "levels": "3〜7（色の階級）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "value": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "率・割合・密度など、面積や人口で正規化した値の地域差を見せる",
+    "行政区域の単位で集計された統計を、区域の形のまま示す",
+    "どの地域に偏っているかを一目で読ませる"
+   ],
+   "avoid_when": [
+    "人数や件数など、絶対数をそのまま塗る（面積の大きい区域が過大に見える）",
+    "区域の面積差が極端で、小さい区域の色が見えない",
+    "個々の区域の値を正確に読ませる",
+    "白黒印刷など、階級の色を区別できない媒体で出す"
+   ],
+   "alternatives": [
+    "proportional-symbol-map",
+    "equalised-cartogram",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "proportional-symbol-map": {
+   "name": "プロポーショナル・シンボル地図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/proportional-symbol-map.md",
+   "status": "available",
+   "aliases": [
+    "bubble-map",
+    "graduated-symbol-map",
+    "symbol-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "points": "5〜100",
+    "categories": "1〜3（記号の色分け）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "value": "area",
+    "category": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "都市や拠点など、地点ごとの絶対数（人数、件数、金額）を比べる",
+    "区域の面積に左右されずに、量の大小を地図上で見せる",
+    "値の差が大きく、桁違いの地点が混じる"
+   ],
+   "avoid_when": [
+    "率や割合など、正規化した値を扱う",
+    "地点が密集し、記号が重なって個々の値が読めない",
+    "微妙な差を読ませる（面積の差は小さいと知覚できない）",
+    "紙面が小さく、最小の記号が点になってしまう媒体"
+   ],
+   "alternatives": [
+    "choropleth-map",
+    "dot-density-map",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "flow-map": {
+   "name": "フローマップ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/flow-map.md",
+   "status": "available",
+   "aliases": [
+    "origin-destination-map",
+    "movement-map",
+    "migration-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "nodes": "2〜20",
+    "edges": "3〜30"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "movement": "connection",
+    "volume": "size",
+    "direction": "shape"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "人・物・資金が場所から場所へどれだけ移動したかを、地図上で見せる",
+    "一つの起点から多くの目的地へ（またはその逆に）広がる移動を示す",
+    "移動の向きと量の大小が、地理的な配置と結びついて意味を持つ"
+   ],
+   "avoid_when": [
+    "流れが多く、線が交差して読めない（目安は 30 本）",
+    "移動量を正確に読ませる（線の太さの比は読みにくい）",
+    "場所の位置が答えに関わらず、起点と終点の組み合わせだけが主題",
+    "実際の経路を示すと誤解される（線は起点と終点を結ぶだけ）"
+   ],
+   "alternatives": [
+    "sankey",
+    "proportional-symbol-map",
+    "choropleth-map"
+   ],
+   "has_intent_means": false
+  },
+  "contour-map": {
+   "name": "コンター図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/contour-map.md",
+   "status": "available",
+   "aliases": [
+    "isoline-map",
+    "isopleth-map",
+    "contour-plot"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "levels": "5〜15（等値線の本数）",
+    "points": "数十〜数万（観測または格子の地点）"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "location": "position",
+    "equal-value": "connection",
+    "gradient": "proximity",
+    "value-range": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "標高・気圧・気温など、面として連続する量の形を見せる",
+    "ある値以上の範囲を、線で囲った領域として示す",
+    "変化の急な場所（線が密）と緩やかな場所（線が疎）を読ませる"
+   ],
+   "avoid_when": [
+    "値が区域単位でしか存在せず、面として連続していない",
+    "観測点が疎らで、線の位置が補間の産物になる",
+    "読者が等値線の読み方（線の間隔が勾配を表す）を知らない",
+    "離散的な出来事の位置を扱う"
+   ],
+   "alternatives": [
+    "spatial-heatmap",
+    "choropleth-map",
+    "dot-density-map"
+   ],
+   "has_intent_means": false
+  },
+  "equalised-cartogram": {
+   "name": "単純化した統計地図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/equalised-cartogram.md",
+   "status": "available",
+   "aliases": [
+    "equalized-cartogram",
+    "tile-grid-map",
+    "hex-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "regions": "10〜100",
+    "groups": "2〜7"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "group": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "各地区を同じ価値（一議席、一都道府県）として扱い、区分を見せる",
+    "面積の小さな地区が、大きな地区に埋もれないようにする",
+    "地区ごとの区分（勝者、達成・未達、段階）を地理的な並びで一覧する"
+   ],
+   "avoid_when": [
+    "正確な地形や隣接関係が答えに関わる",
+    "読者が地区の位置を知らず、近似した配置で地区を特定できない",
+    "地区数が多すぎて、格子に並べると位置の対応が崩れる",
+    "値の大小を面積として読ませる"
+   ],
+   "alternatives": [
+    "choropleth-map",
+    "scaled-cartogram",
+    "bar-chart"
+   ],
+   "has_intent_means": false
+  },
+  "scaled-cartogram": {
+   "name": "変形統計地図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/scaled-cartogram.md",
+   "status": "available",
+   "aliases": [
+    "area-cartogram",
+    "contiguous-cartogram",
+    "value-by-area-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative",
+    "categorical"
+   ],
+   "scale": {
+    "regions": "10〜100"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "location": "position",
+    "value": "area",
+    "category": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "人口や票数など、絶対量の地域差を面積で見せる",
+    "面積の大きな地区が実態以上に目立つのを補正し、量に応じた存在感を与える",
+    "地理的な配置と量の大小を同時に印象づける"
+   ],
+   "avoid_when": [
+    "読者が元の地図の形を知らず、変形の意味が伝わらない",
+    "個々の地区の値を正確に読ませる",
+    "変形が大きすぎて地区を判別できない",
+    "値が率や割合で、面積に対応づける量がない"
+   ],
+   "alternatives": [
+    "choropleth-map",
+    "proportional-symbol-map",
+    "equalised-cartogram"
+   ],
+   "has_intent_means": false
+  },
+  "dot-density-map": {
+   "name": "ドット密度図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/dot-density-map.md",
+   "status": "available",
+   "aliases": [
+    "dot-density",
+    "dot-map",
+    "dot-distribution-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "points": "100〜数万",
+    "categories": "1〜3（点の色分け）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "density": "proximity",
+    "category": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "個々の出来事や対象の位置を点として置き、集中と空白を見せる",
+    "位置情報を持つ記録が多数あり、区域で集計すると細かな偏りが消える",
+    "一点一件で置き、点の密度から量を感じさせる"
+   ],
+   "avoid_when": [
+    "件数を正確に読ませる（点は数えられない）",
+    "位置が区域の中心や代表点に丸められていて、実際の位置ではない",
+    "点が少なく、密度の差として読めない",
+    "点が重なりすぎて一面に塗りつぶされ、密度の差が消える"
+   ],
+   "alternatives": [
+    "spatial-heatmap",
+    "proportional-symbol-map",
+    "choropleth-map"
+   ],
+   "has_intent_means": false
+  },
+  "spatial-heatmap": {
+   "name": "ヒートマップ（地図）",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/spatial-heatmap.md",
+   "status": "available",
+   "aliases": [
+    "spatial-heat-map",
+    "density-map",
+    "kernel-density-map"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "quantitative"
+   ],
+   "scale": {
+    "points": "1000〜数十万（元になる地点）",
+    "levels": "5〜9（色の段階）"
+   },
+   "precision": "overview",
+   "complexity": "low",
+   "visual_encoding": {
+    "location": "position",
+    "intensity": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "行政区域と無関係に連続的に変わる量（密度、気温、騒音）の濃淡を見せる",
+    "地点が多すぎて点では重なる記録を、滑らかな密度に変えて見せる",
+    "どこが濃いかを、境界なしに面として感じさせる"
+   ],
+   "avoid_when": [
+    "区域ごとの集計値を扱う（区域の境界で値が変わる）",
+    "個々の地点の値や件数を正確に読ませる",
+    "平滑化の半径で見え方が大きく変わり、根拠を示せない",
+    "白黒印刷など、色の段階を再現できない媒体"
+   ],
+   "alternatives": [
+    "dot-density-map",
+    "contour-map",
+    "choropleth-map"
+   ],
+   "has_intent_means": false
+  },
+  "voronoi": {
+   "name": "ボロノイ図",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/voronoi.md",
+   "status": "available",
+   "aliases": [
+    "voronoi-diagram",
+    "voronoi-map",
+    "thiessen-polygons"
+   ],
+   "primary_intent": "geographic",
+   "secondary_intents": [],
+   "shape": "spatial",
+   "attributes": [
+    "categorical"
+   ],
+   "scale": {
+    "points": "5〜200"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "site": "position",
+    "nearest-site": "containment",
+    "catchment-extent": "area",
+    "site-group": "color"
+   },
+   "text_dependency": "low",
+   "abstraction": "abstract",
+   "best_for": [
+    "施設や拠点ごとの最寄り範囲（勢力圏、担当範囲）を見せる",
+    "拠点の配置の偏りや空白を、範囲の広さとして見せる",
+    "任意の地点がどの拠点に最も近いかを読ませる"
+   ],
+   "avoid_when": [
+    "最寄りが直線距離で決まらない（道路網、所要時間、行政区域）",
+    "範囲の境界が実際の管轄や契約で定まっている",
+    "読者が最近傍による分割という考え方を知らない",
+    "点が密集し、範囲が細かすぎて読めない"
+   ],
+   "alternatives": [
+    "choropleth-map",
+    "proportional-symbol-map",
+    "dot-density-map"
+   ],
+   "has_intent_means": false
+  },
+  "sankey": {
+   "name": "サンキーグラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/sankey.md",
+   "status": "available",
+   "aliases": [
+    "sankey-diagram",
+    "sankey-chart",
+    "alluvial-diagram"
+   ],
+   "primary_intent": "flow",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "nodes": "3〜30",
+    "edges": "3〜60",
+    "steps": "2〜5"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "flow-amount": "size",
+    "from-to": "connection",
+    "stage": "position",
+    "node-total": "length"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "発生源から経由地を経て行き先へ、量がどう分かれ、どう合流するかを示す",
+    "段階ごとに量が減る、または振り分けられる過程の全体像を示す",
+    "流れの大半がどの経路を通るかを一目で示す"
+   ],
+   "avoid_when": [
+    "辺の量を正確に読ませる。帯の幅の比較は粗い",
+    "節や辺が多く、帯が交差して経路を辿れない",
+    "紙や静止画で辺が多く、ホバーなしに個々の帯の値を読ませる"
+   ],
+   "alternatives": [
+    "chord",
+    "waterfall-chart",
+    "data-flow-diagram"
+   ],
+   "has_intent_means": true
+  },
+  "chord": {
+   "name": "弦グラフ",
+   "layer": "primitive",
+   "family": "chart",
+   "path": "chart/chord.md",
+   "status": "available",
+   "aliases": [
+    "chord-diagram",
+    "chord-chart"
+   ],
+   "primary_intent": "flow",
+   "secondary_intents": [],
+   "shape": "graph",
+   "attributes": [
+    "categorical",
+    "quantitative"
+   ],
+   "scale": {
+    "nodes": "3〜10",
+    "edges": "3〜40"
+   },
+   "precision": "overview",
+   "complexity": "medium",
+   "visual_encoding": {
+    "flow-amount": "size",
+    "from-to": "connection",
+    "node-total": "angle",
+    "direction": "color"
+   },
+   "text_dependency": "medium",
+   "abstraction": "abstract",
+   "best_for": [
+    "同じ集合の節の間で、双方向の移動量を一つの図で示す",
+    "各節について、出る量と入る量の合計を円周の弧で示す",
+    "どの節の組の間で往来が多いかを一目で示す"
+   ],
+   "avoid_when": [
+    "個々の辺の量を正確に読ませる。弦の幅と弧の長さの比較は粗い",
+    "節が 11 以上、または辺が多く、弦が重なって読めない",
+    "読み手が弦の読み方を知らず、説明を添えられない"
+   ],
+   "alternatives": [
+    "sankey",
+    "data-flow-diagram"
+   ],
+   "has_intent_means": false
+  }
+ },
+ "intent_types": [
+  "一項目の変化",
+  "入れ替わり",
+  "段階の性質",
+  "受け渡しでの損失",
+  "受け渡しでの変質"
+ ]
+}

@@ -38,7 +38,7 @@ result = {
     "requested_action": "予算の承認",
     "sections": [{"heading": "お願いしたいこと", "understood": "300万円の承認を求めている", "confidence": "high"}],
     "confusing_points": [],
-    "visual_notes": {"stood_out": ["見出し"], "missed_or_hidden": ["表1の金額"], "layout_issues": []},
+    "visual_notes": {"stood_out": ["見出し"], "missed_or_hidden": ["費用と効果の節の約6000万円"], "layout_issues": []},
 }
 out = {"type": "result", "subtype": "success", "is_error": False, "usage": {"output_tokens": 1}}
 if "--json-schema" in args:

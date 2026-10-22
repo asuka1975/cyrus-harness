@@ -295,8 +295,11 @@ def build_prompt(reader: dict | None, page_names: list[str], has_overview: bool,
 # ---------------------------------------------------------------- 回答の取り出し
 
 
-def _looks_like_result(obj) -> bool:
-    return isinstance(obj, dict) and ("reader_summary" in obj or "visual_notes" in obj)
+RESULT_KEYS = ("reader_summary", "visual_notes")
+
+
+def _looks_like_result(obj, keys: tuple[str, ...] = RESULT_KEYS) -> bool:
+    return isinstance(obj, dict) and any(k in obj for k in keys)
 
 
 def _json_object(text: str) -> dict | None:
@@ -319,7 +322,7 @@ def _json_object(text: str) -> dict | None:
     return None
 
 
-def _result_in_text(text: str) -> dict | None:
+def _result_in_text(text: str, keys: tuple[str, ...] = RESULT_KEYS) -> dict | None:
     """文章の中から回答の JSON を探す（```json の囲み、全体、最初の { から最後の } まで、の順）。"""
     candidates = re.findall(r"```(?:json)?\s*\n(.*?)\n```", text, re.S)
     candidates.append(text.strip())
@@ -330,59 +333,70 @@ def _result_in_text(text: str) -> dict | None:
             obj = json.loads(c)
         except json.JSONDecodeError:
             continue
-        if _looks_like_result(obj):
+        if _looks_like_result(obj, keys):
             return obj
     return None
 
 
-def parse_output(stdout: str) -> tuple[dict, dict]:
+def parse_output(stdout: str, keys: tuple[str, ...] = RESULT_KEYS) -> tuple[dict, dict]:
     """読み手の標準出力から、回答と、回答を包んでいた情報（使用量など）を取り出す。
 
     agy や Claude Code の JSON 出力（structured_output・response・result）にも、
     回答の JSON だけを出す読み手にも、文章の中に ```json で回答を書く読み手にも対応する。
+    keys は、回答と見なす目印の項目名（スキーマの必須項目）。
     """
     envelope = _json_object(stdout)
     if envelope is not None:
-        if _looks_like_result(envelope):
+        if _looks_like_result(envelope, keys):
             return envelope, {}
         meta = {k: v for k, v in envelope.items() if k not in RESULT_FIELDS}
         for k in RESULT_FIELDS:
             v = envelope.get(k)
-            if _looks_like_result(v):
+            if _looks_like_result(v, keys):
                 return v, meta
             if isinstance(v, str):
-                found = _result_in_text(v)
+                found = _result_in_text(v, keys)
                 if found is not None:
                     return found, meta
         texts = [str(envelope.get(k)) for k in RESULT_FIELDS if envelope.get(k) is not None]
         raise ReaderUnavailable("読み手が、決まった形の回答を返しませんでした: "
                                 + (texts[0] if texts else json.dumps(envelope, ensure_ascii=False))[:400])
-    found = _result_in_text(stdout)
+    found = _result_in_text(stdout, keys)
     if found is not None:
         return found, {}
     raise ReaderUnavailable(f"読み手の出力から回答の JSON を見つけられませんでした: {stdout.strip()[:400]}")
 
 
-def _validate(result: dict) -> None:
-    missing = [k for k in SCHEMA["required"] if k not in result]
+def _validate(result: dict, schema: dict = SCHEMA) -> None:
+    missing = [k for k in schema.get("required", []) if k not in result]
     if missing:
         raise ReaderUnavailable(f"読み手の回答に {', '.join(missing)} がありません。"
                                 "回答の形を守らせるには、コマンドに {schema} か {schema_file} を渡す引数を足してください。")
-    if not isinstance(result.get("sections"), list) or not isinstance(result.get("visual_notes"), dict):
-        raise ReaderUnavailable("読み手の回答の sections はリスト、visual_notes はオブジェクトにしてください。")
+    for k, prop in (schema.get("properties") or {}).items():
+        if k in result and prop.get("type") == "array" and not isinstance(result[k], list):
+            raise ReaderUnavailable(f"読み手の回答の {k} はリストにしてください。")
+        if k in result and prop.get("type") == "object" and not isinstance(result[k], dict):
+            raise ReaderUnavailable(f"読み手の回答の {k} はオブジェクトにしてください。")
 
 
 # ---------------------------------------------------------------- 実行
 
 
 def run(pages: list[Path], overview: Path | None, reader: dict | None, model: str | None = None,
-        cfg: ReaderConfig | None = None) -> dict:
+        cfg: ReaderConfig | None = None, prompt: str | None = None, schema: dict | None = None) -> dict:
+    """画像だけを置いた作業ディレクトリで読み手を起動し、回答（JSON）を返す。
+
+    prompt と schema を渡すと、拾い読みではなく別の問い（図表の逆読みなど）に使える。
+    prompt には、作業ディレクトリの画像の名前を書いておくこと。
+    """
     cfg = cfg or load_config()
     model = model or cfg.model
     exe = find_command(cfg)
     if not exe:
         where = f"{cfg.source} の vision.reader.command" if cfg.source else f"{CONFIG_NAME} か環境変数 CYRUS_AGY"
         raise ReaderUnavailable(f"読み手のコマンド {cfg.command[0]} が見つかりません（{where} で指定できます）。")
+    schema = schema or SCHEMA
+    keys = tuple(schema.get("required") or RESULT_KEYS)
     truncated = len(pages) > MAX_PAGES
     use = pages[:MAX_PAGES]
     # 作業ディレクトリには画像だけを置く。スキーマのファイルは別の一時ディレクトリに置く。
@@ -393,12 +407,15 @@ def run(pages: list[Path], overview: Path | None, reader: dict | None, model: st
             shutil.copyfile(p, work / p.name)
         if overview and overview.exists():
             shutil.copyfile(overview, work / "overview.png")
-        schema = json.dumps(SCHEMA, ensure_ascii=False)
+        schema_text = json.dumps(schema, ensure_ascii=False)
         schema_file = Path(sd) / "schema.json"
-        schema_file.write_text(schema, encoding="utf-8")
-        prompt = build_prompt(reader, [p.name for p in use], bool(overview and overview.exists()), truncated,
-                              schema_in_prompt=not cfg.schema_given)
-        argv = build_command(cfg, {"prompt": prompt, "workdir": str(work), "schema": schema,
+        schema_file.write_text(schema_text, encoding="utf-8")
+        if prompt is None:
+            prompt = build_prompt(reader, [p.name for p in use], bool(overview and overview.exists()), truncated,
+                                  schema_in_prompt=not cfg.schema_given)
+        elif not cfg.schema_given:
+            prompt += "\n回答は、次の JSON スキーマに合う JSON オブジェクトだけを出力してください。\n" + schema_text
+        argv = build_command(cfg, {"prompt": prompt, "workdir": str(work), "schema": schema_text,
                                    "schema_file": str(schema_file), "model": model or "",
                                    "timeout": str(cfg.timeout)})
         argv[0] = exe
@@ -412,13 +429,13 @@ def run(pages: list[Path], overview: Path | None, reader: dict | None, model: st
         except OSError as e:
             raise ReaderUnavailable(f"{cfg.name} を起動できませんでした: {e}") from e
     try:
-        result, meta = parse_output(proc.stdout or "")
+        result, meta = parse_output(proc.stdout or "", keys)
     except ReaderUnavailable as e:
         detail = (proc.stderr or "").strip()[:400]
         raise ReaderUnavailable(f"{e}（終了コード {proc.returncode}）" + (f"\n標準エラー: {detail}" if detail else "")) from e
     for k in ("toolAction", "toolSummary"):  # agy が回答に混ぜてくる項目
         result.pop(k, None)
-    _validate(result)
+    _validate(result, schema)
     return {
         "reader": cfg.name,
         "model": model,
