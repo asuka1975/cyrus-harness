@@ -67,6 +67,13 @@ TODO: 同じ種類の記録（事例、ログ、チケット、回答、コミ�
 | 名前 | 単位 | 件数 | 置き場所 | 数える観点 |
 | --- | --- | --- | --- | --- |
 | （例）問い合わせの記録 | 件 | 14 | 02-context/inquiries.md | 原因の種類（設定・操作・不具合） |
+
+## 調べればわかること
+TODO: 公開情報（道具や規格の仕様、公式ドキュメント、統計、研究）や手元の記録（ログ、リポジトリ）で確かめられる前提。「よくある言い方か」「多くの人が同じ経験をしているか」も、辞書・コーパス・検索・記録で数えて確かめられる（ユーザーの「みんなそう言っている」は、証言ではなくここに登録する）。ステージ5で lookup の事実にし、ステージ6で調べる。なければ「なし」
+
+| 名前 | 確かめること | 当たる先 |
+| --- | --- | --- |
+| （例）承認の権限 | プルリクエストを出した本人は承認できないか | GitHub Docs |
 """
 
 
@@ -115,6 +122,7 @@ def facts_template(ws: Workspace) -> dict:
         "facts": [
             {"id": f.get("id"), "statement": f.get("statement", ""), "status": "unverified", "method": "web",
              "sources": [], "evidence": "", "notes": "TODO: 検証の結果",
+             **({"lookup": f["lookup"]} if f.get("lookup") else {}),  # 調べればわかること: ステージ6で必ず調べる
              **({"dataset": f["dataset"],  # 集計の事実: 分類は fact-checker の仕事 C、数えるのは `cyrus tally`
                  "tally": {"items": "TODO: 02-context/tally-<名前>.md（記録1件に1行、「分類」の列）", "total": 0, "counts": {},
                            "criteria": "TODO: 分類の基準（分類ごとの定義）"}}

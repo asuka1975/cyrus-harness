@@ -190,8 +190,45 @@ def _datasets(ws: Workspace) -> dict[str, dict]:
     return datasets_of(p.read_text(encoding="utf-8")) or {}
 
 
+LOOKUPS_HEADING = "調べればわかること"  # 04-analysis.md の節。公開情報や手元の記録で確かめられる前提を、表で登録する
+
+
+def lookups_of(text: str) -> dict[str, dict] | None:
+    """04-analysis.md の「調べればわかること」の表を読む。節がなければ None。「なし」なら {}。
+
+    表の列は、名前・確かめること・当たる先。名前の列（見出しに「名前」。なければ最初の列）で引く。
+    """
+    secs = _md_sections(text)
+    body = next((v for k, v in secs.items() if k.startswith(LOOKUPS_HEADING)), None)
+    if body is None:
+        return None
+    out: dict[str, dict] = {}
+    for b in mdparse.parse(body):
+        if b.kind != "table" or not b.rows:
+            continue
+        header = b.rows[0]
+        name_i = next((i for i, h in enumerate(header) if "名前" in h), 0)
+        what_i = next((i for i, h in enumerate(header) if "確かめる" in h), None)
+        where_i = next((i for i, h in enumerate(header) if "当たる先" in h or "先" in h or "場所" in h), None)
+        for row in b.rows[1:]:
+            name = row[name_i].strip() if name_i < len(row) else ""
+            if not name or re.match(r"^[（(]例[）)]|^例\s*[:：]", name):  # 雛形の例の行は読まない
+                continue
+            out[name] = {"what": row[what_i].strip() if what_i is not None and what_i < len(row) else "",
+                         "where": row[where_i].strip() if where_i is not None and where_i < len(row) else ""}
+    return out
+
+
+def _lookups(ws: Workspace) -> dict[str, dict]:
+    p = ws.path("04-analysis.md")
+    if not p.exists():
+        return {}
+    return lookups_of(p.read_text(encoding="utf-8")) or {}
+
+
 def gate_analysis(ws: Workspace) -> list[Issue]:
-    issues, secs = _require_md(ws, "04-analysis.md", ["素材の要点", "読者に必要な情報", "載せない情報", "不足している情報", "論点", DATASETS_HEADING])
+    issues, secs = _require_md(ws, "04-analysis.md", ["素材の要点", "読者に必要な情報", "載せない情報", "不足している情報", "論点",
+                                                    DATASETS_HEADING, LOOKUPS_HEADING])
     body = next((v for k, v in secs.items() if k.startswith(DATASETS_HEADING)), None)
     if body and not PLACEHOLDER_RE.search(body):
         ds = datasets_of(ws.path("04-analysis.md").read_text(encoding="utf-8")) or {}
@@ -202,6 +239,17 @@ def gate_analysis(ws: Workspace) -> list[Issue]:
         for name, d in ds.items():
             if d["count"] is None:
                 issues.append(Issue("GT044", "warn", f"「{DATASETS_HEADING}」の「{name}」に件数（数字）がありません。"))
+    # 調べればわかること: 公開情報や手元の記録で確かめられる前提（広く共有されているか、も含む）を表で登録する
+    body = next((v for k, v in secs.items() if k.startswith(LOOKUPS_HEADING)), None)
+    if body and not PLACEHOLDER_RE.search(body):
+        lk = lookups_of(ws.path("04-analysis.md").read_text(encoding="utf-8")) or {}
+        if not lk and not re.match(r"^\s*[-*]?\s*なし", body):
+            issues.append(Issue("GT047", "warn", f"「{LOOKUPS_HEADING}」は、表（名前・確かめること・当たる先）で書くか、なければ「なし」と書いてください。"
+                                                 "道具や規格の仕様、公開の統計、研究で分かっていることのほか、「よくある言い方か」「多くの人が同じ経験をしているか」も、"
+                                                 "辞書・コーパス・検索・手元の記録で数えて確かめられます（ステージ5で lookup の事実、ステージ6で調査）。"))
+        for name, d in lk.items():
+            if not d["what"]:
+                issues.append(Issue("GT047", "warn", f"「{LOOKUPS_HEADING}」の「{name}」に、確かめること（何が分かれば支えになるか）がありません。"))
     return issues
 
 
@@ -306,6 +354,19 @@ def gate_claims(ws: Workspace) -> list[Issue]:
         ds = f.get("dataset")
         if _nonempty_str(ds) and ds not in datasets:
             issues.append(Issue("GT046", "error", f"事実 {f.get('id')} の dataset「{ds}」は、04-analysis.md の「{DATASETS_HEADING}」にありません。"))
+    # 調べればわかること（04-analysis.md の表）は、確かめる事実（lookup）にして、ステージ6で必ず調べる
+    lookups = _lookups(ws)
+    looked = {f.get("lookup") for f in facts if _nonempty_str(f.get("lookup"))}
+    for name, d in lookups.items():
+        if name not in looked:
+            what = f"（{d['what']}）" if d.get("what") else ""
+            issues.append(Issue("GT048", "warn", f"調べればわかること「{name}」{what}を確かめる事実がありません。確かめることを事実の文にして"
+                                                 f"（\"lookup\": \"{name}\" を付けて）挙げてください。ステージ6で調べます。"
+                                                 "調べない理由があるなら、04 の表から外して「載せない情報」に理由を書いてください。"))
+    for f in facts:
+        lk = f.get("lookup")
+        if _nonempty_str(lk) and lk not in lookups:
+            issues.append(Issue("GT049", "error", f"事実 {f.get('id')} の lookup「{lk}」は、04-analysis.md の「{LOOKUPS_HEADING}」にありません。"))
     return issues
 
 
@@ -341,13 +402,37 @@ def gate_facts(ws: Workspace) -> list[Issue]:
     history = ws.load().get("history") or []
     back_from_logic = any(h.get("event") == "back" and h.get("from") == "logic" for h in history)
     if report and back_from_logic:
-        covered = {a for f in got.values() for a in (f.get("axioms") or [])}
+        statuses: dict[str, set[str]] = {}
+        for f in got.values():
+            for a in f.get("axioms") or []:
+                if isinstance(a, str):
+                    statuses.setdefault(a, set()).add(f.get("status") or "unverified")
         rejected_doc = ws.read_json("07-logic/rejected.json") or {}
-        covered |= {r.get("axiom") for r in rejected_doc.get("rejected") or [] if isinstance(r, dict)}
-        open_items = [r["axiom"] for r in report.get("rework") or [] if r.get("axiom") not in covered]
+        rejected_names = {r.get("axiom") for r in rejected_doc.get("rejected") or [] if isinstance(r, dict)}
+        rework = [r for r in report.get("rework") or [] if isinstance(r, dict) and r.get("axiom")]
+
+        def _handled(r: dict) -> bool:  # leancheck の LG040/LG041 と同じ基準
+            if r["axiom"] in rejected_names:
+                return True
+            st = statuses.get(r["axiom"], set())
+            if "research" in (r.get("reasons") or []):
+                return "verified" in st  # ［調査］の公理は、確かめられるまで（または Planner が［調査］を外すまで）調べ残し
+            return any(x != "unverified" for x in st)
+
+        open_items = [r["axiom"] for r in rework if r["axiom"] not in statuses and r["axiom"] not in rejected_names]
         if open_items:
             issues.append(Issue("GT058", "warn", f"ステージ7の手戻りの一覧のうち {len(open_items)} 個の公理に、扱い（事実の axioms・rejected.json・集められなかった記録）がありません: "
                                                  + "、".join(open_items[:8]) + (" ほか" if len(open_items) > 8 else "")))
+        # 集められなかった記録（unverified）か調べ残し（［調査］に verified の事実がない）だけの公理: ユーザーが進めると決めたことを --accept-warnings で履歴に残す
+        pending = [r for r in rework if r["axiom"] in statuses and not _handled(r)]
+        if pending:
+            hows = sorted({r.get("how") or "未指定" for r in pending})
+            issues.append(Issue("GT155", "warn", f"ステージ7の手戻りの一覧のうち {len(pending)} 個の公理は、集められなかった記録（unverified の事実）か、"
+                                                 f"調べ残しのある事実（［調査］の公理に verified の事実がない）だけで扱われています（集め方: {'・'.join(hows)}）: "
+                                                 + "、".join(r["axiom"] for r in pending[:8]) + (" ほか" if len(pending) > 8 else "")
+                                                 + "。［調査］は言い切れる水準に届くか調べ尽くすまで調べます（調べ尽くしたら、ステージ7で Planner が要ファクトから［調査］を外します）。"
+                                                 "［実験］は設計を書いて手元の道具で試す前に、［ヒアリング］は尋ねる前に、「集められなかった」にしないでください。"
+                                                 "ユーザーがこの確信度のまま進めると決めたときだけ、--accept-warnings で進みます。"))
     arg = ws.path("07-logic/Argument.lean")
     if arg.exists():
         names = set(re.findall(r"^axiom\s+([A-Za-z_][A-Za-z0-9_'.]*)", arg.read_text(encoding="utf-8"), re.M))
@@ -355,6 +440,20 @@ def gate_facts(ws: Workspace) -> list[Issue]:
             unknown = [a for a in f.get("axioms") or [] if a not in names]
             if unknown:
                 issues.append(Issue("GT059", "warn", f"事実 {fid} の axioms にある {', '.join(unknown)} は、07-logic/Argument.lean の公理にありません。"))
+    # ユーザーの証言（user_asserted）は、ユーザーにしか分からないこと（private）か、同じ内容を調べた事実（checked）を持つ。
+    # 「みんなそう言っている」「普通の表現だ」のような世の中についての証言を、調べずに証言のまま残さないため。
+    for fid, f in got.items():
+        if f.get("status") != "user_asserted" or f.get("private") is True:
+            continue
+        checked = f.get("checked")
+        if isinstance(checked, list) and checked and all(_nonempty_str(c) for c in checked):
+            unknown = [c for c in checked if c not in got]
+            if unknown:
+                issues.append(Issue("GT157", "warn", f"事実 {fid} の checked にある {', '.join(map(str, unknown))} は、06-facts.json にありません。"))
+            continue
+        issues.append(Issue("GT156", "warn", f"事実 {fid} はユーザーの証言（user_asserted）です。ユーザーにしか分からないこと（社内の事情・数字・判断・記憶）なら "
+                                             "\"private\": true を、世の中について述べていること（よくある言い方か、多くの人が同じ経験をしているか、道具の仕様など）なら、"
+                                             "同じ内容を公開情報や手元の記録で確かめた事実の id を \"checked\" に書いてください。まだ確かめていなければ、先に調べます。"))
     for fid, f in got.items():
         st = f.get("status")
         if st not in FACT_STATUS:

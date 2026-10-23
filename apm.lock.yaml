@@ -138,7 +138,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:3917c758c186b97489f7a6a143224329c951e85ff441d3b6c0bc299fb24b6389
+  content_hash: sha256:0e4da180b5c6dbe0c921f63a35f0e7b398333bee1b4ca408f8a58c4433598e9a
 - kind: project-relative
   target: claude
   value: .claude/agents/cyrus-lean-writer.md
@@ -147,7 +147,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:d82a27b83c347e9ff6af63c5ad84c3bf82cd65a64eea9da58a831b4722e02020
+  content_hash: sha256:dd40e93c11bc3eb9f78fe48922c5bf405e60ba91e5fcf185e97a5396b51b49fe
 - kind: project-relative
   target: claude
   value: .claude/agents/cyrus-logic-planner.md
@@ -156,7 +156,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:cfde1c1b2e28ff47ca5f7341cd1f0f18ce7c9ceb7100dab58d21a6930e463d9e
+  content_hash: sha256:e7355ca800f8a103596877417c5d60b32d688e5993180e64311f1b308daa42b8
 - kind: project-relative
   target: claude
   value: .claude/agents/cyrus-logic-reviewer.md
@@ -165,7 +165,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:3b208219bded7265858d32c83d87e83f3ee7d77cf7825f5a8d53bce2c4076acb
+  content_hash: sha256:3716b6d2d74dcb2bf534d417b3021f9fd1458a183fc27452b6730dba8ae7b383
 - kind: project-relative
   target: claude
   value: .claude/agents/cyrus-persona-reader.md
@@ -309,7 +309,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:e0d99be359ce86d8149283cbcc06342e6458f3ee116fec8e615f33c98b996281
+  content_hash: sha256:d04e7fd61b523520000fca4270bb101da8c798c18915ba8b3096ba7d7b129ca3
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/data/wording-rules.json
@@ -363,7 +363,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:68fac5714b36dbe7113de0e1135a7dd1bfdd3a8034e511487913238e1a1d656f
+  content_hash: sha256:7d8ce3783798f652a2dd8c9867830cd2e83c689b97eb84817d168f7d526a550a
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
@@ -543,7 +543,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:f99c9097c73655f39f0fac06e835af9cf6a316c33c972726f77b61cd6f314b68
+  content_hash: sha256:139cf8f98edb2cace286afa84ec06a38c6a2cd1ab9423439c95c4ecd4d8cbf23
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/figure.py
@@ -561,7 +561,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:1d0ce8119a7bfe535d120ef44a326aea941439e69369151a75867effb4da5b08
+  content_hash: sha256:5ec4ca4c09a8f74bc3fe4f04a77e943f1bf7a36da37a1cf7805d5d87770b2e37
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/hooks.py
@@ -597,7 +597,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:1ee5c75d228b15ac99e1f2d1bac3010556c6ee9e24bf47baee40584f4b2810b5
+  content_hash: sha256:98d8fea7fb31bf129ddb9ffb07992c13983efce0edc91fe66969c4ad30e0162c
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/leansrc.py
@@ -651,7 +651,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:b6e25f42c222e3d47c4fc777363f6c33601cd81643cbd4fe8d159813168c9450
+  content_hash: sha256:5085a83748fd9754e547fff55e3a6e32fe6534380bbe28306e701b8f0707b247
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/skim.py
@@ -759,7 +759,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:51317229e28162fbd0a541aa1735597df46b5d1d249db4f8a28e66b0760494fa
+  content_hash: sha256:82c757c06e5b5e6475e34d847fcd0e9a80930730852b05033075e5f2da4d1cf1
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/05-claims.md
@@ -768,7 +768,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:4beccbe662803e89cb7131381f0159d4e3dc53079de6fc36096c23841c2a173e
+  content_hash: sha256:603102f42ac00eb6753e9b1db559ce4b4bf929e06f792b14d0fd98fe4d38de58
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/06-facts.md
@@ -777,7 +777,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:5571f78383ff2c8830b2654c7a3f6f61d7e2fe570c8087c49cd001fda67fc9f2
+  content_hash: sha256:8109f5c5e37f32a573bba08c3de6d62a9527ebec2441633c0df8c0794e6629e0
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/07-logic.md
@@ -786,7 +786,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:7b3ad1227772263f3e6613d2f45430dca68d6eeb2d276655e0cf87f2f0e4db6a
+  content_hash: sha256:32b04b36bec9530d37a92823ffc2163cdcaceddb222275b4ce0df6996acc43e4
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/stages/08-structure.md
@@ -2375,22 +2375,22 @@ local_deployed_files:
 - .claude/skills/visual-patterns/scripts/vp_figure.py
 local_deployed_file_hashes:
   .claude/agents/cyrus-alignment-judge.md: sha256:f23d70143ba31de7fb426ef40232bbf70d00ce21856c5705c2ac145fccd2d3bb
-  .claude/agents/cyrus-fact-checker.md: sha256:3917c758c186b97489f7a6a143224329c951e85ff441d3b6c0bc299fb24b6389
-  .claude/agents/cyrus-lean-writer.md: sha256:d82a27b83c347e9ff6af63c5ad84c3bf82cd65a64eea9da58a831b4722e02020
-  .claude/agents/cyrus-logic-planner.md: sha256:cfde1c1b2e28ff47ca5f7341cd1f0f18ce7c9ceb7100dab58d21a6930e463d9e
-  .claude/agents/cyrus-logic-reviewer.md: sha256:3b208219bded7265858d32c83d87e83f3ee7d77cf7825f5a8d53bce2c4076acb
+  .claude/agents/cyrus-fact-checker.md: sha256:0e4da180b5c6dbe0c921f63a35f0e7b398333bee1b4ca408f8a58c4433598e9a
+  .claude/agents/cyrus-lean-writer.md: sha256:dd40e93c11bc3eb9f78fe48922c5bf405e60ba91e5fcf185e97a5396b51b49fe
+  .claude/agents/cyrus-logic-planner.md: sha256:e7355ca800f8a103596877417c5d60b32d688e5993180e64311f1b308daa42b8
+  .claude/agents/cyrus-logic-reviewer.md: sha256:3716b6d2d74dcb2bf534d417b3021f9fd1458a183fc27452b6730dba8ae7b383
   .claude/agents/cyrus-persona-reader.md: sha256:78f07277bf01e9aeec29ce2677391eb802b9af1308fcd4cc2c27cef67ed921ca
   .claude/agents/cyrus-skim-reader.md: sha256:1d3eef8f0f34052956fc0c33b3b11d4c4d86d87eddf7ff84d4e2706bdd1ddbd0
   .claude/commands/cyrus-status.md: sha256:f0cce7658bac76dfb65f8a670c6cddac7edba572f4a2e908a1bd8b5161d824dd
   .claude/commands/cyrus.md: sha256:76d8692125100e6f56cc251927f693a0c066249342cf7a10d1d1e5777f253794
   .claude/rules/cyrus-documents.md: sha256:1d59ecb32f396354559538e38316fad96726e2462578e4ac1dff4fa335cfc7f3
-  .claude/skills/cyrus/SKILL.md: sha256:e0d99be359ce86d8149283cbcc06342e6458f3ee116fec8e615f33c98b996281
+  .claude/skills/cyrus/SKILL.md: sha256:d04e7fd61b523520000fca4270bb101da8c798c18915ba8b3096ba7d7b129ca3
   .claude/skills/cyrus/data/wording-rules.json: sha256:81be47a833ed30a6e5bc3949a5c41fa0176ee867939d80c6ab507b48fa741376
   .claude/skills/cyrus/references/japanese-style.md: sha256:c41b39b0d373f902e9231bc719556ef563034b57a7910bca5767d19d661d8180
   .claude/skills/cyrus/references/lean-modeling.md: sha256:974a2b18a7aded906ec27f1769a3e88571cc9ba6d2343caf4f575aa40daaac02
   .claude/skills/cyrus/references/owner-principles.md: sha256:67b2558f04890283d7a51548c1129e3a77ef31144c515969ddad15d8345664b3
   .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
-  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:68fac5714b36dbe7113de0e1135a7dd1bfdd3a8034e511487913238e1a1d656f
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:7d8ce3783798f652a2dd8c9867830cd2e83c689b97eb84817d168f7d526a550a
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc: sha256:a59fd99339064374ec22a825c307c0d5b745f9f33364e37d90d206b0a920ef62
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/figure.cpython-312.pyc: sha256:d2429c2f22f6abb196138f6abfd18e32e99f7b70549ce3e75e208c6fe90f93ae
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/gates.cpython-312.pyc: sha256:edcafe549a7f8423fea386381fe34b5d05d1bfbe07156d365507c0e8c829605e
@@ -2410,19 +2410,19 @@ local_deployed_file_hashes:
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/wording.cpython-312.pyc: sha256:254db543ac17a255f4e7298d996286369142403aa2d28fffa737f52066463b41
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/workspace.cpython-312.pyc: sha256:444eab02f9feb2c1b81df53059fb2d47f5b910c3274ac1932234baad2c78217f
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/yomiyasu.cpython-312.pyc: sha256:a80a528c288aeeeed956ee99740707143d62937d5d73d719f1b5e94488591c16
-  .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:f99c9097c73655f39f0fac06e835af9cf6a316c33c972726f77b61cd6f314b68
+  .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:139cf8f98edb2cace286afa84ec06a38c6a2cd1ab9423439c95c4ecd4d8cbf23
   .claude/skills/cyrus/scripts/cyruslib/figure.py: sha256:a6c840440352b624ef3988a36c7967b7d743a01f0289646f7017bacc2fa53091
-  .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:1d0ce8119a7bfe535d120ef44a326aea941439e69369151a75867effb4da5b08
+  .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:5ec4ca4c09a8f74bc3fe4f04a77e943f1bf7a36da37a1cf7805d5d87770b2e37
   .claude/skills/cyrus/scripts/cyruslib/hooks.py: sha256:835034fad61bd05eb7ac3e1f34ab5e21ed44786e8dedc1c08849e703c3d8285c
   .claude/skills/cyrus/scripts/cyruslib/issues.py: sha256:31964f1bb2e42f5d53501327391c4898026093f3ebb652f857169753263ba8dd
   .claude/skills/cyrus/scripts/cyruslib/jatext.py: sha256:a6c7ab40f3c5f01b7ebdcfe02a2e83f22d89e32d940c76cfe75fb8f8e0112800
-  .claude/skills/cyrus/scripts/cyruslib/leancheck.py: sha256:1ee5c75d228b15ac99e1f2d1bac3010556c6ee9e24bf47baee40584f4b2810b5
+  .claude/skills/cyrus/scripts/cyruslib/leancheck.py: sha256:98d8fea7fb31bf129ddb9ffb07992c13983efce0edc91fe66969c4ad30e0162c
   .claude/skills/cyrus/scripts/cyruslib/leansrc.py: sha256:34119d405d7643baa5b83a0df01ccddfe6ae5c00ff686b12844b335fb2e5520a
   .claude/skills/cyrus/scripts/cyruslib/lint.py: sha256:a7a578082d5ac05807a1103318738f26c0251efd6eeda5579355561f169215e2
   .claude/skills/cyrus/scripts/cyruslib/logicround.py: sha256:ea884e4e90457a0502b4c2284a54d7600f88efcffaaccac04a2baabba1f7b92e
   .claude/skills/cyrus/scripts/cyruslib/mdparse.py: sha256:72c802a4eafc581df80e5ae227296890421a3e3973b5e792697ac4c421472d88
   .claude/skills/cyrus/scripts/cyruslib/reader.py: sha256:df7933df55d2ebb4395f51143b917d13a724c35b1a34adefdc4cde7530bfdeae
-  .claude/skills/cyrus/scripts/cyruslib/scaffold.py: sha256:b6e25f42c222e3d47c4fc777363f6c33601cd81643cbd4fe8d159813168c9450
+  .claude/skills/cyrus/scripts/cyruslib/scaffold.py: sha256:5085a83748fd9754e547fff55e3a6e32fe6534380bbe28306e701b8f0707b247
   .claude/skills/cyrus/scripts/cyruslib/skim.py: sha256:8900d931cfc691df862d9fe7b3232e07ce677d6bfe9cf8135c54e0cbf1a5824a
   .claude/skills/cyrus/scripts/cyruslib/tally.py: sha256:2a7d0dc2e4709e5e7630b47774b36ca980673821c9fc24bfb93c3def482d0c08
   .claude/skills/cyrus/scripts/cyruslib/terms.py: sha256:dbd331c8f292579b1cc435be28d69aa613a9a50f750771c5d51ed7b1525f9d02
@@ -2434,10 +2434,10 @@ local_deployed_file_hashes:
   .claude/skills/cyrus/stages/01-intent.md: sha256:6edc698e15e712ccb057adf5cc421a7c2972bec67688eb240260a346ed8246bf
   .claude/skills/cyrus/stages/02-context.md: sha256:e5908db740634ef46cac2bd819c094af11b0b7d2240f5453953d22c3bf10b663
   .claude/skills/cyrus/stages/03-reader.md: sha256:257f1e8c13216a7c4822321a22325c6ba48d55b47a96dc518a570a561608ff57
-  .claude/skills/cyrus/stages/04-analysis.md: sha256:51317229e28162fbd0a541aa1735597df46b5d1d249db4f8a28e66b0760494fa
-  .claude/skills/cyrus/stages/05-claims.md: sha256:4beccbe662803e89cb7131381f0159d4e3dc53079de6fc36096c23841c2a173e
-  .claude/skills/cyrus/stages/06-facts.md: sha256:5571f78383ff2c8830b2654c7a3f6f61d7e2fe570c8087c49cd001fda67fc9f2
-  .claude/skills/cyrus/stages/07-logic.md: sha256:7b3ad1227772263f3e6613d2f45430dca68d6eeb2d276655e0cf87f2f0e4db6a
+  .claude/skills/cyrus/stages/04-analysis.md: sha256:82c757c06e5b5e6475e34d847fcd0e9a80930730852b05033075e5f2da4d1cf1
+  .claude/skills/cyrus/stages/05-claims.md: sha256:603102f42ac00eb6753e9b1db559ce4b4bf929e06f792b14d0fd98fe4d38de58
+  .claude/skills/cyrus/stages/06-facts.md: sha256:8109f5c5e37f32a573bba08c3de6d62a9527ebec2441633c0df8c0794e6629e0
+  .claude/skills/cyrus/stages/07-logic.md: sha256:32b04b36bec9530d37a92823ffc2163cdcaceddb222275b4ce0df6996acc43e4
   .claude/skills/cyrus/stages/08-structure.md: sha256:dbd444061d60aaacb2e50cf82ee3901892c8a41a9e50f01ce634c956aa538317
   .claude/skills/cyrus/stages/09-storyline.md: sha256:0572539ac8c9249f1f7a1f5f0267841ab5ee5e79a701fa33c2b092a18b346572
   .claude/skills/cyrus/stages/10-detail.md: sha256:2b6f256a703acb6c45e2dea8a434e2733db6ef5b3f8ccd11a6ef1aa218a1b194

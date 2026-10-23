@@ -7,6 +7,6 @@
     {"id": "F3", "statement": "試験環境の全文検索エンジンでは、記事の保存から5秒以内に検索に出た", "status": "verified", "method": "execution",
      "sources": [], "evidence": "試験環境で記事を20件保存し、検索に出るまでの時間を計測した。最大4.2秒", "notes": "本番の記事数での計測ではない"},
     {"id": "F4", "statement": "移行の初年度費用の見積もりは300万円である", "status": "user_asserted", "method": "user",
-     "sources": [], "notes": "見積書はユーザーの手元にあり、金額はユーザーの証言"}
+     "sources": [], "notes": "見積書はユーザーの手元にあり、金額はユーザーの証言", "private": true}
   ]
 }

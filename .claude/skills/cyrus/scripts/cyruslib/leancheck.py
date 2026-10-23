@@ -20,6 +20,9 @@ Lean への問い合わせは次の3回にまとめる。
   - どの種類でも、`@confidence`（Reviewer が書き換えたものを含む）があれば、それとの小さいほう。
   - 定理の値 = `#print axioms` に出る関係公理の値の最小値。主張の値 = その主張の `@claim` 定理の値の最小値。
     `@beyond`・`@baseline` の定理は、公理の使用には数えるが、主張の値には入れない。
+  - 手戻りの一覧（ステージ6へ戻して証拠を集める公理）: 確信度が 0.4 未満（low_confidence）、反対の証拠がある（against）、
+    要ファクトが［調査］で確信度が言い切れる水準（0.85）に届いていない（research。調査はユーザーの手を借りずに済むので、届くまで調べる）。
+    一覧の公理に扱いがなければ LG040、集められなかった記録（unverified の事実）だけで扱われていれば LG041 の警告（どちらも門ではない）。
 """
 
 from __future__ import annotations
@@ -54,6 +57,7 @@ HEDGES = [
     (0.4, "tentative", "可能性として述べる（〜の可能性があります）"),
     (0.0, "hypothesis", "主張ではなく仮説・未確認事項として明示する"),
 ]
+RESEARCH_THRESHOLD = HEDGES[0][0]  # 要ファクトが［調査］の公理は、言い切れる水準に届くまで手戻りの一覧に入る（調査はユーザーの手を借りずに済む）
 
 WITNESS_FORBIDDEN_ADDITIONS = ("instance", "attribute", "open", "set_option")
 DRAFT_MARK_RE = re.compile(r"TODO|TBD|FIXME|XXX|書きかけ|から埋める|後で埋める|あとで埋める")
@@ -572,9 +576,12 @@ def check(doc_dir: Path, write_report: bool = True) -> tuple[list[Issue], dict]:
     rework = []
     for a in relational:
         r = ax_report[a.name]
+        how, need = leansrc.need_of(a.doc)
         reasons = []
         if r["confidence"] < REWORK_THRESHOLD - EPS:
             reasons.append("low_confidence")
+        if how == "調査" and r["kind"] != "自明" and r["confidence"] < RESEARCH_THRESHOLD - EPS:
+            reasons.append("research")  # 調べれば分かる前提は、言い切れる水準に届くまで調べる（ユーザーの手を借りない）
         if r["against"]:
             reasons.append("against")
         if not reasons:
@@ -582,7 +589,6 @@ def check(doc_dir: Path, write_report: bool = True) -> tuple[list[Issue], dict]:
         users = sorted({cid for n, t in thm_report.items() if a.name in t["depends_on"] for cid in t["claims"]})
         side = sorted(n for n, t in thm_report.items() if a.name in t["depends_on"] and not t["claims"])
         others = sorted(n for n, t in other_report.items() if a.name in t["depends_on"])
-        how, need = leansrc.need_of(a.doc)
         rework.append({"axiom": a.name, "line": a.line, "kind": r["kind"], "confidence": r["confidence"],
                        "reasons": reasons, "support": r["support"], "against": r["against"],
                        "claims": users, "side_theorems": side, "other_theorems": others,
@@ -590,18 +596,43 @@ def check(doc_dir: Path, write_report: bool = True) -> tuple[list[Issue], dict]:
     # 一覧の公理に、まだ扱い（事実の axioms か rejected.json）がなければ警告する。
     # 門（エラー）にはしない: 周の途中では一覧が残っていて当たり前で、ステージ7を出るときに意味を持つ
     # （`cyrus advance` は警告があると --accept-warnings を求めるので、集めずに進む判断が記録に残る）。
-    covered = {ax for f in facts.values() for ax in (f.get("axioms") or []) if isinstance(ax, str)}
-    if rejected_doc:
-        covered |= {r.get("axiom") for r in rejected_doc.get("rejected") or [] if isinstance(r, dict)}
-    open_items = [r for r in rework if r["axiom"] not in covered]
+    # 集められなかった記録（unverified の事実）だけで扱った公理と、調べ残しのある［調査］の公理（verified の事実がまだない）は、
+    # 別の警告にする（ユーザーが進めると決めたことを --accept-warnings で履歴に残す）。
+    statuses: dict[str, set[str]] = {}
+    for f in facts.values():
+        for ax in f.get("axioms") or []:
+            if isinstance(ax, str):
+                statuses.setdefault(ax, set()).add(f.get("status") or "unverified")
+    rejected_names = {r.get("axiom") for r in (rejected_doc or {}).get("rejected") or [] if isinstance(r, dict)}
+
+    def _handled(r: dict) -> bool:
+        if r["axiom"] in rejected_names:
+            return True
+        st = statuses.get(r["axiom"], set())
+        if "research" in r["reasons"]:
+            return "verified" in st  # 調べれば分かる公理は、確かめられるまで（または Planner が［調査］を外すまで）調べ残し
+        return any(x != "unverified" for x in st)
+
+    open_items = [r for r in rework if r["axiom"] not in statuses and r["axiom"] not in rejected_names]
+    unverified_only = [r for r in rework if r["axiom"] in statuses and not _handled(r)]
+
+    def _by_how(items) -> str:
+        by_how = Counter(r["how"] or "未指定" for r in items)
+        return "・".join(f"{k} {by_how[k]}" for k in (*leansrc.NEED_HOWS, "未指定") if by_how.get(k))
+
     if open_items:
-        by_how = Counter(r["how"] or "未指定" for r in open_items)
-        detail = "・".join(f"{k} {by_how[k]}" for k in (*leansrc.NEED_HOWS, "未指定") if by_how.get(k))
         issues.append(Issue("LG040", "warn",
-                            f"手戻りの一覧の {len(open_items)} 個の公理に、まだ扱い（事実の axioms か rejected.json）がありません（集め方: {detail}）。"
+                            f"手戻りの一覧の {len(open_items)} 個の公理に、まだ扱い（事実の axioms か rejected.json）がありません（集め方: {_by_how(open_items)}）。"
                             "ステージ6に戻って証拠を集めます（`cyrus back facts --reason \"ステージ7の手戻り\"`）。"
                             "調べれば分かる［調査］の公理を残したまま先へ進まないでください。"
                             "ユーザーがこのまま進めると決めたときだけ、--accept-warnings で進みます。"))
+    if unverified_only:
+        issues.append(Issue("LG041", "warn",
+                            f"手戻りの一覧の {len(unverified_only)} 個の公理は、集められなかった記録（unverified の事実）か、"
+                            f"調べ残しのある事実（［調査］の公理に verified の事実がない）だけで扱われています（集め方: {_by_how(unverified_only)}）。"
+                            "［調査］は言い切れる水準に届くか調べ尽くすまで調べる（調べ尽くしたら、Planner が要ファクトから［調査］を外す）。"
+                            "［実験］は設計を書いて手元の道具で試す前に、［ヒアリング］は尋ねる前に、「集められなかった」にしない。"
+                            "ユーザーがこの確信度のまま進めると決めたときだけ、--accept-warnings で進みます（判断が履歴に残ります）。"))
 
     # ---- 証人
     w_issues, witness = check_witness(src, [a for a in axioms if a.full in ax_info] or axioms, model_path,

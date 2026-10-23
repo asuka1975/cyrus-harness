@@ -416,9 +416,11 @@ def cmd_lean(args):
         for w in report["weak_premises"]:
             print(f"  {w['axiom']}（【{w['kind']}】{w['confidence']}、主張 {', '.join(w['claims'])}）: {w['statement'][:60]}")
     if report.get("rework"):
-        print(f"手戻りの一覧（ステージ6で証拠を集める公理。確信度 {leancheck.REWORK_THRESHOLD} 未満か @against 付き）:")
+        print(f"手戻りの一覧（ステージ6で証拠を集める公理。確信度 {leancheck.REWORK_THRESHOLD} 未満か @against 付き、"
+              f"または要ファクトが［調査］で {leancheck.RESEARCH_THRESHOLD} 未満）:")
+        labels = {"low_confidence": "確信度が低い", "against": "反対の証拠", "research": "調べれば分かる"}
         for r in report["rework"]:
-            why = "・".join({"low_confidence": "確信度が低い", "against": "反対の証拠"}[x] for x in r["reasons"])
+            why = "・".join(labels.get(x, x) for x in r["reasons"])
             print(f"  {r['axiom']}（{r['confidence']}、{why}）→ 主張 {', '.join(r['claims']) or 'なし'}"
                   f"　集め方: {r.get('how') or '未指定'}" + (f"　要ファクト: {r['need'][:60]}" if r.get("need") else ""))
     print(f"Lean 検査: エラー {c['error']} 件・警告 {c['warn']} 件・参考 {c['info']} 件")

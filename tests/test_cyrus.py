@@ -401,7 +401,13 @@ class GateTest(CliCase):
         self.advance_through("logic")
         for rel in ("07-logic/Argument.lean", "07-logic/Model.lean"):
             self.put(rel)
-        self.run_cli("lean")  # ステージ7の report.json（手戻りの一覧）を作る
+        arg = self.doc / "07-logic" / "Argument.lean"
+        weak = "弱い点: 金額はユーザーの証言で、見積書はユーザーの手元にある（F4 の notes）。 -/"
+        arg.write_text(arg.read_text(encoding="utf-8").replace(weak, weak[:-3] + "\n要ファクト: [調査] 見積書の金額を確かめる。 -/", 1), encoding="utf-8")
+        r = self.run_cli("lean")  # ステージ7の report.json（手戻りの一覧）を作る
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("estimate_eq（0.6、調べれば分かる）", r.stdout)  # ［調査］の公理は 0.4 以上でも一覧に出る
+        self.assertIn("LG040", r.stdout)
         self.assertEqual(self.run_cli("back", "facts", "--reason", "ステージ7の手戻り").returncode, 0)
         report = json.loads((self.doc / "07-logic" / "report.json").read_text(encoding="utf-8"))
         rework = [r["axiom"] for r in report["rework"]]
@@ -421,6 +427,86 @@ class GateTest(CliCase):
         out = self.run_cli("check").stdout
         self.assertNotIn("GT058", out)
         self.assertIn("GT059", out)
+        self.assertIn("GT155", out)  # rework[1:] は集められなかった記録（unverified）だけで扱われている
+        self.assertIn(f"{len(rework) - 1} 個の公理", out)
+        self.assertIn(rework[1], out)
+        data["facts"][-2]["status"] = "partially_verified"
+        data["facts"][-2]["sources"] = [{"title": "情報システム部の返事", "location": "02-context/sources.md"}]
+        (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT058", out)
+        if "estimate_eq" in rework[1:]:
+            self.assertIn("GT155", out)  # ［調査］の公理は、verified の事実が付くまで調べ残し
+            self.assertIn("estimate_eq", out)
+        data["facts"][-2]["status"] = "verified"
+        data["facts"][-2]["method"] = "document"
+        (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT155", out)
+        self.assertNotIn("GT058", out)
+
+    def test_lookup_requires_fact(self):
+        """調べればわかること（04 の表）→ 確かめる事実（05 の lookup）→ 06 の雛形に写る。"""
+        self.advance_through("analysis")
+        base = (FIXTURE / "04-analysis.md").read_text(encoding="utf-8")
+        none_line = "- なし（主張が頼る一般の事実は、素材の試験記録と見積もりで足りる）。"
+        self.assertIn(none_line, base)
+        (self.doc / "04-analysis.md").write_text(base.replace(none_line, "承認の権限は GitHub Docs で分かります。"), encoding="utf-8")
+        self.assertIn("GT047", self.run_cli("check").stdout)  # 表でも「なし」でもない
+        table = ("| 名前 | 確かめること | 当たる先 |\n| --- | --- | --- |\n"
+                 "| 承認の権限 | 出した本人は承認できないか | GitHub Docs |\n| 定番の言い回し | AI の文章で「静かに壊れる」を指摘した記事が3件以上あるか | 検索・手元のログ |")
+        (self.doc / "04-analysis.md").write_text(base.replace(none_line, table), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT047", out)
+        r = self.run_cli("advance")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.put("05-claims.json")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT048", out)
+        self.assertIn("承認の権限", out)
+        self.assertIn("定番の言い回し", out)
+        claims = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        claims["facts"] += [
+            {"id": "F5", "statement": "GitHub では、出した本人は自分のプルリクエストを承認できない", "source_hint": "GitHub Docs", "lookup": "承認の権限"},
+            {"id": "F6", "statement": "「静かに壊れる」を AI の言い回しとして指摘した独立した記事が3件以上ある", "source_hint": "検索と手元のログ", "lookup": "定番の言い回し"},
+        ]
+        claims["claims"][0]["premises"] += ["F5", "F6"]
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT048", out)
+        self.assertNotIn("GT049", out)
+        claims["facts"][-1]["lookup"] = "別の項目"
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT049", self.run_cli("check").stdout)
+        claims["facts"][-1]["lookup"] = "定番の言い回し"
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("advance", "--confirmed", "テスト", "--accept-warnings")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        scaffolded = json.loads((self.doc / "06-facts.json").read_text(encoding="utf-8"))
+        self.assertEqual([f.get("lookup") for f in scaffolded["facts"] if f["id"] in ("F5", "F6")], ["承認の権限", "定番の言い回し"])
+
+    def test_user_asserted_needs_private_or_checked(self):
+        """ユーザーの証言は、ユーザーにしか分からないこと（private）か、同じ内容を調べた事実（checked）を持つ。"""
+        self.advance_through("facts")
+        data = json.loads((FIXTURE / "06-facts.json").read_text(encoding="utf-8"))
+        f4 = next(f for f in data["facts"] if f["id"] == "F4")
+        self.assertIs(f4.get("private"), True)
+
+        def check():
+            (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            return self.run_cli("check").stdout
+
+        self.assertNotIn("GT156", check())
+        del f4["private"]
+        self.assertIn("GT156", check())  # 「みんなそう言っている」を調べずに証言のまま残さない
+        f4["checked"] = ["F1"]
+        out = check()
+        self.assertNotIn("GT156", out)
+        self.assertNotIn("GT157", out)
+        f4["checked"] = ["F9"]
+        self.assertIn("GT157", check())
+        f4["checked"] = []
+        self.assertIn("GT156", check())
 
     def test_refuted_fact_in_premises(self):
         self.advance_through("facts")
@@ -1424,7 +1510,51 @@ class LogicGateTest(unittest.TestCase):
         (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
         issues, report = self.check()
         self.assertNotIn("LG040", rules(issues))  # 扱いが付けば消える（値は変わらない）
+        self.assertIn("LG041", rules(issues))  # ただし、集められなかった記録（unverified）だけなら別の警告（ユーザーの判断を --accept-warnings で残す）
+        self.assertIn("調査 1", next(i.message for i in issues if i.rule == "LG041"))
         self.assertEqual([r["axiom"] for r in report["rework"]], ["lean_le_doc", "lean_miss_pos"])
+        facts["facts"][-1]["status"] = "partially_verified"
+        facts["facts"][-1]["sources"] = [{"title": "x", "url": "https://example.com"}]
+        (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
+        issues, _ = self.check()
+        self.assertNotIn("LG040", rules(issues))
+        self.assertIn("LG041", rules(issues))  # lean_le_doc は［調査］: verified の事実が付くまで調べ残し（lean_miss_pos は扱い済み）
+        self.assertIn("調査 1", next(i.message for i in issues if i.rule == "LG041"))
+        facts["facts"][-1]["status"] = "verified"
+        (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
+        issues, _ = self.check()
+        self.assertNotIn("LG041", rules(issues))
+
+    def test_research_reason_until_assertable(self):
+        """要ファクトが［調査］の公理は、確信度が 0.4 以上でも、言い切れる水準（0.85）に届くまで手戻りの一覧に入る（調査はユーザーの手を借りない）。"""
+        self.assertEqual(leancheck.RESEARCH_THRESHOLD, leancheck.HEDGES[0][0])
+        issues, report = self.check()
+        self.assertNotIn("doc_miss_pos", [r["axiom"] for r in report["rework"]])  # 0.75（F2 は partially_verified）で、閾値 0.4 以上
+        weak = "弱い点: 件数は1つのチームの記録だけ（F3 も参照）。 -/"
+        self.edit(self.arg, weak, weak[:-3] + "\n要ファクト: [調査] 他のチームの振り返りの記録で、承認で見落とした伝え間違いを数える。 -/")
+        issues, report = self.check()
+        rw = {r["axiom"]: r for r in report["rework"]}
+        self.assertIn("doc_miss_pos", rw)
+        self.assertEqual(rw["doc_miss_pos"]["reasons"], ["research"])
+        self.assertEqual((rw["doc_miss_pos"]["how"], rw["doc_miss_pos"]["confidence"]), ("調査", 0.75))
+        self.assertIn("調査 1", next(i.message for i in issues if i.rule == "LG040"))
+        facts = json.loads((self.tmp / "06-facts.json").read_text(encoding="utf-8"))
+        facts["facts"].append({"id": "F4", "statement": "別のチームの記録にも、承認で見落とした伝え間違いが2件ある", "status": "partially_verified",
+                               "method": "document", "sources": [{"title": "振り返りの記録", "location": "02-context/retro-b.md"}], "notes": "",
+                               "axioms": ["doc_miss_pos"]})
+        (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
+        issues, report = self.check()
+        self.assertNotIn("調査 1", next(i.message for i in issues if i.rule == "LG040"))  # 扱いが付いた（残りは未指定の2つ）
+        self.assertIn("調査 1", next(i.message for i in issues if i.rule == "LG041"))  # ただし部分確認までなので、調べ残しとして警告
+        self.assertIn("doc_miss_pos", {r["axiom"] for r in report["rework"]})  # 値は 0.75 のままなので一覧には残る
+        facts["facts"][-1]["status"] = "verified"
+        (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
+        issues, report = self.check()
+        self.assertNotIn("LG041", rules(issues))  # 確かめられた（値は案 0.8 で止まるが、調べ残しではない）
+        self.assertIn("doc_miss_pos", {r["axiom"] for r in report["rework"]})
+        self.edit(self.arg, "要ファクト: [調査] 他のチーム", "要ファクト: [ヒアリング] 他のチーム")
+        _, report = self.check()
+        self.assertNotIn("doc_miss_pos", {r["axiom"] for r in report["rework"]})  # ［調査］でなければ、0.4 以上は一覧に入らない
 
     def test_against_goes_to_rework(self):
         self.edit(self.arg, "@support F2\n", "@support F2\n@against F3\n")
@@ -1624,8 +1754,35 @@ class HarnessConsistencyTest(unittest.TestCase):
             self.assertIn("[調査]", self.read(rel), rel)
         self.assertIn("調べればわかる", self.read("skills/cyrus/stages/05-claims.md"))
         self.assertIn("調べればわかる", self.read("skills/cyrus/stages/04-analysis.md"))
-        self.assertIn("証拠を公開情報から探す", self.read("skills/cyrus/SKILL.md"))
+        self.assertIn("証拠を公開情報や手元の記録から探す", self.read("skills/cyrus/SKILL.md"))
         self.assertIn("[調査]", self.read("skills/cyrus/scripts/cyruslib/scaffold.py"))  # Argument.lean と設計書の雛形
+
+    def test_lookup_experiment_and_rating_route(self):
+        """調べれば分かる前提を「ユーザーの記憶」で済ませず、実験と評価の問いを設計する道筋が、ガイド・役・CLI で一致している。"""
+        expected = {
+            "skills/cyrus/stages/04-analysis.md": ("調べればわかること", "GT048", "`lookup`", "多くの人が同じ経験"),
+            "skills/cyrus/stages/05-claims.md": ("調べればわかること", "`lookup`", "GT048", "GT049", "数えられる形"),
+            "skills/cyrus/stages/06-facts.md": ("数えて確かめる命題", "実験を設計して行う", "人の判断を測る", "`private: true`", "`checked`",
+                                                 "GT156", "GT155", "LG041", "`research`", "仕事（D）", "あなたの記憶だけが根拠"),
+            "skills/cyrus/stages/07-logic.md": ("`research`", "LG041", "あなたの記憶だけが根拠", "判定してもらう項目"),
+            "skills/cyrus/SKILL.md": ("実験する", "判定してもらう項目"),
+            "agents/cyrus-fact-checker.agent.md": ("D. 実験する", "not_run", "数えて確かめる命題", "bar", "records"),
+            "agents/cyrus-logic-planner.agent.md": ("【経験則】にする", "判定してもらう", "`[調査]` を残さない"),
+            "agents/cyrus-logic-reviewer.agent.md": ("数える", "判定してもらう項目", "21."),
+            "agents/cyrus-lean-writer.agent.md": ("判定してもらう項目",),
+            "skills/cyrus/scripts/cyruslib/scaffold.py": ("調べればわかること", "lookup"),
+        }
+        for rel, marks in expected.items():
+            text = self.read(rel)
+            for m in marks:
+                self.assertIn(m, text, f"{rel}: {m}")
+        self.assertEqual(gates.LOOKUPS_HEADING, "調べればわかること")
+        self.assertEqual(leancheck.RESEARCH_THRESHOLD, leancheck.HEDGES[0][0])
+        logic = self.read("skills/cyrus/stages/07-logic.md")
+        self.assertLess(logic.index("### ステージの終わり: 手戻り"), logic.index("### ステージの終わり: 弱い前提を見せる"))  # 調査・実験が先
+        design = (ROOT / "docs/ai-notes/harness-design.md").read_text(encoding="utf-8")
+        for m in ("調べればわかること", "LG041", "GT155", "GT156", "`research`"):
+            self.assertIn(m, design, m)
 
     def test_tally_route(self):
         """記録の集まりを、1件の例でなく全件を数えた事実にする道筋が、ガイド・役・CLI で一致している。"""
