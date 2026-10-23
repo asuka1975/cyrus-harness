@@ -33,6 +33,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 | `back <stage> --reason "…"` | 前のステージに戻る |
 | `scaffold [stage] [--force]` | 成果物の雛形を作る |
 | `lean` | 論証のモデルを検査し（門）、主張ごとの確信度と手戻りの一覧を出す |
+| `tally <file>` | 記録の分類の表（`02-context/tally-*.md`。記録1件に1行、「分類」の列）を数え、06-facts.json の `tally` に書く値を出す |
 | `logic-round close` / `logic-round diff` | ステージ7の周を記録し打ち切りを判定する／前の周との差分と対応表を作る |
 | `lint [file]` | 認知負荷の検査（既定は draft.md） |
 | `wording [file]` | 言葉遣いの検査（読者辞書・ひらく漢字・表記ゆれ） |
@@ -73,7 +74,7 @@ python3 .claude/skills/cyrus/scripts/cyrus.py <コマンド>
 
 | エージェント | 役割 | 主に使うステージ |
 | --- | --- | --- |
-| `cyrus-fact-checker` | 事実を外部の資料や実行で確かめる | 6 |
+| `cyrus-fact-checker` | 事実を外部の資料や実行で確かめる。公理（論証の前提）を支える証拠を公開情報から探す。記録の集まり（事例・ログ・回答など）を1件ずつ分類する（数えるのは `cyrus tally`） | 6（ステージ7からの手戻りを含む） |
 | `cyrus-logic-planner` | 論証のモデル（コンポーネント・関係公理・定理の計画）を設計する | 7 |
 | `cyrus-lean-writer` | 設計書のとおりに Lean でモデルと証人を書く | 7 |
 | `cyrus-logic-reviewer` | モデルを敵対的に監査し、証拠のない公理の確信度を下げる | 7 |

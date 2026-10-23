@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 
-from . import figure, jatext, leancheck, lint, mdparse, skim, wording, yomiyasu
+from . import figure, jatext, leancheck, lint, mdparse, skim, tally, wording, yomiyasu
 from .issues import Issue
 from .reader import build_profile
 from .workspace import Workspace
@@ -153,8 +153,55 @@ def gate_reader(ws: Workspace) -> list[Issue]:
     return issues
 
 
+DATASETS_HEADING = "集計できる素材"  # 04-analysis.md の節。同じ種類の記録が複数ある素材を、表で登録する
+
+
+def datasets_of(text: str) -> dict[str, dict] | None:
+    """04-analysis.md の「集計できる素材」の表を読む。節がなければ None。「なし」なら {}。
+
+    表の列は、名前・単位・件数・置き場所・数える観点。名前の列（見出しに「名前」。なければ最初の列）で引く。
+    """
+    secs = _md_sections(text)
+    body = next((v for k, v in secs.items() if k.startswith(DATASETS_HEADING)), None)
+    if body is None:
+        return None
+    out: dict[str, dict] = {}
+    for b in mdparse.parse(body):
+        if b.kind != "table" or not b.rows:
+            continue
+        header = b.rows[0]
+        name_i = next((i for i, h in enumerate(header) if "名前" in h), 0)
+        count_i = next((i for i, h in enumerate(header) if "件数" in h), None)
+        loc_i = next((i for i, h in enumerate(header) if "置き場所" in h or "場所" in h), None)
+        for row in b.rows[1:]:
+            name = row[name_i].strip() if name_i < len(row) else ""
+            if not name or re.match(r"^[（(]例[）)]|^例\s*[:：]", name):  # 雛形の例の行は読まない
+                continue
+            m = re.search(r"\d+", row[count_i]) if count_i is not None and count_i < len(row) else None
+            out[name] = {"count": int(m.group(0)) if m else None,
+                         "location": row[loc_i].strip() if loc_i is not None and loc_i < len(row) else ""}
+    return out
+
+
+def _datasets(ws: Workspace) -> dict[str, dict]:
+    p = ws.path("04-analysis.md")
+    if not p.exists():
+        return {}
+    return datasets_of(p.read_text(encoding="utf-8")) or {}
+
+
 def gate_analysis(ws: Workspace) -> list[Issue]:
-    issues, _ = _require_md(ws, "04-analysis.md", ["素材の要点", "読者に必要な情報", "載せない情報", "不足している情報", "論点"])
+    issues, secs = _require_md(ws, "04-analysis.md", ["素材の要点", "読者に必要な情報", "載せない情報", "不足している情報", "論点", DATASETS_HEADING])
+    body = next((v for k, v in secs.items() if k.startswith(DATASETS_HEADING)), None)
+    if body and not PLACEHOLDER_RE.search(body):
+        ds = datasets_of(ws.path("04-analysis.md").read_text(encoding="utf-8")) or {}
+        if not ds and not re.match(r"^\s*[-*]?\s*なし", body):
+            issues.append(Issue("GT044", "warn", f"「{DATASETS_HEADING}」は、表（名前・単位・件数・置き場所・数える観点）で書くか、"
+                                                 "なければ「なし」と書いてください。同じ種類の記録（事例、ログ、回答など）が複数ある素材は、"
+                                                 "1件を選ぶ前に全件を数えます（ステージ5で dataset の事実、ステージ6で集計）。"))
+        for name, d in ds.items():
+            if d["count"] is None:
+                issues.append(Issue("GT044", "warn", f"「{DATASETS_HEADING}」の「{name}」に件数（数字）がありません。"))
     return issues
 
 
@@ -246,6 +293,19 @@ def gate_claims(ws: Workspace) -> list[Issue]:
     for f in fids:
         if f not in used:
             issues.append(Issue("GT041", "warn", f"事実 {f} はどの主張の前提にもなっていません。"))
+    # 集計できる素材（04-analysis.md の表）は、全件を数えた事実（dataset）で主張を支える
+    datasets = _datasets(ws)
+    tallied = {f.get("dataset") for f in facts if _nonempty_str(f.get("dataset"))}
+    for name, d in datasets.items():
+        if name not in tallied:
+            n = f"{d['count']} 件" if d.get("count") else "件数は 04 の表"
+            issues.append(Issue("GT045", "warn", f"集計できる素材「{name}」（{n}）を数えた事実がありません。全件を分類して数えた事実を"
+                                                 f"（\"dataset\": \"{name}\" を付けて）挙げてください。1件の事例だけでは、傾向や頻度の主張は支えられません。"
+                                                 "数えない理由があるなら、04 の表から外して「載せない情報」に理由を書いてください。"))
+    for f in facts:
+        ds = f.get("dataset")
+        if _nonempty_str(ds) and ds not in datasets:
+            issues.append(Issue("GT046", "error", f"事実 {f.get('id')} の dataset「{ds}」は、04-analysis.md の「{DATASETS_HEADING}」にありません。"))
     return issues
 
 
@@ -263,10 +323,19 @@ def gate_facts(ws: Workspace) -> list[Issue]:
     for fid in expected:
         if fid not in got:
             issues.append(Issue("GT050", "error", f"事実 {fid} の検証結果がありません。"))
+    claim_ids = {c.get("id") for c in _all_claims(claims)}
     for fid in got:
-        if fid not in expected and not got[fid].get("axioms"):
-            issues.append(Issue("GT051", "warn", f"事実 {fid} は 05-claims.json にありません。主張側にも追加するか、"
-                                                 "ステージ7の手戻りで集めた事実なら axioms に公理の名前を書いてください。"))
+        if fid in expected or got[fid].get("axioms"):
+            continue
+        backs = got[fid].get("claims")  # ステージ6の調査で足した事実: 支える主張の id
+        if isinstance(backs, list) and backs:
+            unknown = [c for c in backs if not _is(c, claim_ids)]
+            if unknown:
+                issues.append(Issue("GT051", "warn", f"事実 {fid} の claims にある {', '.join(map(str, unknown))} は、05-claims.json の主張にありません。"))
+            continue
+        issues.append(Issue("GT051", "warn", f"事実 {fid} は 05-claims.json にありません。主張側にも追加するか、"
+                                             "ステージ6の調査で足した事実なら claims に支える主張の id を、"
+                                             "ステージ7の手戻りで集めた事実なら axioms に公理の名前を書いてください。"))
     # ステージ7からの手戻り: 一覧の公理ごとに扱い（事実・棄却・集められなかった記録）があるか
     report = ws.read_json("07-logic/report.json") if ws.path("07-logic/report.json").exists() else None
     history = ws.load().get("history") or []
@@ -313,6 +382,46 @@ def gate_facts(ws: Workspace) -> list[Issue]:
                 issues.append(Issue("GT057", "warn", f"事実 {fid} の出典 {path} が文書のフォルダにありません。素材を 02-context/ に置くか、出典を直してください。"))
         if not _nonempty_str(f.get("notes")) and st != "verified":
             issues.append(Issue("GT056", "warn", f"事実 {fid} が verified でない理由や、確認できた範囲を notes に書いてください。"))
+    issues += _check_tallies(ws, got)
+    return issues
+
+
+def _check_tallies(ws: Workspace, got: dict[str, dict]) -> list[Issue]:
+    """集計の事実（dataset のある事実）: 分類の表（tally.items）を CLI が数え直し、tally の値と照らす。"""
+    issues: list[Issue] = []
+    datasets = _datasets(ws)
+    for fid, f in got.items():
+        st = f.get("status")
+        t = f.get("tally")
+        if _nonempty_str(f.get("dataset")) and st in ("verified", "partially_verified"):
+            ok = (isinstance(t, dict) and _nonempty_str(t.get("items")) and isinstance(t.get("total"), int)
+                  and isinstance(t.get("counts"), dict) and t["counts"] and _nonempty_str(t.get("criteria")))
+            if not ok:
+                issues.append(Issue("GT150", "error", f"事実 {fid} は集計の事実（dataset「{f['dataset']}」）です。tally に items（分類の表のパス。"
+                                                      "記録1件に1行、「分類」の列）、total、counts、criteria（分類の基準）を書いてください。"
+                                                      "分類は cyrus-fact-checker の仕事 C、数えるのは `cyrus tally <items>` です。"))
+                continue
+            res = tally.read_items(ws.dir / t["items"])
+            if res.error:
+                issues.append(Issue("GT151", "error", f"事実 {fid} の分類の表 {t['items']}: {res.error}"))
+                continue
+            if res.unlabeled:
+                issues.append(Issue("GT151", "error", f"事実 {fid} の分類の表 {t['items']} に、分類が空の行があります（{', '.join(map(str, res.unlabeled))} 行目）。"
+                                                      "どれにも当たらない記録は「該当なし」と書き、行を消さないでください。"))
+                continue
+            if res.total != t["total"] or not tally.same_counts(t["counts"], res.counts):
+                counted = json.dumps(res.to_dict(), ensure_ascii=False)
+                issues.append(Issue("GT152", "error", f"事実 {fid} の tally が、分類の表 {t['items']} を数えた結果と合いません。CLI の集計: {counted}。"
+                                                      "tally をこの値にするか、表を直してください（statement の数字も合わせる）。"))
+            d = datasets.get(f["dataset"]) or {}
+            if d.get("count") and d["count"] != t["total"]:
+                issues.append(Issue("GT153", "warn", f"事実 {fid} の tally.total（{t['total']}）が、04-analysis.md の「{f['dataset']}」の件数（{d['count']}）と違います。"
+                                                     "記録の漏れか、04 の数え方の違いです。どちらかを直すか、notes に理由を書いてください。"))
+        elif st in ("verified", "partially_verified") and not isinstance(t, dict) and tally.looks_like_ratio(f.get("statement", "")):
+            quoted = any(re.search(r"\d", str(s.get("quote", ""))) for s in f.get("sources") or [] if isinstance(s, dict))
+            if not quoted and not re.search(r"\d", str(f.get("evidence", ""))):
+                issues.append(Issue("GT154", "info", f"事実 {fid} は割合や件数を述べていますが、数え方が残っていません。あなたが数えたなら"
+                                                     "（04 の「集計できる素材」に登録し）dataset と tally を、出典の数字なら sources の quote にその数字を書いてください。"))
     return issues
 
 

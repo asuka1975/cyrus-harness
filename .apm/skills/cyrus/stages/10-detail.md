@@ -37,7 +37,7 @@
    値が 4 つ以下の比較、一つの定義や理由、主体が一つで分岐のない手順、3 つ以下の列挙は文章にします。迷ったら根拠を文章で書き出し、同じ文型が 3 つ以上並ぶか、読者が前の文に戻って照合し直すなら図表にします（その判断で目安に満たない根拠を図表にするときは、spec の `evidence.below_threshold_reason` に `repeated-pattern` か `cross-reference` を書く）。
 3. **図表にする節は、Skill ツールで `visual-patterns` を呼びます。** 渡すものは次のとおりです。
    - 答え（一文）と、その節の問い（`08-structure.json` の reader_question）
-   - 根拠（数を添えて）。値があれば値そのもの
+   - 根拠（数を添えて）。値があれば値そのもの。集計の事実（`06-facts.json` の `tally`）があれば、`counts` の分類と数がそのまま値になる（分類が5つ以上なら「量」の目安に当たる）
    - 読者: `03-reader.json` の knowledge_level と、記法の知識（known_terms にフローチャートやシーケンス図などがあるか）
    - 精度（正確な値が要るか、傾向でよいか）と読み方（通読 through か参照 lookup か。`03-reader.json` の reading_context.reading_mode が reference（必要なときに引く）なら参照、purpose が lookup（調べる）の文書も参照に寄せる。それ以外は通読を基本にし、表引きのための表など節ごとに変えてよい）
    - 媒体: Markdown。Mermaid はそのまま表示でき、PNG の画像も置ける

@@ -549,10 +549,10 @@ def check(doc_dir: Path, write_report: bool = True) -> tuple[list[Issue], dict]:
         a = next(x for x in relational if x.name == name)
         first = next((ln.strip() for ln in a.doc.split("\n") if ln.strip()), "")
         statement = re.sub(r"^【[^】]*】\s*", "", first)
-        need = re.search(r"要ファクト\s*[:：]\s*([^\n]*)", a.doc)
+        how, need = leansrc.need_of(a.doc)
         weak_premises.append({"axiom": name, "kind": ax_report[name]["kind"], "confidence": ax_report[name]["confidence"],
                               "claims": deciding[name], "statement": statement,
-                              "needs_fact": need.group(1).strip() if need else ""})
+                              "needs_fact": need, "how": how})
 
     # ---- 原子命題の数（数えて報告するだけ）
     def atoms_of(names) -> int:
@@ -582,9 +582,26 @@ def check(doc_dir: Path, write_report: bool = True) -> tuple[list[Issue], dict]:
         users = sorted({cid for n, t in thm_report.items() if a.name in t["depends_on"] for cid in t["claims"]})
         side = sorted(n for n, t in thm_report.items() if a.name in t["depends_on"] and not t["claims"])
         others = sorted(n for n, t in other_report.items() if a.name in t["depends_on"])
+        how, need = leansrc.need_of(a.doc)
         rework.append({"axiom": a.name, "line": a.line, "kind": r["kind"], "confidence": r["confidence"],
                        "reasons": reasons, "support": r["support"], "against": r["against"],
-                       "claims": users, "side_theorems": side, "other_theorems": others})
+                       "claims": users, "side_theorems": side, "other_theorems": others,
+                       "need": need, "how": how})
+    # 一覧の公理に、まだ扱い（事実の axioms か rejected.json）がなければ警告する。
+    # 門（エラー）にはしない: 周の途中では一覧が残っていて当たり前で、ステージ7を出るときに意味を持つ
+    # （`cyrus advance` は警告があると --accept-warnings を求めるので、集めずに進む判断が記録に残る）。
+    covered = {ax for f in facts.values() for ax in (f.get("axioms") or []) if isinstance(ax, str)}
+    if rejected_doc:
+        covered |= {r.get("axiom") for r in rejected_doc.get("rejected") or [] if isinstance(r, dict)}
+    open_items = [r for r in rework if r["axiom"] not in covered]
+    if open_items:
+        by_how = Counter(r["how"] or "未指定" for r in open_items)
+        detail = "・".join(f"{k} {by_how[k]}" for k in (*leansrc.NEED_HOWS, "未指定") if by_how.get(k))
+        issues.append(Issue("LG040", "warn",
+                            f"手戻りの一覧の {len(open_items)} 個の公理に、まだ扱い（事実の axioms か rejected.json）がありません（集め方: {detail}）。"
+                            "ステージ6に戻って証拠を集めます（`cyrus back facts --reason \"ステージ7の手戻り\"`）。"
+                            "調べれば分かる［調査］の公理を残したまま先へ進まないでください。"
+                            "ユーザーがこのまま進めると決めたときだけ、--accept-warnings で進みます。"))
 
     # ---- 証人
     w_issues, witness = check_witness(src, [a for a in axioms if a.full in ax_info] or axioms, model_path,

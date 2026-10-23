@@ -8,7 +8,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import figure, gates, lint, leancheck, logicround, scaffold, skim, wording
+from . import figure, gates, lint, leancheck, logicround, scaffold, skim, tally, wording
 from .issues import count, format_issues
 from .reader import build_profile, load_profile
 from .workspace import (PHASE_JA, STAGE_KEYS, STAGES, Workspace, documents_dir, list_workspaces,
@@ -227,6 +227,26 @@ def cmd_lint(args):
     sys.exit(1 if c["error"] else 0)
 
 
+def cmd_tally(args):
+    """分類の表（記録1件に1行、「分類」の列）を数える。分類は LLM が、数えるのは CLI が受け持つ。"""
+    ws = Workspace.current() if not args.doc else Workspace(args.doc)
+    path = _resolve_file(ws, args.file)
+    res = tally.read_items(path)
+    if args.json:
+        print(json.dumps(res.to_dict(), ensure_ascii=False, indent=2))
+    else:
+        if res.error:
+            print(f"{path}: {res.error}")
+        else:
+            print(f"{path}: 記録 {res.total} 件（列「{res.column}」）")
+            for k, v in sorted(res.counts.items(), key=lambda kv: (-kv[1], kv[0])):
+                print(f"  {k}: {v}")
+            if res.unlabeled:
+                print(f"  分類が空の行: {', '.join(map(str, res.unlabeled))}")
+            print("06-facts.json の tally には、この total と counts をそのまま書きます（門が照らします）。")
+    sys.exit(1 if res.error or res.unlabeled else 0)
+
+
 def cmd_wording(args):
     ws = Workspace.current() if not args.doc else Workspace(args.doc)
     path = _resolve_file(ws, args.file)
@@ -399,7 +419,8 @@ def cmd_lean(args):
         print(f"手戻りの一覧（ステージ6で証拠を集める公理。確信度 {leancheck.REWORK_THRESHOLD} 未満か @against 付き）:")
         for r in report["rework"]:
             why = "・".join({"low_confidence": "確信度が低い", "against": "反対の証拠"}[x] for x in r["reasons"])
-            print(f"  {r['axiom']}（{r['confidence']}、{why}）→ 主張 {', '.join(r['claims']) or 'なし'}")
+            print(f"  {r['axiom']}（{r['confidence']}、{why}）→ 主張 {', '.join(r['claims']) or 'なし'}"
+                  f"　集め方: {r.get('how') or '未指定'}" + (f"　要ファクト: {r['need'][:60]}" if r.get("need") else ""))
     print(f"Lean 検査: エラー {c['error']} 件・警告 {c['warn']} 件・参考 {c['info']} 件")
     if issues:
         print(format_issues(issues, "Argument.lean"))
@@ -515,6 +536,11 @@ def main(argv: list[str] | None = None) -> None:
     p.set_defaults(func=cmd_logic_round)
 
     sub.add_parser("lean", help="論証のモデルを検査し（門）、主張ごとの確信度と手戻りの一覧を出す").set_defaults(func=cmd_lean)
+
+    p = sub.add_parser("tally", help="記録の分類の表（02-context/tally-*.md）を数え、06-facts.json の tally に書く値を出す")
+    p.add_argument("file")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_tally)
 
     p = sub.add_parser("hook", help="Claude Code のフックから呼ばれる")
     p.add_argument("event", choices=["post-edit", "session-start"])

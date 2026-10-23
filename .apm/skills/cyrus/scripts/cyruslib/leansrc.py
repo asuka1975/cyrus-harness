@@ -212,9 +212,22 @@ class AxiomMarks:
     reviewer: list[ReviewerMark]
     needs_fact: bool
     weak_point_facts: list[str]
+    need: str = ""                 # 「要ファクト:」の本文（集めるべき事実）
+    need_how: str | None = None    # 集め方: 調査（公開情報）／実験（実行・計測）／ヒアリング（ユーザーに聞く）。書いていなければ None
 
 
 REVIEWER_RE = re.compile(r"^[ \t]*@reviewer\s+(?P<v>\S+)\s*(?:←|<-)\s*(?P<o>[^\s理]+)\s*(?:理由\s*[:：]\s*(?P<r>.*))?", re.M)
+NEED_HOWS = ("調査", "実験", "ヒアリング")
+# 「要ファクト: [調査] …」。集め方の札は [ ]・［ ］・【 】のどれでもよい。札がなくても本文は読む（古い書き方）。
+NEED_RE = re.compile(r"要ファクト\s*[:：]\s*(?:[\[［【]\s*(" + "|".join(NEED_HOWS) + r")\s*[\]］】]\s*)?([^\n]*)")
+
+
+def need_of(doc: str) -> tuple[str | None, str]:
+    """docstring の「要ファクト:」から、集め方（調査／実験／ヒアリング。なければ None）と本文を取る。"""
+    m = NEED_RE.search(doc)
+    if not m:
+        return None, ""
+    return m.group(1), m.group(2).strip().removesuffix("-/").strip()
 
 
 def _float(s: str) -> float | None:
@@ -244,6 +257,7 @@ def axiom_marks(doc: str) -> AxiomMarks:
     wm = re.search(r"弱い点\s*[:：](.*?)(?=\n\s*(?:要ファクト|論拠|@)|\Z)", doc, re.S)
     if wm:
         weak = sorted(set(re.findall(FACT_ID + r"(?![0-9a-z])", wm.group(1))), key=fact_sort_key)
+    need_how, need = need_of(doc)
     return AxiomMarks(
         kind=km.group(1) if km else None,
         support=_ids_on_lines(doc, "support"),
@@ -255,6 +269,8 @@ def axiom_marks(doc: str) -> AxiomMarks:
                      if not REVIEWER_RE.match(m.group(0))],
         needs_fact="要ファクト" in doc,
         weak_point_facts=weak,
+        need=need,
+        need_how=need_how,
     )
 
 

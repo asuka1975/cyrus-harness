@@ -23,7 +23,7 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "wiki-search"
 sys.path.insert(0, str(SCRIPTS))
 sys.dont_write_bytecode = True  # .apm/ に __pycache__ を作らない（apm install がそれを .claude/ に写してしまうため）
 
-from cyruslib import jatext, leancheck, leansrc, lint, logicround, skim, visionreader, visual, wording  # noqa: E402
+from cyruslib import gates, jatext, leancheck, leansrc, lint, logicround, skim, tally, visionreader, visual, wording  # noqa: E402
 from cyruslib.reader import build_profile  # noqa: E402
 
 HAS_LEAN = leancheck.find_lean() is not None
@@ -129,6 +129,43 @@ class LintTest(unittest.TestCase):
         reader = json.loads((FIXTURE / "03-reader.json").read_text(encoding="utf-8"))
         issues = self.lint((FIXTURE / "final.md").read_text(encoding="utf-8"), reader)
         self.assertEqual([i for i in issues if i.severity == "error"], [])
+
+
+class TallyTest(unittest.TestCase):
+    """記録の分類の表を数える（分類は LLM、数えるのは CLI）。"""
+    TABLE = "| # | 記録 | 分類 | 根拠 |\n| --- | --- | --- | --- |\n| E1 | a | 足された | x |\n| E2 | b | 伝わらない、足された | y |\n"
+
+    def test_count_text(self):
+        t = tally.count_text("# 分類\n\n" + self.TABLE)
+        self.assertEqual((t.total, t.counts, t.column, t.unlabeled, t.error), (2, {"足された": 2, "伝わらない": 1}, "分類", [], ""))
+
+    def test_tables_are_summed_and_empty_label_is_reported(self):
+        text = self.TABLE + "\n別の表\n\n| # | 記録 | 区分 | 根拠 |\n| --- | --- | --- | --- |\n| E3 | c |  | z |\n| E4 | d | 該当なし | w |\n"
+        t = tally.count_text(text)
+        self.assertEqual(t.total, 4)
+        self.assertEqual(t.unlabeled, [3])
+        self.assertEqual(t.counts["該当なし"], 1)
+
+    def test_no_label_column(self):
+        self.assertTrue(tally.count_text("| a | b |\n| --- | --- |\n| 1 | 2 |\n").error)
+        self.assertTrue(tally.count_text("本文だけ\n").error)
+
+    def test_same_counts_and_ratio(self):
+        self.assertTrue(tally.same_counts({"a": 2, "b": 0}, {"a": 2}))
+        self.assertFalse(tally.same_counts({"a": "x"}, {"a": 1}))
+        self.assertFalse(tally.same_counts({"a": 1}, {"a": 2}))
+        for s in ("14件中9件", "回答者の62%が", "約3割", "19のうち8件"):
+            self.assertTrue(tally.looks_like_ratio(s), s)
+        self.assertFalse(tally.looks_like_ratio("1日平均20分"))
+
+    def test_datasets_of(self):
+        self.assertIsNone(gates.datasets_of("# a\n\n## 論点\n- x\n"))
+        self.assertEqual(gates.datasets_of("## 集計できる素材\n- なし\n"), {})
+        ds = gates.datasets_of("## 集計できる素材\n\n| 名前 | 単位 | 件数 | 置き場所 | 数える観点 |\n| --- | --- | --- | --- | --- |\n| 問い合わせの記録 | 件 | 14 | 02-context/inquiries.md | 原因 |\n| 事例 | 件 | 約19 | memo.md | 型 |\n")
+        self.assertEqual(ds["問い合わせの記録"], {"count": 14, "location": "02-context/inquiries.md"})
+        self.assertEqual(ds["事例"]["count"], 19)
+        from cyruslib import scaffold
+        self.assertEqual(gates.datasets_of(scaffold.ANALYSIS_MD.replace("TODO", "")), {})  # 雛形の「（例）」の行は素材にしない
 
 
 class WordingTest(unittest.TestCase):
@@ -268,10 +305,97 @@ class GateTest(CliCase):
                               "axioms": ["prodDelay_le_test"]})
         data["facts"].append({"id": "F6", "statement": "どの公理のためでもない事実", "status": "verified", "method": "execution",
                               "sources": [], "evidence": "x", "notes": ""})
+        data["facts"].append({"id": "F7", "statement": "全文検索エンジンは、文書の追加のたびに索引を更新できる", "status": "verified",
+                              "method": "web", "sources": [{"title": "公式ドキュメント", "url": "https://example.com/docs"}],
+                              "notes": "", "claims": ["C2"]})  # ステージ6の調査で足した事実（支える主張を書く）
+        data["facts"].append({"id": "F8", "statement": "x", "status": "verified", "method": "web",
+                              "sources": [{"title": "t", "url": "https://example.com"}], "notes": "", "claims": ["C9"]})
         (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         out = self.run_cli("check").stdout
         self.assertNotIn("事実 F5 は 05-claims.json にありません", out)
         self.assertIn("事実 F6 は 05-claims.json にありません", out)
+        self.assertNotIn("事実 F7", out)
+        self.assertIn("事実 F8 の claims にある C9 は、05-claims.json の主張にありません", out)
+
+    def test_dataset_requires_tally(self):
+        """集計できる素材（04 の表）→ 全件を数えた事実（05 の dataset）→ 分類の表を CLI が数え直す（06 の tally）。"""
+        self.advance_through("analysis")
+        base = (FIXTURE / "04-analysis.md").read_text(encoding="utf-8")
+        none_line = "- なし（アンケートは集計値だけが素材にあり、回答そのものはない）。"
+        self.assertIn(none_line, base)
+        (self.doc / "04-analysis.md").write_text(base.replace(none_line, "問い合わせの記録が14件あります。"), encoding="utf-8")
+        self.assertIn("GT044", self.run_cli("check").stdout)  # 表でも「なし」でもない
+        table = ("| 名前 | 単位 | 件数 | 置き場所 | 数える観点 |\n| --- | --- | --- | --- | --- |\n"
+                 "| 問い合わせの記録 | 件 | 3 | 02-context/inquiries.md | 原因の種類 |")
+        (self.doc / "04-analysis.md").write_text(base.replace(none_line, table), encoding="utf-8")
+        r = self.run_cli("advance")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        # ステージ5: 素材を数えた事実がないと警告、表にない名前はエラー
+        self.put("05-claims.json")
+        self.assertIn("GT045", self.run_cli("check").stdout)
+        claims = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        tally_fact = {"id": "F5", "statement": "問い合わせ3件のうち2件は設定の誤りだった", "source_hint": "02-context/inquiries.md を全件分類する",
+                      "dataset": "問い合わせの記録"}
+        claims["facts"].append(tally_fact)
+        claims["claims"][0]["premises"].append("F5")
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT045", out)
+        self.assertNotIn("GT046", out)
+        claims["facts"][-1]["dataset"] = "別の素材"
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT046", self.run_cli("check").stdout)
+        claims["facts"][-1]["dataset"] = "問い合わせの記録"
+        (self.doc / "05-claims.json").write_text(json.dumps(claims, ensure_ascii=False), encoding="utf-8")
+        r = self.run_cli("advance", "--confirmed", "テスト", "--accept-warnings")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        # ステージ6: 雛形が dataset と tally の TODO を写す
+        scaffolded = json.loads((self.doc / "06-facts.json").read_text(encoding="utf-8"))
+        f5 = next(f for f in scaffolded["facts"] if f["id"] == "F5")
+        self.assertEqual(f5["dataset"], "問い合わせの記録")
+        self.assertIn("tally", f5)
+        data = json.loads((FIXTURE / "06-facts.json").read_text(encoding="utf-8"))
+        data["facts"].append({"id": "F5", "statement": "問い合わせ3件のうち2件は設定の誤りだった", "status": "verified", "method": "execution",
+                              "sources": [{"title": "問い合わせの記録", "location": "02-context/inquiries.md"}], "evidence": "cyrus tally",
+                              "notes": "", "dataset": "問い合わせの記録"})
+        fact = data["facts"][-1]
+
+        def check():
+            (self.doc / "06-facts.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            return self.run_cli("check").stdout
+
+        self.assertIn("GT150", check())  # tally がない
+        fact["tally"] = {"items": "02-context/tally-inquiries.md", "total": 3, "counts": {"設定の誤り": 2, "不具合": 1},
+                         "criteria": "設定の誤り: 設定値を直せば解決した。不具合: 修正のコミットがある"}
+        self.assertIn("GT151", check())  # 分類の表がない
+        items = self.doc / "02-context" / "tally-inquiries.md"
+        items.parent.mkdir(parents=True, exist_ok=True)
+        rows = "| # | 記録 | 分類 | 根拠 |\n| --- | --- | --- | --- |\n| 1 | a | 設定の誤り | x |\n| 2 | b | 設定の誤り | y |\n| 3 | c | 不具合 | z |\n"
+        items.write_text("# 問い合わせの記録の分類\n\n" + rows, encoding="utf-8")
+        out = check()
+        for code in ("GT150", "GT151", "GT152", "GT153"):
+            self.assertNotIn(code, out)
+        r = self.run_cli("tally", "02-context/tally-inquiries.md", "--json")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertEqual(json.loads(r.stdout), {"total": 3, "counts": {"設定の誤り": 2, "不具合": 1}})
+        fact["tally"]["counts"] = {"設定の誤り": 3}
+        out = check()
+        self.assertIn("GT152", out)  # 数え直した結果と合わない
+        self.assertIn("\"不具合\": 1", out)
+        fact["tally"]["counts"] = {"設定の誤り": 2, "不具合": 1}
+        items.write_text(rows + "| 4 | d | 該当なし | w |\n", encoding="utf-8")
+        fact["tally"]["total"], fact["tally"]["counts"]["該当なし"] = 4, 1
+        self.assertIn("GT153", check())  # 04 の件数（3）と違う
+        items.write_text(rows + "| 4 | d |  | w |\n", encoding="utf-8")
+        out = check()
+        self.assertIn("GT151", out)  # 分類が空の行
+        self.assertNotEqual(self.run_cli("tally", "02-context/tally-inquiries.md").returncode, 0)
+        # 割合を述べる事実に数え方が残っていない（参考）
+        data["facts"].append({"id": "F6", "statement": "回答者の62%が検索に不満と答えた", "status": "verified", "method": "document",
+                              "sources": [{"title": "アンケート", "location": "02-context/survey-2026.md"}], "notes": ""})
+        self.assertIn("GT154", check())
+        data["facts"][-1]["sources"][0]["quote"] = "不満あり 62%"
+        self.assertNotIn("GT154", check())  # fixture の F2 も quote に数字があるので出ない
 
     def test_rework_coverage_after_back_from_logic(self):
         self.advance_through("logic")
@@ -1104,6 +1228,9 @@ class WikiSearchLogicTest(CliCase):
         self.assertEqual(set(report["claims"]), {"C0", "C1", "C2", "C3"})
         self.assertNotIn("rule_", (FIXTURE / "07-logic" / "Argument.lean").read_text(encoding="utf-8"))
         self.assertTrue(report["rework"])  # 証拠のない【仮定】が手戻りの一覧に出る
+        hows = {r["how"] for r in report["rework"] if r["need"]}
+        self.assertTrue(hows and hows <= set(leansrc.NEED_HOWS), hows)  # 要ファクトには集め方の札がある
+        self.assertIn("LG040", r.stdout)  # 一覧に扱いのない公理が残っている（警告。check は 0 で終わる）
 
 
 class LeanSourceTest(unittest.TestCase):
@@ -1116,6 +1243,13 @@ class LeanSourceTest(unittest.TestCase):
         self.assertEqual((mk.kind, mk.support, mk.confidence, mk.weak_point_facts), ("経験則", ["F2"], [0.8], ["F3"]))
         mk = leansrc.axiom_marks(axioms["lean_le_doc"].doc)
         self.assertEqual((mk.kind, mk.support, mk.needs_fact), ("仮定", [], True))
+        self.assertEqual(mk.need_how, None)  # 札のない古い書き方でも本文は読む
+        self.assertIn("数える", mk.need)
+        self.assertEqual(leansrc.need_of("弱い点: x\n要ファクト: [調査] GitHub Docs で確かめる。 -/"), ("調査", "GitHub Docs で確かめる。"))
+        self.assertEqual(leansrc.need_of("要ファクト: ［実験］ 測る。")[0], "実験")
+        self.assertEqual(leansrc.need_of("要ファクト:【ヒアリング】聞く。"), ("ヒアリング", "聞く。"))
+        self.assertEqual(leansrc.need_of("要ファクト: [未知] x"), (None, "[未知] x"))
+        self.assertEqual(leansrc.need_of("論拠: 要ファクトという語が文中にあるだけ"), (None, ""))
         tm = leansrc.theorem_marks("@beyond C0 強い版")
         self.assertEqual((tm.claims, tm.beyond), ([], ["C0"]))
 
@@ -1265,6 +1399,32 @@ class LogicGateTest(unittest.TestCase):
         self.assertIn("LG004", rules(self.errors(self.check()[0])))
         self.edit(self.arg, "@support F2, F9", "@support F2\n@against F10")
         self.assertIn("LG004", rules(self.errors(self.check()[0])))
+
+    def test_rework_how_and_open_items_warning(self):
+        """要ファクトの集め方の札が rework・weak_premises に出ること。扱いのない公理が残っていれば警告（門ではない）。"""
+        issues, report = self.check()
+        self.assertEqual(self.errors(issues), [])
+        self.assertIn("LG040", rules(issues))
+        rw = {r["axiom"]: r for r in report["rework"]}
+        self.assertEqual((rw["lean_le_doc"]["how"], rw["lean_miss_pos"]["how"]), (None, None))
+        self.assertIn("数える", rw["lean_le_doc"]["need"])
+        self.edit(self.arg, "要ファクト: 両方式で", "要ファクト: [調査] 両方式で")
+        issues, report = self.check()
+        rw = {r["axiom"]: r for r in report["rework"]}
+        self.assertEqual(rw["lean_le_doc"]["how"], "調査")
+        self.assertIn("数える", rw["lean_le_doc"]["need"])  # 札を除いた本文
+        weak = {w["axiom"]: w for w in report["weak_premises"]}
+        self.assertEqual(weak["lean_le_doc"]["how"], "調査")
+        msg = next(i.message for i in issues if i.rule == "LG040")
+        self.assertIn("調査 1", msg)
+        self.assertIn("未指定 1", msg)
+        facts = json.loads((self.tmp / "06-facts.json").read_text(encoding="utf-8"))
+        facts["facts"].append({"id": "F4", "statement": "探した範囲の記録", "status": "unverified", "method": "web", "sources": [],
+                               "notes": "公式ドキュメントと論文を探したが、両方式を比べた記録はなかった", "axioms": ["lean_le_doc", "lean_miss_pos"]})
+        (self.tmp / "06-facts.json").write_text(json.dumps(facts, ensure_ascii=False), encoding="utf-8")
+        issues, report = self.check()
+        self.assertNotIn("LG040", rules(issues))  # 扱いが付けば消える（値は変わらない）
+        self.assertEqual([r["axiom"] for r in report["rework"]], ["lean_le_doc", "lean_miss_pos"])
 
     def test_against_goes_to_rework(self):
         self.edit(self.arg, "@support F2\n", "@support F2\n@against F3\n")
@@ -1448,6 +1608,47 @@ class HarnessConsistencyTest(unittest.TestCase):
         self.assertNotIn("命題論理（∧, ∨, →, ¬）で十分", guide)
         for f in logicround.ROUND_FILES:
             self.assertIn(f, guide, f)
+
+    def test_fact_research_route(self):
+        """調べれば分かる前提が、調べられないまま確信度 0.05 で残らないための道筋が、ガイドと役に書いてある。"""
+        facts = self.read("skills/cyrus/stages/06-facts.md")
+        for m in ("命題の証拠を探す", "調査 → 実験 → ヒアリング", "`claims`", "`how`", "`not_found`", "調べればわかる"):
+            self.assertIn(m, facts, m)
+        logic = self.read("skills/cyrus/stages/07-logic.md")
+        for m in ("[調査]", "[実験]", "[ヒアリング]", "LG040", "--accept-warnings", "`how`"):
+            self.assertIn(m, logic, m)
+        checker = self.read("agents/cyrus-fact-checker.agent.md")
+        for m in ("命題の証拠を探す", "axioms", "not_found", "against", "proposition", "need"):
+            self.assertIn(m, checker, m)
+        for rel in ("agents/cyrus-logic-planner.agent.md", "agents/cyrus-lean-writer.agent.md", "agents/cyrus-logic-reviewer.agent.md"):
+            self.assertIn("[調査]", self.read(rel), rel)
+        self.assertIn("調べればわかる", self.read("skills/cyrus/stages/05-claims.md"))
+        self.assertIn("調べればわかる", self.read("skills/cyrus/stages/04-analysis.md"))
+        self.assertIn("証拠を公開情報から探す", self.read("skills/cyrus/SKILL.md"))
+        self.assertIn("[調査]", self.read("skills/cyrus/scripts/cyruslib/scaffold.py"))  # Argument.lean と設計書の雛形
+
+    def test_tally_route(self):
+        """記録の集まりを、1件の例でなく全件を数えた事実にする道筋が、ガイド・役・CLI で一致している。"""
+        expected = {
+            "skills/cyrus/stages/02-context.md": ("全件",),
+            "skills/cyrus/stages/04-analysis.md": ("集計できる素材", "GT045"),
+            "skills/cyrus/stages/05-claims.md": ("集計できる素材", "`dataset`", "発言の記録", "GT045", "GT046"),
+            "skills/cyrus/stages/06-facts.md": ("記録の集まりを数える", "cyrus tally", "`tally`", "criteria", "GT152", "GT153", "発言の記録"),
+            "skills/cyrus/stages/07-logic.md": ("`tally`",),
+            "skills/cyrus/stages/10-detail.md": ("`tally`",),
+            "skills/cyrus/stages/11-writing.md": ("`tally`",),
+            "skills/cyrus/SKILL.md": ("tally <file>",),
+            "agents/cyrus-fact-checker.agent.md": ("記録を分類して数える", "tally", "criteria", "該当なし", "Write"),
+            "agents/cyrus-logic-planner.agent.md": ("`tally`", "発言の記録"),
+            "agents/cyrus-logic-reviewer.agent.md": ("`tally`", "発言の記録"),
+            "skills/cyrus/scripts/cyruslib/scaffold.py": ("集計できる素材", "dataset"),
+        }
+        for rel, marks in expected.items():
+            text = self.read(rel)
+            for m in marks:
+                self.assertIn(m, text, f"{rel}: {m}")
+        self.assertEqual(gates.DATASETS_HEADING, "集計できる素材")
+        self.assertIn("分類", tally.LABEL_COLUMNS)
 
     def test_agents_exist_and_follow_roles(self):
         planner = self.read("agents/cyrus-logic-planner.agent.md")
