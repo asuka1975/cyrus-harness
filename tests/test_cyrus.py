@@ -689,6 +689,75 @@ class GateTest(CliCase):
         self.env["CYRUS_CONSTRUCTIVISM"] = str(self.tmp / "no-such")
         self.assertIn("GT071", self.run_cli("check").stdout)
 
+    def test_structure_dresses_the_logic(self):
+        """ステージ8は論理の核を見せ方で覆う: 主張を言う節は1つずつ、根拠を置く節・言い直す節・留保・材料の置き場所を記録し、弱い前提に留保の置き場所を求める。"""
+        self.advance_through("structure")
+        self.put("08-structure.md")
+        self.put("08-structure.json")
+        self.put("07-logic/report.json")  # 弱い前提の一覧（Lean がなくても検査できるように、fixture の report.json を置く）
+        out = self.run_cli("check").stdout
+        self.assertNotIn("[エラー]", out)
+        self.assertNotIn("GT077", out)
+        self.assertNotIn("GT078", out)
+        self.assertIn("[参考] GT079", out)
+        self.assertIn("S1 言う C0／留保 1／材料 1、S2 言う C1／材料 1、S3 言う C2／留保 1／材料 2、S4 言う C3／支え C1／言い直し C0／留保 4／材料 1", out)
+        base = json.loads((FIXTURE / "08-structure.json").read_text(encoding="utf-8"))
+
+        def check(d):
+            (self.doc / "08-structure.json").write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+            return self.run_cli("check").stdout
+
+        def fresh():
+            return json.loads(json.dumps(base))
+
+        d = fresh()
+        d["sections"][1]["claims"] = ["C1"]  # 主張を節に割り当てるだけ（古い形）は、見せ方の記録にならない
+        out = check(d)
+        self.assertIn("GT063", out)
+        self.assertIn("見せ方が記録されません", out)
+        d = fresh()
+        d["sections"][3]["claims"]["assert"].append("C1")  # 言う節が2つ
+        out = check(d)
+        self.assertIn("[警告] GT077", out)
+        self.assertIn("主張 C1 を言う節が 2 つあります（S2・S4）", out)
+        d = fresh()
+        d["sections"][1]["claims"]["assert"] = []  # C1 は S4 で支えるだけで、言う節がない
+        self.assertIn("GT068", check(d))
+        d = fresh()
+        d["sections"][1]["claims"]["support"] = ["C9"]
+        self.assertIn("GT069", check(d))
+        d = fresh()
+        d["sections"][0]["claims"]["assert"] = []
+        d["sections"][3]["claims"]["assert"].append("C0")  # C0 を言う節が冒頭にない
+        self.assertIn("GT070", check(d))
+        d = fresh()
+        d["sections"][3]["caveats"] = []  # 弱い前提に留保の置き場所がない（S3 に置いた prodMaxDelay_le_test は数えない）
+        out = check(d)
+        self.assertIn("[警告] GT078", out)
+        self.assertIn("4 個に、留保の置き場所", out)
+        self.assertIn("cost_le_estimate", out)
+        d = fresh()
+        for s in d["sections"]:  # 主張の木の写し: 支え・言い直し・留保・材料がどこにもない
+            s["claims"] = {"assert": s["claims"]["assert"]}
+            s["caveats"] = []
+            s["material"] = []
+        out = check(d)
+        self.assertIn("[警告] GT077", out)
+        self.assertIn("主張を言う節の割り当てだけ", out)
+        self.assertIn("S2 言う C1、S3 言う C2", out)  # 一行には置き方だけが残る
+        d = fresh()
+        del d["message"]
+        self.assertIn("GT060", check(d))
+        d = fresh()
+        d["sections"][2]["material"] = "用語"  # 配列でない
+        self.assertIn("GT063", check(d))
+        # 雛形は message と置き方の記録を TODO つきで置くので、埋めないと止まる
+        self.run_cli("scaffold", "structure", "--force")
+        tpl = json.loads((self.doc / "08-structure.json").read_text(encoding="utf-8"))
+        self.assertIn("message", tpl)
+        self.assertEqual(set(tpl["sections"][0]["claims"]), {"assert", "support", "recall"})
+        self.assertIn("GT002", self.run_cli("check").stdout)
+
     def test_storyline_pattern_follows_form_and_draft_follows_style(self):
         self.advance_through("storyline")
         data = json.loads((FIXTURE / "09-storyline.json").read_text(encoding="utf-8"))
@@ -728,7 +797,72 @@ class GateTest(CliCase):
         (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
         self.assertIn("VP041", self.run_cli("check").stdout)  # 実行順の候補にない
         self.env["CYRUS_VISUAL_PATTERNS"] = str(self.tmp / "no-such")
-        self.assertIn("GT101", self.run_cli("check").stdout)
+        out = self.run_cli("check").stdout
+        self.assertIn("GT101", out)
+        self.assertEqual(out.count("GT101"), 1)  # 図表の spec と節の記録の両方が同じスキルを要しても、知らせるのは一度
+
+    def test_sections_without_figures_record_step2(self):
+        """図表のない節にも手順2（根拠の形と数）の記録を求め、目安に当たるのに文章なら理由を求め、節ごとの判断を一行で見せる。"""
+        self.advance_through("detail")
+        self.put("10-detail.json")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("[エラー]", out)
+        self.assertIn("GT104", out)
+        self.assertIn("S1 文章（形なし）、S2 文章（量: 値 2）、S3 図1、S4 文章（量: 値 2）", out)
+        data = json.loads((FIXTURE / "10-detail.json").read_text(encoding="utf-8"))
+        del data["sections"][1]["evidence"]
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT102", out)  # 記録がない
+        self.assertIn("S2 記録なし", out)
+        data = json.loads((FIXTURE / "10-detail.json").read_text(encoding="utf-8"))
+        data["sections"][1]["evidence"] = {"form": "quantity", "description": "値が 6 つ"}
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT102", self.run_cli("check").stdout)  # 数を添えていない
+        data["sections"][1]["evidence"] = {"form": "none", "description": ""}
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT102", self.run_cli("check").stdout)  # 形なしでも、何がいくつあるかは書く
+        data["sections"][1]["evidence"] = {"form": "quantity", "description": "設定ごとの AUC が 6 つ", "counts": {"values": 6}}
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("[エラー]", out)
+        self.assertIn("[警告] GT103", out)  # 目安では図表なのに文章で、理由がない
+        self.assertIn("目安では図表", out)
+        data["sections"][1]["prose_reason"] = "6 つの値がほぼ同じで差が答えではなく、本文の一文と同じ粒度の繰り返しになる"
+        (self.doc / "10-detail.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertNotIn("[警告] GT103", out)
+        self.assertIn("[参考] GT103", out)  # 理由があれば参考として残る
+        self.assertIn("理由あり", out)
+        self.assertEqual(self.run_cli("advance", "--accept-warnings").returncode, 0, out)  # 残る警告は fixture の VP052（初心者に sequence-diagram）
+        # 雛形は節ごとに evidence を TODO で置くので、埋めないと止まる
+        (self.doc / "10-detail.json").unlink()
+        self.run_cli("back", "detail")
+        self.run_cli("scaffold", "detail")
+        tpl = json.loads((self.doc / "10-detail.json").read_text(encoding="utf-8"))
+        self.assertTrue(all("evidence" in sec for sec in tpl["sections"]))
+        self.assertIn("GT002", self.run_cli("check").stdout)
+
+    def test_conclusion_is_not_a_list_of_numbers(self):
+        """「伝えたいこと」と主張の中心 C0 が、測った値の列挙になっていたら警告する（結論は結果の意味を言う）。"""
+        self.put("01-intent.md")
+        text = (self.doc / "01-intent.md").read_text(encoding="utf-8")
+        self.assertNotIn("GT011", self.run_cli("check").stdout)
+        assert "社員が探し物に使う時間を大きく減らせる" in text
+        (self.doc / "01-intent.md").write_text(text.replace("社員が探し物に使う時間を大きく減らせる", "探し物の時間が 1 日 20 分から 8 分に減る"), encoding="utf-8")
+        self.assertIn("GT011", self.run_cli("check").stdout)
+        self.advance_through("claims")
+        self.put("05-claims.json")
+        self.assertNotIn("GT044", self.run_cli("check").stdout)
+        data = json.loads((FIXTURE / "05-claims.json").read_text(encoding="utf-8"))
+        data["main_claim"]["text"] = "新しい検索は AUC 0.77 まで出たが、28 組のうち 11 組を取り違え、48 組中 12 組が違和感側だった"
+        (self.doc / "05-claims.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("[警告] GT044", out)
+        self.assertIn("数値 5 個", out)
+        data["main_claim"]["text"] = "置き換えれば探し物の時間は減る。" * 12  # 数値はないが長い
+        (self.doc / "05-claims.json").write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertIn("GT044", self.run_cli("check").stdout)
 
     def test_draft_figures_must_match_plan(self):
         self.advance_through("writing")
@@ -1849,8 +1983,66 @@ class HarnessConsistencyTest(unittest.TestCase):
                   "目的は必須", "判定理由", "GT075"):
             self.assertIn(m, self.read("skills/cyrus/stages/08-structure.md"), m)
         self.assertNotIn("欠けた項目はスキルが既定値で補い", self.read("skills/cyrus/stages/08-structure.md"))  # v1.0.0 までの決まり
-        for m in ("visual-patterns", "spec", "VP020", "answer", "evidence"):
+        for m in ("visual-patterns", "spec", "VP020", "answer", "evidence", "すべての節", "`prose_reason`", "GT102", "GT103", "GT104",
+                  "上限も下限もありません", "節ごとに呼び"):
             self.assertIn(m, self.read("skills/cyrus/stages/10-detail.md"), m)
+
+    def test_presentation_layer_route(self):
+        """論理の構造（ステージ7の核）と文書の構造（ステージ8の見せ方）を別の軸にする道筋が、ガイド・CLI・雛形・設計ノートで一致している。"""
+        expected = {
+            "skills/cyrus/stages/05-claims.md": ("章立てではありません",),
+            "skills/cyrus/stages/07-logic.md": ("`caveats`", "文書の構造ではありません"),
+            "skills/cyrus/stages/08-structure.md": ("別の軸", "主張の木を節に写さない", "`message`", "`assert`", "`support`", "`recall`", "`caveats`",
+                                                    "`material`", "`weak_premises`", "渡さない", "GT060", "GT068", "GT070", "GT077", "GT078", "GT079"),
+            "skills/cyrus/stages/09-storyline.md": ("読者の言葉で書く", "主張の文（05-claims.json）を写さない", "`message`（読者に渡す結論の一文）を写す"),
+            "skills/cyrus/stages/10-detail.md": ("`assert`・`support`", "`material`"),
+            "skills/cyrus/stages/11-writing.md": ("ステージ8で決めた節で言う", "`support`", "`recall`", "`caveats`", "`material`"),
+            "skills/cyrus/SKILL.md": ("論理の構造を文書の構造にしない", "主張の木は渡しません"),
+            "skills/cyrus/scripts/cyruslib/scaffold.py": ("\"message\"", "\"assert\"", "\"support\"", "\"recall\"", "\"caveats\"", "\"material\""),
+        }
+        for rel, marks in expected.items():
+            text = self.read(rel)
+            for m in marks:
+                self.assertIn(m, text, f"{rel}: {m}")
+        self.assertEqual(set(gates.PLACEMENTS), {"assert", "support", "recall"})
+        guide = self.read("skills/cyrus/stages/08-structure.md")
+        self.assertNotIn("主張の木（C1〜、F1〜）から", guide)  # 主張の木を constructivism の「内容」として渡していた決まり
+        self.assertNotIn("\"claims\": [\"C0\"]", guide)      # 主張を節に割り当てるだけの古い形
+        design = (self.APM.parent / "docs" / "ai-notes" / "harness-design.md").read_text(encoding="utf-8")
+        for m in ("別の軸", "主張の木を節に写さない", "GT077", "GT078", "GT079", "`message`", "`caveats`", "`material`"):
+            self.assertIn(m, design, m)
+
+    def test_conclusion_recommendation_and_search_route(self):
+        """結論は結果の意味を言い、実験より軽い迂回路を推奨せず、探し方は命題から組み立てる。ガイド・役・CLI で一致している。"""
+        expected = {
+            "skills/cyrus/stages/01-intent.md": ("結果の意味を言う", "GT011"),
+            "skills/cyrus/stages/05-claims.md": ("GT044", "測った値を並べることではない"),
+            "skills/cyrus/stages/06-facts.md": ("search-howto.md", "推奨は「行う」にする", "軽いほうを推奨にしない"),
+            "skills/cyrus/stages/07-logic.md": ("軽いほうを推奨にしない",),
+            "skills/cyrus/stages/09-storyline.md": ("結果の数字を並べない",),
+            "skills/cyrus/stages/11-writing.md": ("結果の列挙にしない",),
+            "skills/cyrus/SKILL.md": ("推奨は、文書がいちばん強く言えるようになる選択肢にする",),
+            "skills/cyrus/references/search-howto.md": ("何があれば決まるかを先に言う", "どこに溜まるか", "届く道を選ぶ", "正の対照",
+                                                        "「見つからなかった」と言う前に"),
+            "agents/cyrus-fact-checker.agent.md": ("search-howto.md", "道を変える", "正の対照"),
+        }
+        for rel, marks in expected.items():
+            text = self.read(rel)
+            for m in marks:
+                self.assertIn(m, text, f"{rel}: {m}")
+        # 題材固有の道（特定サイトの件数を数える命令）や、考察という主張の種類は入れない
+        for rel in ("skills/cyrus/SKILL.md", "skills/cyrus/references/search-howto.md", "agents/cyrus-fact-checker.agent.md",
+                    "skills/cyrus/stages/05-claims.md", "skills/cyrus/stages/06-facts.md"):
+            text = self.read(rel)
+            self.assertNotIn("count qiita", text, rel)
+            self.assertNotIn("interpretation", text, rel)
+        self.assertEqual(gates.CLAIM_TYPES, {"fact", "judgement", "proposal", "explanation"})
+        design = (self.APM.parent / "docs" / "ai-notes" / "harness-design.md").read_text(encoding="utf-8")
+        for m in ("GT011", "GT044", "search-howto.md", "推奨", "取り下げた", "道の組み立て方"):
+            self.assertIn(m, design, m)
+        design = (self.APM.parent / "docs" / "ai-notes" / "harness-design.md").read_text(encoding="utf-8")
+        for m in ("節ごとの手順2 の記録", "GT102", "GT103", "GT104", "`form: \"none\"`"):
+            self.assertIn(m, design, m)
         for m in ("cyrus figure check", "cyrus figure render", "figures/fig-NN.vl.json", "キャプション"):
             self.assertIn(m, self.read("skills/cyrus/stages/11-writing.md"), m)
         for m in ("cyrus figure read", "figure_test", "match / partial / mismatch / misread"):

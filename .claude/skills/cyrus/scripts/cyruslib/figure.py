@@ -38,6 +38,13 @@ CAPTION_RE = re.compile(r"^\s*(図|表)\s*([0-9０-９]+)\s*[：:．.]\s*(.*?)\s
 ZEN2HAN = str.maketrans("０１２３４５６７８９", "0123456789")
 MERMAID_LINES_WARN = 40
 VERDICTS = ("match", "partial", "mismatch", "misread")
+# 節ごとの手順2 の記録（図表のない節の evidence）。形がない根拠は cyrus だけの値 "none" で書く（カタログの形は増やさない）
+NO_SHAPE = "none"
+SECTION_FORMS = ("quantity", "items-attributes", "parts-relations", "conditions", "appearance", NO_SHAPE)
+FORM_JA = {"quantity": "量", "items-attributes": "項目×属性", "parts-relations": "段階・主体・部分", "conditions": "条件と結果",
+           "appearance": "外観", NO_SHAPE: "形なし"}
+COUNT_JA = {"values": "値", "groups": "区分", "periods": "時点", "series": "系列", "items": "対象", "categories": "観点",
+            "actors": "主体", "steps": "段階", "conditions": "条件"}
 PREFERS = ("yes", "no", "either")
 
 
@@ -143,6 +150,79 @@ def check_detail(detail: dict | None, reader_level: str | None = None, chrome: b
             if ok:
                 issues.append(Issue("VP021", "info", f"節 {s.get('id')} の {b.get('kind')} ブロック: 手順2 の目安では図表にします（{why}）。"
                                                      "文章を選んだ理由を plan に書いてください。"))
+    return issues
+
+
+def _counts_ja(ev: dict) -> str:
+    counts = ev.get("counts") if isinstance(ev.get("counts"), dict) else {}
+    parts = [f"{COUNT_JA.get(k, k)} {v}" for k, v in counts.items() if isinstance(v, int) and not isinstance(v, bool)]
+    feats = ev.get("features") if isinstance(ev.get("features"), list) else []
+    parts += [str(f) for f in feats if isinstance(f, str)]
+    return "・".join(parts)
+
+
+def check_sections(detail: dict | None) -> list[Issue]:
+    """節ごとに、手順1〜2（根拠の形を当てはめる）を通した記録があるかを検査する（ステージ10の門だけで使う）。
+
+    図表（figure / table）のある節は、その spec の evidence が記録。ない節は、節の `evidence` に根拠の形と数を書く
+    （形がなければ form: "none"）。目安に当たるのに文章を選んだ節は、`prose_reason` がなければ警告、あれば参考。
+    最後に、節ごとの判断を一行にまとめて知らせる（飛ばした節が見えるように）。
+    """
+    if not isinstance(detail, dict):
+        return []
+    issues: list[Issue] = []
+    labels: dict[str, list[str]] = {}
+    for it in planned(detail):
+        labels.setdefault(it.section, []).append(it.label)
+    mod = None
+    summary: list[str] = []
+    for s in detail.get("sections") or []:
+        if not isinstance(s, dict):
+            continue
+        sid = str(s.get("id", ""))
+        if sid in labels:
+            summary.append(f"{sid} {'・'.join(labels[sid])}")
+            continue
+        ev = s.get("evidence")
+        if not isinstance(ev, dict):
+            issues.append(Issue("GT102", "error", f"節 {sid} に図表がなく、根拠の形の記録（evidence）もありません。"
+                                                  "手順1〜2 を通し、根拠の形（form）と数（counts）を書いてください（形がなければ form: \"none\"）。"))
+            summary.append(f"{sid} 記録なし")
+            continue
+        form = ev.get("form")
+        if form not in SECTION_FORMS:
+            issues.append(Issue("GT102", "error", f"節 {sid} の evidence.form は {', '.join(SECTION_FORMS)} のいずれかにしてください。"))
+            summary.append(f"{sid} 記録なし")
+            continue
+        desc = ev.get("description")
+        if not (isinstance(desc, str) and desc.strip()):
+            issues.append(Issue("GT102", "error", f"節 {sid} の evidence.description に、根拠を数を添えて書いてください（何がいくつあるか）。"))
+        if form == NO_SHAPE:
+            summary.append(f"{sid} 文章（形なし）")
+            continue
+        if form != "appearance" and not _counts_ja(ev):
+            issues.append(Issue("GT102", "error", f"節 {sid} の evidence に counts（値・対象と観点・主体と段階・条件の数）か features を書いてください。"
+                                                  "数を添えないと、手順2 の目安に照らせません。"))
+        if mod is None:
+            mod = vp()
+            if mod is None:
+                return issues + [missing_skill_issue()]
+        ok, why = mod.figure_warranted(ev)
+        shape = f"{FORM_JA[form]}: {_counts_ja(ev)}" if _counts_ja(ev) else FORM_JA[form]
+        if ok:
+            reason = s.get("prose_reason")
+            if isinstance(reason, str) and reason.strip():
+                issues.append(Issue("GT103", "info", f"節 {sid}: 手順2 の目安では図表にします（{why}）が、文章を選んでいます。理由: {reason.strip()}"))
+                summary.append(f"{sid} 文章（{shape}。理由あり）")
+            else:
+                issues.append(Issue("GT103", "warn", f"節 {sid}: 手順2 の目安では図表にします（{why}）。visual-patterns で図表にするか、"
+                                                     "文章を選ぶ理由（描けるパターンがない、読者が記法を知らない、本文と同じ情報の繰り返しになる、など）を"
+                                                     " prose_reason に書いてください。"))
+                summary.append(f"{sid} 文章（{shape}。目安では図表）")
+        else:
+            summary.append(f"{sid} 文章（{shape}）")
+    if summary:
+        issues.append(Issue("GT104", "info", "図表の判断（節ごとの手順2）: " + "、".join(summary)))
     return issues
 
 

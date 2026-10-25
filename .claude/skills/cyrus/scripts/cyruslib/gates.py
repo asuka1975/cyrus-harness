@@ -72,6 +72,14 @@ def _nonempty_str(v) -> bool:
     return isinstance(v, str) and v.strip() != ""
 
 
+NUMBER_RE = re.compile(r"[0-9０-９][0-9０-９,，.．]*")
+
+
+def numbers_in(text) -> int:
+    """文の中の数値の個数（半角・全角の数字。小数点とけたの区切りは1つの数値に含める）。"""
+    return len(NUMBER_RE.findall(text)) if isinstance(text, str) else 0
+
+
 def _is(v, coll) -> bool:
     """列挙に含まれる文字列か（リストなど、ハッシュできない値が来ても例外にしない）。"""
     return isinstance(v, str) and v in coll
@@ -93,6 +101,9 @@ def gate_intent(ws: Workspace) -> list[Issue]:
         first = next((l.strip("-* 　") for l in secs[key].split("\n") if l.strip()), "")
         if jatext.visible_length(first) > 100:
             issues.append(Issue("GT010", "warn", "「伝えたいこと」の最初の行は、100字以内の1文にまとめてください。これが文書全体の軸になります。"))
+        if numbers_in(first) >= 2:
+            issues.append(Issue("GT011", "warn", f"「伝えたいこと」に数値が {numbers_in(first)} 個あります。測った結果ではなく、読者にとっての意味"
+                                                 "（何が分かったか、何ができて何ができなかったか、なぜか）を1文で言い、数字は本文の根拠に回してください。"))
     return issues
 
 
@@ -254,6 +265,8 @@ def gate_analysis(ws: Workspace) -> list[Issue]:
 
 
 CLAIM_TYPES = {"fact", "judgement", "proposal", "explanation"}
+C0_MAX_NUMBERS = 3     # 主張の中心に数値が3つ以上あれば、結果の列挙になっている
+C0_MAX_LENGTH = 160    # 主張の中心は1〜2文（読者が持ち帰る判断）
 CLAIM_FORMS = {"capability", "comparison"}  # 能力の文／比較の文（ステージ7の論証の深さを決める）
 # 主張の中心（C0）のメッセージ種別（constructivism の「メッセージ種別」。構成の型を決める）
 MESSAGE_KINDS = {"proposal": "提言", "decision": "決定の記録", "report": "事実報告", "instruction": "手順指示",
@@ -270,6 +283,11 @@ def gate_claims(ws: Workspace) -> list[Issue]:
     if not _is(main.get("message_kind"), MESSAGE_KINDS):
         issues.append(Issue("GT043", "error", "main_claim.message_kind（メッセージの種別）を次のいずれかにしてください: "
                                               + "、".join(f"{k}（{v}）" for k, v in MESSAGE_KINDS.items()) + "。構成（ステージ8）の型を決める軸になります。"))
+    c0_text = main.get("text") if isinstance(main.get("text"), str) else ""
+    if numbers_in(c0_text) >= C0_MAX_NUMBERS or jatext.visible_length(c0_text) > C0_MAX_LENGTH:
+        issues.append(Issue("GT044", "warn", f"主張の中心 C0 が結果の列挙になっています（数値 {numbers_in(c0_text)} 個・{jatext.visible_length(c0_text)} 字）。"
+                                             "C0 は読者が持ち帰る判断（何が分かったか、何ができて何ができなかったか、なぜか）を1〜2文で言い、"
+                                             "測った値は事実（F）に置いて主張の前提にしてください。"))
     claims = _all_claims(data)
     for c in claims:
         if c.get("form") not in CLAIM_FORMS:
@@ -530,6 +548,9 @@ def gate_logic(ws: Workspace) -> list[Issue]:
 
 
 STYLES = {"敬体", "常体"}
+# 見せ方の記録: 論理の核（主張）を、節ごとにどう置くか。言う（家。主張ごとに1節）／支え（根拠・詳細・例を置く）／言い直し（まとめ・次の行動で言い直す）。
+# 弱い前提の置き場所は節の `caveats`（07-logic/report.json の weak_premises の公理の名前か、範囲・条件の文）、論理にない材料は `material`。
+PLACEMENTS = {"assert": "言う", "support": "支え", "recall": "言い直し"}
 OUTLINE_ITEM_RE = re.compile(r"^(\d+)\.\s+(.+?)\s*$")  # constructivism の骨子: 「1. 見出し（役割：…／目安：…）」
 CHECK_ITEM_RE = re.compile(r"^\s*[-*]\s*\[([ xX])\][ \t]*(.+?)\s*$", re.M)  # constructivism の構成チェック: 「- [x] 項目」（判定理由の行は拾わない。項目文のない行で次の行を拾わないよう、] の後は行内の空白だけ）
 
@@ -573,6 +594,117 @@ def selection_style(md: str) -> str | None:
     sel = next((v for k, v in secs.items() if k.startswith("構成選択結果")), "")
     m = re.search(r"文体\s*[：:]\s*(敬体|常体)", sel)
     return m.group(1) if m else None
+
+
+def _placements(sec: dict) -> dict[str, list[str]] | None:
+    """節の claims（{"assert": [...], "support": [...], "recall": [...]}）。形が違えば None（配列だけの割り当ては見せ方の記録にならない）。"""
+    v = sec.get("claims")
+    if not isinstance(v, dict):
+        return None
+    out: dict[str, list[str]] = {}
+    for k, ids in v.items():
+        if k not in PLACEMENTS or not isinstance(ids, list) or not all(isinstance(c, str) for c in ids):
+            return None
+        out[k] = ids
+    return out
+
+
+def _asserts(sec: dict) -> list[str]:
+    """節で言う主張。古い形（主張の id の配列）は、すべて言う主張として読む（GT063 のエラーに GT068 を重ねないため）。"""
+    pl = _placements(sec)
+    if pl is not None:
+        return list(pl.get("assert") or [])
+    v = sec.get("claims")
+    return [c for c in v if isinstance(c, str)] if isinstance(v, list) else []
+
+
+def _str_list(sec: dict, key: str) -> list[str] | None:
+    """節の文字列の配列（caveats・material）。省略は空、形が違えば None。"""
+    v = sec.get(key)
+    if v is None:
+        return []
+    if isinstance(v, list) and all(_nonempty_str(x) for x in v):
+        return v
+    return None
+
+
+def _dressing(ws: Workspace, data: dict, secs: list[dict], top: list[dict], cids: list[str]) -> list[Issue]:
+    """見せ方の記録（論理の核をどの節でどう見せるか）の形とつじつま。
+
+    主張ごとに言う節が1つ（GT068・GT077）、存在する主張だけ（GT069）、C0 は冒頭（GT070）、
+    弱い前提（07-logic/report.json の weak_premises）に留保の置き場所がある（GT078）、節ごとの見せ方を一行で知らせる（GT079）。
+    主張を言う節の割り当てしか記録されていなければ、主張の木を節に写しているとして警告する（GT077）。
+    """
+    issues: list[Issue] = []
+    if not _nonempty_str(data.get("message")):
+        issues.append(Issue("GT060", "error", "message（読者に渡す結論の一文。主張の中心 C0 を読者の言葉で言い直したもので、constructivism に渡したメッセージ）を書いてください。"))
+    asserted: dict[str, list[str]] = {}
+    referenced: set[str] = set()
+    caveats_all: set[str] = set()
+    recorded = 0
+    dressed = False
+    summary: list[str] = []
+    for s in secs:
+        sid = str(s.get("id"))
+        pl = _placements(s)
+        if pl is None:
+            issues.append(Issue("GT063", "error", f"節 {sid} の claims は、置き方ごとの主張の id の配列にしてください: "
+                                                  "{\"assert\": [この節で言う主張], \"support\": [根拠を置く主張], \"recall\": [言い直す主張]}。"
+                                                  "主張を節に割り当てるだけ（配列）では、見せ方が記録されません。"))
+            for c in _asserts(s):
+                asserted.setdefault(c, []).append(sid)
+                referenced.add(c)
+            summary.append(f"{sid} 記録なし")
+            continue
+        recorded += 1
+        for c in pl.get("assert") or []:
+            asserted.setdefault(c, []).append(sid)
+        for ids in pl.values():
+            referenced.update(ids)
+        caveats = _str_list(s, "caveats")
+        if caveats is None:
+            issues.append(Issue("GT063", "error", f"節 {sid} の caveats は、弱い前提（07-logic/report.json の weak_premises の公理の名前）か、"
+                                                  "範囲・条件の文の配列にしてください。"))
+            caveats = []
+        material = _str_list(s, "material")
+        if material is None:
+            issues.append(Issue("GT063", "error", f"節 {sid} の material は、論理にない材料（背景・方法・用語・例・手順）の文字列の配列にしてください。"))
+            material = []
+        caveats_all.update(caveats)
+        if pl.get("support") or pl.get("recall") or caveats or material:
+            dressed = True
+        parts = [f"{PLACEMENTS[k]} {'・'.join(pl[k])}" for k in PLACEMENTS if pl.get(k)]
+        if caveats:
+            parts.append(f"留保 {len(caveats)}")
+        if material:
+            parts.append(f"材料 {len(material)}")
+        summary.append(f"{sid} " + ("／".join(parts) if parts else "置き方なし"))
+    for c in cids:
+        if c not in asserted:
+            issues.append(Issue("GT068", "error", f"主張 {c} を言う節（claims の assert）がありません。読者がその答えを欲しがる節を1つ決めてください。"))
+    for c in sorted(referenced - set(cids)):
+        issues.append(Issue("GT069", "error", f"節が存在しない主張 {c} を参照しています。"))
+    for c, sids in asserted.items():
+        if len(sids) > 1:
+            issues.append(Issue("GT077", "warn", f"主張 {c} を言う節が {len(sids)} つあります（{'・'.join(sids)}）。言うのは1か所にし、"
+                                                 "ほかの節では support（根拠を置く）か recall（まとめで言い直す）にしてください。"))
+    first_two = {c for s in top[:2] for c in _asserts(s)}
+    if "C0" not in first_two and data.get("conclusion_first", True):
+        issues.append(Issue("GT070", "warn", "主張の中心 C0 を言う節が冒頭の2節にありません。結論を先に示すと読者の負荷が下がります"
+                                             "（意図的に後に置く場合は conclusion_first: false を設定）。"))
+    if recorded and not dressed:
+        issues.append(Issue("GT077", "warn", "見せ方の記録が、主張を言う節の割り当てだけです（根拠を置く節・言い直す節・留保・論理にない材料がどこにもない）。"
+                                             "論理の木をそのまま節にしていないか確かめ、根拠を置く節（support）、弱い前提や範囲を添える節（caveats）、"
+                                             "背景・方法・用語・例の置き場所（material）を記録してください。"))
+    report = ws.read_json("07-logic/report.json") if ws.path("07-logic/report.json").exists() else None
+    weak = [w.get("axiom") for w in (report or {}).get("weak_premises") or [] if isinstance(w, dict) and _nonempty_str(w.get("axiom"))]
+    missing = [a for a in weak if a not in caveats_all]
+    if missing:
+        issues.append(Issue("GT078", "warn", f"確信度を左右する弱い前提 {len(missing)} 個に、留保の置き場所（節の caveats）がありません: {', '.join(missing)}。"
+                                             "主張を言う節か、範囲・限界を述べる節の caveats に公理の名前を書いてください（ステージ11で、日常語の条件として添えます）。"))
+    if summary:
+        issues.append(Issue("GT079", "info", "見せ方（節ごとの主張の置き方・留保・材料）: " + "、".join(summary)))
+    return issues
 
 
 def gate_structure(ws: Workspace) -> list[Issue]:
@@ -660,16 +792,7 @@ def gate_structure(ws: Workspace) -> list[Issue]:
         issues.append(Issue("GT067", "warn", f"最上位の節が{len(top)}個あります。7個以下にまとめると全体を見渡しやすくなります。"))
     claims = ws.read_json("05-claims.json") or {}
     cids = [c.get("id") for c in _all_claims(claims)]
-    covered = {c for s in secs for c in (s.get("claims") or [])}
-    for c in cids:
-        if c not in covered:
-            issues.append(Issue("GT068", "error", f"主張 {c} がどの節にも割り当てられていません。"))
-    for c in covered - set(cids):
-        issues.append(Issue("GT069", "error", f"節が存在しない主張 {c} を参照しています。"))
-    first_two = {c for s in top[:2] for c in (s.get("claims") or [])}
-    if "C0" not in first_two and data.get("conclusion_first", True):
-        issues.append(Issue("GT070", "warn", "主張の中心 C0 が冒頭の2節にありません。結論を先に示すと読者の負荷が下がります"
-                                              "（意図的に後に置く場合は conclusion_first: false を設定）。"))
+    issues += _dressing(ws, data, secs, top, cids)
     return issues
 
 
@@ -773,6 +896,11 @@ def gate_detail(ws: Workspace) -> list[Issue]:
             issues.append(Issue("GT100", "warn", f"想定字数では読むのに約{minutes:.1f}分かかり、読者の時間（{prof.time_budget_min:g}分）を超えます。"))
     # 図表の spec を、visual-patterns のカタログの規則（手順2・5・6）で検査する
     issues += figure.check_detail(data, prof.level)
+    # 図表のない節にも、手順2（根拠の形を当てはめる）を通した記録があるか。飛ばした節が見えるように、節ごとの判断を一行で知らせる
+    for i in figure.check_sections(data):
+        if i.rule == "GT101" and any(j.rule == "GT101" for j in issues):
+            continue
+        issues.append(i)
     return issues
 
 

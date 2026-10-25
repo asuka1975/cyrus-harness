@@ -295,13 +295,18 @@ def structure_template(ws: Workspace) -> dict:
         "genre": "TODO: constructivism の「採用構成」（例: 技術記事（Qiita/Zenn 型）、稟議書・決裁文書）",
         "form": "TODO: constructivism の「型」（例: PREP、SDS、SCQA、IMRaD、Diátaxis のチュートリアル、結論ファースト）",
         "style": "TODO: 敬体 か 常体（constructivism の「文体」）",
+        "message": "TODO: 読者に渡す結論の一文（主張の中心 C0 を読者の言葉で言い直す。測った値は入れない）。constructivism に渡すメッセージ",
         "second_choice": "",
         "deviations": "",
         "format": "markdown",
         "conclusion_first": True,
         "sections": [
             {"id": "S1", "heading": "TODO: 骨子の見出し", "level": 2, "purpose": "TODO: この節の役割（骨子の「役割」）",
-             "length_hint": "", "elements": [], "reader_question": "TODO: この節が答える読者の疑問", "claims": ["C0"]}
+             "length_hint": "", "elements": [], "reader_question": "TODO: この節が答える読者の疑問",
+             # 見せ方の記録: 言う主張（主張ごとに1節）、根拠を置く主張、まとめで言い直す主張。弱い前提の置き場所（caveats）と、論理にない材料（material）
+             "claims": {"assert": ["C0"], "support": [], "recall": []},
+             "caveats": [],
+             "material": ["TODO: この節に置く、論理にない材料（背景・方法・用語・例・手順）。なければ空の配列にする"]}
         ],
     }
 
@@ -325,6 +330,9 @@ def detail_template(ws: Workspace) -> dict:
         "target_length_chars": 0,
         "sections": [
             {"id": s.get("id"), "heading": s.get("heading"),
+             "evidence": {"form": "TODO: quantity / items-attributes / parts-relations / conditions / appearance / none",
+                          "description": "TODO: この節の答えの根拠を、数を添えて（値がいくつ、対象×観点、主体と段階、条件がいくつ）。図表にする節は、代わりに figure / table ブロックの spec に書き、この evidence は消す",
+                          "counts": {}},
              "blocks": [{"kind": "prose", "plan": "TODO: 何をどう見せるか（図表にするブロックは kind を figure / table にし、visual-patterns で決めた spec を添える）"}],
              "new_terms": [], "length_chars": 0}
             for s in structure.get("sections") or []

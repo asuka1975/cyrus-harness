@@ -4,6 +4,10 @@
     {
       "id": "S1",
       "heading": "お願いしたいこと",
+      "evidence": {
+        "form": "none",
+        "description": "依頼が1つと理由が1つ。値も段階も条件もない"
+      },
       "blocks": [
         {
           "kind": "prose",
@@ -21,6 +25,13 @@
     {
       "id": "S2",
       "heading": "いま困っていること",
+      "evidence": {
+        "form": "quantity",
+        "description": "アンケートの値が 2 つ（1日20分、当日の記事が見つからない不満が最多）",
+        "counts": {
+          "values": 2
+        }
+      },
       "blocks": [
         {
           "kind": "prose",
@@ -73,6 +84,13 @@
     {
       "id": "S4",
       "heading": "費用と効果",
+      "evidence": {
+        "form": "quantity",
+        "description": "金額が 2 つ（費用 300 万円と、失われている時間の金額）",
+        "counts": {
+          "values": 2
+        }
+      },
       "blocks": [
         {
           "kind": "prose",
