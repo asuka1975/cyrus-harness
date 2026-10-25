@@ -372,7 +372,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:7d8ce3783798f652a2dd8c9867830cd2e83c689b97eb84817d168f7d526a550a
+  content_hash: sha256:cda34b949bf82838b1e44f1397fb76a35813503ea5e1efa51e899ecf3262d40d
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc
@@ -2411,7 +2411,7 @@ local_deployed_file_hashes:
   .claude/skills/cyrus/references/owner-principles.md: sha256:67b2558f04890283d7a51548c1129e3a77ef31144c515969ddad15d8345664b3
   .claude/skills/cyrus/references/search-howto.md: sha256:9a8e9572450dd008d9984c883d61165f2645952fdc6d52403c75bb8383ff78a8
   .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
-  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:7d8ce3783798f652a2dd8c9867830cd2e83c689b97eb84817d168f7d526a550a
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:cda34b949bf82838b1e44f1397fb76a35813503ea5e1efa51e899ecf3262d40d
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/__init__.cpython-312.pyc: sha256:40efb50b4e4f5d4c37798bc96415c9a0cb451970170999658c39f4bf955031dd
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/cli.cpython-312.pyc: sha256:a0e6e71bdab6a1ac164f0716122258d3faedc1b9e47037a40195e4f23a387944
   .claude/skills/cyrus/scripts/cyruslib/__pycache__/figure.cpython-312.pyc: sha256:f1130e180cf0b32131316fe7cd87fbb12f97543859faf0a9524618350fe6c69e
