@@ -7,8 +7,8 @@ targets:
 - claude
 dependencies:
   apm:
-  - nanaism/yomiyasu#v2.0.1
   - asuka1975/constructivism#v1.0.1
+  - asuka1975/koko#v0.1.2
   mcp: []
 includes: auto
 scripts: {}

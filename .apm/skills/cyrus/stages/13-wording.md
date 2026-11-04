@@ -9,99 +9,104 @@
 
 | 層 | 見るもの | 方法 |
 | --- | --- | --- |
-| 推敲 | 不自然な比喩、あいまいな主述関係、硬い表現、冗長な言い方、立場に合わない文末や敬語 | yomiyasu スキル（推敲は非決定論、検査と記録は決定論） |
-| 読者の辞書と表記 | 読者が知らない語の説明、避けるべき語、ひらく漢字、表記ゆれ | `cyrus wording`（決定論） |
+| 読者の辞書と表記 | 読者が知らない語の説明、避けるべき語、ひらく漢字（接続詞・副詞・補助動詞・形式名詞）、表記ゆれ | `cyrus wording`（決定論） |
+| 推敲 | AI が書いたと見分けられる書きぶり。判定モデルが文ごとに付ける P(Yes)（人が書いた文と判定する確率）を、意味のまとまりごとに目標（0.9）まで上げる。伝えたいこと、数値、主張の強さ、前後のつながりは保つ | koko スキル（まとまりの分け方と推敲は非決定論、採点・組み立て・記録・照合は決定論） |
 
-yomiyasu（nanaism/yomiyasu）は、cyrus の依存として APM で一緒に入ります。場所は `.claude/skills/yomiyasu/` です。
+koko（asuka1975/koko）は、cyrus の依存として APM で一緒に入ります。場所は `.claude/skills/koko/`（スキル）と `.claude/agents/koko-copy-editor.md`（まとまりを推敲するサブエージェント）です。
+動かすには uv が要ります。初めて使うときに、判定モデル（約 2.6 GB）と採点サーバの環境（torch など数 GB）を取得します。GPU（VRAM 4 GB 以上）を推奨し、なければ CPU で動きます（速さは未確認）。
+
+順序が大事です。koko はまとまり（段落・箇条書き）の中だけを書き換え、見出し・図表・キャプション・表は1文字も変えません。
+そのため、辞書と表記の直しを先に済ませてから koko をかけ、koko のあとの直しは koko のまとまりの中で行います。
 
 ## 進め方
 
-### 1. yomiyasu で推敲する
+### 1. 読者の辞書と表記を検査し、final.md を直す
 
-雛形として `draft.md` の写しが `final.md` にできています。`draft.md` を原文にして yomiyasu で推敲し、結果を `final.md` に書きます。
-
-Skill ツールで `yomiyasu` を呼びます。依頼には次のことを書きます。yomiyasu は、言われなかった種類や読者を推定で決めたときは、直す箇所を控えめにします。わかっていることはすべて渡します。
-
-- **原文**: `documents/<slug>/draft.md`（書き換えない）
-- **最終稿の保存先**: `documents/<slug>/final.md`（上書きしてよい）
-- **文書の種類**（`--doc-type`）: `08-structure.json` の `genre`（constructivism が選んだ構成）から、次の表で決める。genre が表にないときは `doc_type` で決める。当てはまらなければ付けない。
-
-  | genre（採用構成） | yomiyasu の値 |
-  | --- | --- |
-  | チュートリアル、ハウツー／手順書、ランブック、マニュアル | manual |
-  | 解説記事、技術記事（Qiita/Zenn 型）、FAQ、リリースノート、教科書・教材の章 | article |
-  | 企画書・提案書、エグゼクティブサマリー／1枚もの、Amazon 型ナラティブ・PR/FAQ、稟議書・決裁文書、デザインドキュメント、プロジェクト計画書 | proposal |
-  | ADR、要件定義書・仕様書、リファレンス／API ドキュメント | formal |
-  | 学術論文（IMRaD）、報告書（SDS 型。調査報告に近いとき。進捗報告なら付けない） | paper |
-  | 障害報告書・ポストモーテム | incident |
-  | 議事録 | minutes |
-  | 社内通知・案内、依頼・説得メール | mail |
-
-  | doc_type（genre が表にないとき） | yomiyasu の値 |
-  | --- | --- |
-  | 提案書 | proposal |
-  | 手順書・マニュアル | manual |
-  | 解説・技術記事・社内ブログ | article |
-  | 障害報告 | incident |
-  | 議事録 | minutes |
-  | スライド | slides |
-  | 仕様書・規程・契約書 | formal |
-  | 論文・研究レポート | paper |
-  | メール・チャット | mail |
-
-  文体は `08-structure.json` の `style`（敬体／常体）です。yomiyasu に、この文体を変えないよう伝えます。
-
-- **読者**（`--reader`）: `03-reader.json` の `knowledge_level` から決める。novice は general、intermediate は informed、expert は expert。
-- **書き手と読み手の関係**: `01-intent.md` と `03-reader.json` の persona からわかる範囲で書く（例: 書き手は情報システム部の担当者、読み手は決裁者の部長）。関係を渡すと、yomiyasu は読み手に合わせて敬語を直す。
-- **文書の立場**（`--stance`）: 提案や推奨なら「勧め」、守ってもらう決まりや手順なら「決まり」、解説や報告なら「説明」。決めきれなければ付けない。
-- **資料**: 渡さない。事実はステージ6で確かめてあり、ここでは事実を足さない。
-- **図表のキャプション**: 「図N: …」「表N: …」の行は、設計（`10-detail.json` の spec.answer）の答えの一文そのものなので書き換えない、と伝える。Mermaid のコードブロックと図表の位置も変えない。キャプションの文体を直したいときは、`cyrus back detail` で spec.answer を直してから書き直す（`cyrus check` が照合する）。
-- **返答の形**: 本文は `final.md` に保存し、返答に本文を載せない。返答には「変えたところ」「書き手に確かめたい点」「事実の確かめ」「確認の記録」だけを書く。
-
-yomiyasu は推敲のあと、`yomiyasu_check.py run --source draft.md --final final.md` で lint と diff をかけ、`verify` で記録と照らします。途中でフックが lint や wording のエラーを知らせてきても、yomiyasu の手順を最後まで終えてから、手順2・3で直します。
-
-### 2. 読者の辞書と表記を検査する
+雛形として `draft.md` の写しが `final.md` にできています。`draft.md` は書き換えません。
 
 `cyrus wording final.md` を実行します。検出されるものは次のとおりです。
 
 - **WD001（エラー）** 読者に対して避けるべき語 → 指定の言い換えにする。
 - **WD002 / WD003（エラー）** 読者が知らない語が説明なしに使われている／説明が初出より後 → 初出で説明するか、知っている語に言い換える。
 - **WD004（参考）** 読者辞書にない語 → 読者が知っている語か判断する。知らない語なら説明か言い換えをする。判断に迷う語が多ければ、まとめてユーザーに聞き、答えを `03-reader.json` の `known_terms` / `unknown_terms` に追加する（辞書が育つほど検査が正確になる）。
-- **WD005（警告）** ひらく漢字（「及び」「既に」「予め」など） → ひらく。
+- **WD005（警告）** ひらく漢字（「及び」「既に」「予め」、補助動詞「して下さい」「して頂く」「出来る」、形式名詞「事」「為」） → ひらく。
 - **WD007 / WD008（警告）** 表記ゆれ・全角英数字 → 統一する。
 
-yomiyasu は、補助動詞と形式名詞の「事」「為」のほかは表記を変えません。WD005・WD007・WD008 は、ここで直します。
+見出し・キャプション・表の中の直しも、ここで済ませます（koko は変えないので、あとから直すと手順2をやり直すことになります）。
+`cyrus lint final.md` と `cyrus figure check --file final.md` も通しておきます。
 
-yomiyasu が「書き手に確かめたい点」に「ここに説明が必要です」と挙げた語は、WD002 と同じように扱います。
+### 2. koko で推敲する
 
-### 3. 認知負荷と図表を確かめる
-
-`cyrus lint final.md` で、言い換えによって認知負荷が上がっていないか確かめます。
-`cyrus figure check --file final.md` で、図表とキャプションが設計どおりのままかを確かめます（GT113〜GT117。`cyrus check` にも含まれます）。
-
-### 4. 直したら、yomiyasu の検査をやり直す
-
-手順2・3で `final.md` を直したら、yomiyasu の検査をもう一度実行します。完了条件では、`final.md` が最後に yomiyasu で検査した本文のままかを確かめるからです。プロジェクトのルートで、手順1で決めた値を付けて実行します（`--doc-type` と `--reader` の値は、yomiyasu の出力の `yomiyasu-check:` で始まる行にもあります）。
+まず準備を確かめます。
 
 ```bash
-python3 .claude/skills/yomiyasu/scripts/yomiyasu_check.py run --source documents/<slug>/draft.md --final documents/<slug>/final.md --doc-type <値> --reader <値> --stance=<値> --fact-gaps
-python3 .claude/skills/yomiyasu/scripts/yomiyasu_check.py verify --final documents/<slug>/final.md --source documents/<slug>/draft.md
+uv run .claude/skills/koko/scripts/koko.py doctor
 ```
 
-- run の出力の「意味が変わる恐れ」と「直した箇所」を読み、手順2・3の直しで意味が変わっていないか確かめる。変わっていたら直して、run からやり直す。
-- run の1行目に「修正は1回までの決まりを超えています」と出ることがあります。これは yomiyasu の推敲の決まりで、辞書の検査やユーザーの指示による直しは止めません。
-- verify の1行目に「ハッシュが記録と合いました」と出れば終わりです。
+- 1行目が `koko-doctor: ready` なら進めます。
+- `needs_setup` なら、判定モデル（約 2.6 GB）と採点サーバの環境（数 GB）をダウンロードすることをユーザーに一言伝えてから、`uv run .claude/skills/koko/scripts/koko.py setup` を実行します。
+- `unavailable`（uv がない、など）なら、出力をユーザーに伝えて止まります。koko なしでは、このステージの完了条件を満たせません。
+
+Skill ツールで `koko` を呼びます。依頼には次のことを書きます（koko が受け取るものの取り決めは、koko の `references/interface.md` にあります）。
+
+- **原文**: `documents/<slug>/final.md`。出力も同じファイルにします（上書き。元の写しは作業ディレクトリの `source.md` に残る）。
+- **作業ディレクトリ**: `documents/<slug>/koko/`。計画（`plan.json`）、まとまり（`chunks/`）、報告（`report.md`）、記録（`record.json`）がここにできます。
+- **文体**: `08-structure.json` の `style`。敬体なら「です・ます調」、常体なら「である調」。
+- **固定する段落**: 既定のまま（図表のキャプション「図N:」「表N:」は書き換えない。`10-detail.json` の spec.answer の一文そのものなので、`cyrus check` が照合します）。
+- **文書の要点**（まとまりの「伝えたいこと」の根拠）: 下の表の成果物を、節ごとに渡します。
+- **全体への補足**（計画の `notes`）:
+  - 数値と固有名詞はすべて残す（ステージ6で確かめた事実）。
+  - 主張の強さ（断定・推測・留保）を変えない（`07-logic/report.json` の hedge）。
+  - 読者が知らない語（`03-reader.json` の `unknown_terms`）を説明なしに使わない。読者辞書にない語を新たに足さない。
+  - 1文に1つのこと。1文はおおむね60字以内（`cyrus lint` が検査する）。
+  - 図表への参照（「図1」など）を残す。
+- **目標**: 既定（0.9）。
+- **範囲**: 目標未満のすべてのまとまり。ただし、起動するまとまりが10を超えるときは、koko に任せずにあなたが、数と目安（1つ 3〜10 分）を伝えて全部にするか一部にするかをユーザーに確かめます（AskUserQuestion。推奨は全部）。選んだ範囲を koko に渡します。
+
+まとまりの「伝えたいこと」（計画の `intent`）に渡す要点は、次の成果物から取ります。intent にない細部は koko が省いてよいものとして扱うので、残すべき主張・数値・留保はすべて intent に書きます。
+
+| 要点 | どこから |
+| --- | --- |
+| 節のメッセージ | `09-storyline.json` の `sections[].message` |
+| その節で言う主張・支え・言い直しと、留保 | `08-structure.json` の `sections[].claims`（assert / support / recall）と `caveats`。主張の文は `05-claims.json` |
+| 主張の強さ | `07-logic/report.json` の `claims[].hedge` |
+| 根拠の数値と形 | `10-detail.json` の `sections[].evidence` と `06-facts.json` |
+| 前後のまとまりとの整合 | `09-storyline.json` の `sections[].bridge`（節のつなぎ）を、節の最初のまとまりの `prev_constraints` と、前の節の最後のまとまりの `next_constraints` に |
+
+koko のまとまりは、節より細かいことがあります。1つの節に複数のまとまりがあれば、節の要点をまとまりの中身で分けます。
+
+koko は推敲のあと、`assemble` で `final.md` を組み立て直し、採点し直して `koko/record.json`（本文のハッシュとまとまりごとの値・機械チェック）と `koko/report.md` を書きます。
+途中でフックが lint や wording のエラーを知らせてきても、koko の手順を最後まで終えてから、手順3で直します。
+
+### 3. 直しは koko のまとまりの中で
+
+`cyrus check` を実行します。lint・wording・図表の検査に加えて、koko の記録を照らします。
+
+- **GT134** `final.md` が記録した本文と違う（modified）→ `final.md` を直接直したときに出ます。直しは `koko/chunks/cNN.revised.md`（推敲していないまとまりなら、`cNN.md` を写して `cNN.revised.md` を作る）に書き、`uv run .claude/skills/koko/scripts/koko.py assemble --plan documents/<slug>/koko/plan.json` で組み立て直します。`cyrus back` のあとに `final.md` が雛形として作り直されたときは、記録が古いので（assemble も止まります）、手順1と手順2を最初からやり直します。
+- **GT135（エラー）** koko の機械チェックのエラー（見出しを作った、リンクが消えた、など）→ 必ず直して assemble。
+- **GT136（警告）** 機械チェックの注意（括弧の外の数値や「」の表現が消えた、長さや文の数が大きく変わった）→ 消えた数値や表現は戻す。意図した変更なら、理由を説明できるようにする。
+- **GT137（警告）** 目標未満のまま推敲していないまとまり → 範囲を絞ったときに出ます。理由をユーザーに説明できるなら、そのまま進めます。
+- **GT138（参考）** 推敲の結果の要約（達成・未達の数、平均 P(Yes) の前後）。
+- lint・wording（GT130・GT131）の指摘も、同じように `cNN.revised.md` を直して assemble します。koko が1文を長くしたり、読者辞書にない語を足したりしたときに出ます。
+- 見出し・キャプション・表を直す必要が出たら、手順1に戻って `final.md` を直し、手順2をやり直します（計画からやり直す。達成済みのまとまりは起動されないので、時間はかかりません）。
+
+直したら `cyrus check` をもう一度実行します。
+
+### 4. 完了を確かめる
+
+`cyrus check` で、エラーが0になれば完了です。GT138 の一行で、目標に届いたまとまりと届かなかったまとまりの数が分かります。
+届かなかったまとまりは、koko の作業メモ（`koko/chunks/cNN.notes.md`）に、上がらなかった文と試した型が書いてあります。作業や結果の報告の文は上がりにくいので、届かないまとまりが残ることはあります。無理に届かせるために内容を変えてはいけません。
 
 ## ユーザーへの確認
 
 - 完成版の冒頭（要約の節）と、主な変更点を3行程度で見せる。
-- yomiyasu の「書き手に確かめたい点」があれば、あわせて聞く（最大2点）。
+- koko の報告（`koko/report.md`、各まとまりの作業メモ）から、省いたり言い換えたりした内容のうち確かめたいものと、「呼び出し元に確かめたい点」を、あわせて聞く（最大2点）。目標に届かなかったまとまりがあれば、その数と理由を伝える。
 - 「読者の〇〇さんが読む想定で、この内容でよいですか。気になる言い回しがあれば教えてください」と聞く。
-- ユーザーの修正を反映したら、手順2〜4をやり直し、再度 `cyrus check` を通す。
-- 承認をもらったら `cyrus advance --confirmed "…"` を実行する。これでワークフローは完了です。完成版の場所（`documents/<slug>/final.md`）をユーザーに伝えます。
+- ユーザーの修正を反映したら、手順3の形で直し（`cNN.revised.md` → assemble）、再度 `cyrus check` を通す。
+- 承認をもらったら `cyrus advance --confirmed "…"` を実行する。これでワークフローは完了です。完成版の場所（`documents/<slug>/final.md`）をユーザーに伝えます。`uv run .claude/skills/koko/scripts/koko.py server stop` で、採点サーバを止めて GPU を空けます。
 
 ## 完了条件
 
 - `final.md` に lint と wording のエラーがない。図表が設計どおり（GT113〜GT117 がない）。
-- `final.md` が、yomiyasu で `draft.md` から推敲して検査した本文のままである（yomiyasu の verify が通る）。
+- `final.md` が、koko で推敲して採点した本文のままである（`koko/record.json` と合う。GT133・GT134 がない）。koko の機械チェックにエラーがない（GT135 がない）。
 - ユーザーの承認をもらって `cyrus advance --confirmed "…"`。

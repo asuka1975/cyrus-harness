@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import re
 
-from . import figure, jatext, leancheck, lint, mdparse, skim, tally, wording, yomiyasu
+from . import figure, jatext, koko, leancheck, lint, mdparse, skim, tally, wording
 from .issues import Issue
 from .reader import build_profile
 from .workspace import Workspace
@@ -1100,20 +1100,51 @@ def gate_wording(ws: Workspace) -> list[Issue]:
         issues.append(Issue("GT132", "error", "final.md に TODO などの未記入箇所が残っています。"))
     # 推敲でキャプション（答えの一文）が書き換えられていないか、図表が設計どおりのままか
     issues += figure.check_draft(ws, text, ws.read_json("10-detail.json"), name="final.md")
-    script = yomiyasu.find_check()
+    script = koko.find_script()
     if script is None:
-        issues.append(Issue("GT133", "error", "yomiyasu が見つかりません。`apm install` で入れてください"
-                                              "（場所は環境変数 CYRUS_YOMIYASU で yomiyasu_check.py を指定できます）。"))
+        issues.append(Issue("GT133", "error", "koko が見つかりません。`apm install` で入れてください"
+                                              "（場所は環境変数 CYRUS_KOKO で koko.py を指定できます）。"))
+    elif koko.uv_bin() is None:
+        issues.append(Issue("GT133", "error", "uv がありません。koko は `uv run` で動かします（https://docs.astral.sh/uv/ の手順で入れてください）。"))
     else:
-        rc, status, first = yomiyasu.verify(script, p, ws.path("draft.md"))
+        workdir = ws.path(koko.WORKDIR)
+        rc, status, first = koko.verify(script, workdir, p)
         if rc != 0 and status == "no_record":
-            issues.append(Issue("GT134", "error", "final.md に yomiyasu の検査の記録がありません（no_record）。"
-                                                  "stages/13-wording.md の手順1で、yomiyasu で draft.md を推敲してください。"))
+            issues.append(Issue("GT134", "error", f"final.md に koko の記録（{koko.WORKDIR}/record.json）がありません（no_record）。"
+                                                  "stages/13-wording.md の手順2で、koko で final.md を推敲してください。"))
         elif rc != 0:
             reason = first.split("。")[0] + "。" if first else ""
-            issues.append(Issue("GT134", "error", f"final.md が、yomiyasu で draft.md から推敲して検査した本文と合いません（{status}）。"
-                                                  f"{reason}yomiyasu_check.py の run をやり直してから verify してください"
-                                                  "（stages/13-wording.md の手順4）。"))
+            issues.append(Issue("GT134", "error", f"final.md が、koko で採点した本文と合いません（{status}）。{reason}"
+                                                  f"final.md を直接直さず、{koko.WORKDIR}/chunks/cNN.revised.md を直して assemble をやり直してください"
+                                                  "（stages/13-wording.md の手順3）。final.md を作り直したのなら、手順2の koko からやり直します。"))
+        else:
+            issues += _koko_record(koko.read_record(workdir))
+    return issues
+
+
+def _koko_record(rec: dict | None) -> list[Issue]:
+    """koko の記録（koko-record-v1）から、機械チェックの結果とまとまりの状態を読む。"""
+    if rec is None:
+        return [Issue("GT134", "error", f"koko の記録（{koko.WORKDIR}/record.json）を読めません。assemble をやり直してください。")]
+    issues: list[Issue] = []
+    chunks = [c for c in rec.get("chunks") or [] if isinstance(c, dict)]
+    target = rec.get("target")
+    errs = [(c.get("id"), e) for c in chunks for e in (c.get("check_errors") or [])]
+    if errs:
+        issues.append(Issue("GT135", "error", f"koko の機械チェックにエラーのあるまとまりが {len({i for i, _ in errs})} つあります: "
+                                              + "、".join(f"{i}（{e}）" for i, e in errs[:4]) + ("…" if len(errs) > 4 else "")
+                                              + f"。{koko.WORKDIR}/chunks/cNN.revised.md を直して assemble をやり直してください。"))
+    warns = [(c.get("id"), w) for c in chunks for w in (c.get("check_warnings") or [])]
+    if warns:
+        issues.append(Issue("GT136", "warn", f"koko の機械チェックに注意のあるまとまりが {len({i for i, _ in warns})} つあります: "
+                                             + "、".join(f"{i}（{w}）" for i, w in warns[:4]) + ("…" if len(warns) > 4 else "")
+                                             + "。数値や「」の表現が消えていれば直し、意図した変更なら理由を説明できるようにしてください。"))
+    left = [c.get("id") for c in chunks if c.get("status") == "unrevised"
+            and isinstance(c.get("mean_before"), (int, float)) and isinstance(target, (int, float)) and c["mean_before"] < target]
+    if left:
+        issues.append(Issue("GT137", "warn", f"目標未満のまま推敲していないまとまりが {len(left)} つあります（{', '.join(map(str, left))}）。"
+                                             "範囲を絞ったのなら、その理由をユーザーに説明できるようにしてください。"))
+    issues.append(Issue("GT138", "info", "koko の推敲: " + koko.summarize(rec)))
     return issues
 
 

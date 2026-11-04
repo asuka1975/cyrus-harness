@@ -2,7 +2,7 @@
 
 読者の知識集合（03-reader.json の known_terms / unknown_terms / avoid_terms）を辞書として扱い、
 読者が知らない語が説明なしに使われていないか、避けるべき語が残っていないかを調べる。
-あわせて、ひらく漢字・表記ゆれ・全角英数字を調べる。硬い表現・冗長な表現などの推敲は yomiyasu に任せる。
+あわせて、ひらく漢字（補助動詞と形式名詞を含む）・表記ゆれ・全角英数字を調べる。書きぶりの推敲は koko（ステージ13）に任せる。
 """
 
 from __future__ import annotations
@@ -75,7 +75,7 @@ def check_wording(text: str, profile: ReaderProfile | None = None, glossary: dic
         issues.append(Issue("WD004", "info", f"「{occ.term}」は読者辞書にありません。読者が知っている語か判断し、知らなければ説明か言い換えをしてください。",
                             occ.line, excerpt(occ.sentence)))
 
-    # 4) ひらく漢字（接続詞・副詞など。yomiyasu は補助動詞と「事」「為」のほかは表記を変えない）
+    # 4) ひらく漢字（接続詞・副詞・補助動詞・形式名詞。koko は表記を変えないので、ここで全部拾う）
     for r in rules.get("kana", []):
         pat = re.compile(r["pattern"])
         for line, s in sentences:

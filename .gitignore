@@ -2,8 +2,9 @@
 # APM dependencies
 apm_modules/
 # 依存パッケージが .claude/ に展開したもの（apm install で入る。中身はこのリポジトリに含めない）
-.claude/skills/yomiyasu/
 .claude/skills/constructivism/
+.claude/skills/koko/
+.claude/agents/koko-copy-editor.md
 
 # Python
 __pycache__/

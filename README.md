@@ -14,7 +14,7 @@ Claude が目的と読者を聞き取り、事実を確かめ、論理を検証�
 - **認知負荷を測ります。** 文の長さ、漢字の連続、段落や見出しの構造などを lint で調べます。さらに、原稿を見ていない読み手に拾い読みさせ、伝えたいことが伝わるかを確かめます。読み手には、書き手とは別のモデル（既定は Gemini）も使います。
 - **構成は型から選びます。** 章立ては [constructivism](https://github.com/asuka1975/constructivism) に任せます。読者の目的と読む姿勢、メッセージの種別から、技術文書・学術・ビジネス文書のカタログに照らして構成を選びます。
 - **図表は「読み取らせたいこと」から決めます。** 同梱の visual-patterns スキルが、答えと根拠の形から文章か図表かを判定し、図表パターンのカタログから候補を選びます。描いた図表は、本文を知らない読み手に図だけを読ませて（逆読み）、答えに届くかを確かめます。
-- **言葉を読者に合わせます。** 読者が知っている語と知らない語を辞書として扱い、説明のない専門用語を見つけます。推敲は [yomiyasu](https://github.com/nanaism/yomiyasu) に任せます。
+- **言葉を読者に合わせます。** 読者が知っている語と知らない語を辞書として扱い、説明のない専門用語を見つけます。推敲は [koko](https://github.com/asuka1975/koko) に任せます。原稿を意味のまとまりに分け、人が書いた文と判定される確率を判定モデルで測りながら、伝えたいことと数値を保って書き直します。
 
 ## 流れ
 
@@ -38,6 +38,7 @@ Claude が目的と読者を聞き取り、事実を確かめ、論理を検証�
 | Python 3 | CLI。標準ライブラリだけで動きます（3.12 で確認） |
 | Lean 4（[elan](https://lean-lang.org/install/)） | ステージ7の論理の検証。省略できません |
 | Chrome、Pillow、agy（Gemini を呼ぶ CLI） | ステージ12の、画像での拾い読みテストと図表の逆読み。そろっていなければ、理由を書いて省略できます。Chrome は、Vega-Lite で描いた図を PNG にするのにも使います |
+| [uv](https://docs.astral.sh/uv/)、GPU（VRAM 4 GB 以上を推奨）、ディスク 7 GB | ステージ13の推敲（koko）。uv が判定モデル（約 2.6 GB。初回に Hugging Face から取得）と採点サーバの環境を用意します。GPU がなければ CPU で動きます（速さは未確認）。省略できません |
 
 画像を読む読み手は、agy（Gemini）のほかのコマンドにも変えられます。
 プロジェクトのルートに `cyrus.config.json` を置きます。書き方は [`stages/12-cogload.md`](.apm/skills/cyrus/stages/12-cogload.md) にあります。
@@ -51,7 +52,7 @@ apm install asuka1975/cyrus-harness#v0.3.0
 ```
 
 スキル（cyrus と visual-patterns）、サブエージェント、コマンド、フックが Claude Code に入ります。
-ステージ8の構成に使う constructivism と、ステージ13の推敲に使う yomiyasu も、依存として一緒に入ります。別に入れる必要はありません。
+ステージ8の構成に使う constructivism と、ステージ13の推敲に使う koko も、依存として一緒に入ります。別に入れる必要はありません。koko は初回の使用の前に実行環境を用意します（`uv run .claude/skills/koko/scripts/koko.py doctor` が案内します。cyrus のステージ13でも案内されます）。koko のライセンスは GPL-3.0-or-later です（cyrus からは別のプロセスとして呼びます）。
 
 `.claude/` がまだないプロジェクトでは、APM が入れ先を判断できません。そのときは `--target claude` を付けてください。
 
@@ -85,7 +86,7 @@ apm install                            # .apm/ の変更を .claude/ に展開�
 python3 -m unittest discover -s tests  # テストを実行する
 ```
 
-Lean、yomiyasu、Chrome、Pillow のない環境では、それらを使うテストは飛ばされます。
+Lean、koko（と uv）、Chrome、Pillow のない環境では、それらを使うテストは飛ばされます。koko のテストは判定モデルを使わず、仮の採点（`KOKO_FAKE_SCORER=1`）で記録の照合だけを確かめます。
 
 | 場所 | 中身 |
 | --- | --- |

@@ -32,8 +32,8 @@ try:
     HAS_VISUAL = visual.find_chrome() is not None
 except ImportError:
     HAS_VISUAL = False
-YOMIYASU_CHECK = ROOT / ".claude" / "skills" / "yomiyasu" / "scripts" / "yomiyasu_check.py"  # apm install で入る依存
-HAS_YOMIYASU = YOMIYASU_CHECK.exists()
+KOKO = ROOT / ".claude" / "skills" / "koko" / "scripts" / "koko.py"  # apm install で入る依存（uv で動かす）
+HAS_KOKO = KOKO.exists() and shutil.which("uv") is not None
 CONSTRUCTIVISM = ROOT / ".claude" / "skills" / "constructivism"  # apm install で入る依存（ゲートは SKILL.md の有無だけを見る）
 HAS_CONSTRUCTIVISM = (CONSTRUCTIVISM / "SKILL.md").exists()
 VISUAL_PATTERNS = ROOT / ".apm" / "skills" / "visual-patterns"  # このパッケージのスキル（元を直接使う）
@@ -200,11 +200,16 @@ class WordingTest(unittest.TestCase):
         self.assertIn("WD005", rules(issues))
         self.assertIn("WD007", rules(issues))
 
-    def test_rewriting_is_left_to_yomiyasu(self):
-        # 硬い漢語・冗長な表現・補助動詞の推敲は yomiyasu に任せ、辞書では拾わない
+    def test_auxiliary_verbs_and_formal_nouns(self):
+        # 補助動詞と形式名詞「事」「為」は辞書で拾う（koko は表記を変えない）。硬い漢語・冗長な表現は執筆の指針で守り、辞書では拾わない
         issues = self.check("# t\n\n状況に鑑みて、確認することができます。確認を行って下さい。\n")
-        self.assertNotIn("WD005", rules(issues))
+        self.assertEqual([i.message.split(":")[0] for i in issues if i.rule == "WD005"], ["「て下さい」"])
         self.assertNotIn("WD006", rules(issues))
+        hits = [i.message.split(":")[0] for i in self.check("# t\n\n指定出来ます。確認する事が、その為に要ります。確認して頂きます。\n") if i.rule == "WD005"]
+        self.assertEqual(sorted(hits), sorted(["「出来ま」", "「事」", "「為」", "「て頂き」"]))
+        # 名詞の「事」「為」「出来」は拾わない
+        self.assertEqual([i for i in self.check("# t\n\n仕事が増える。出来事があった。為替と行為を記事にする。習い事が増え、願い事を書く。\n") if i.rule == "WD005"], [])
+        # 辞書に載せた複合語以外の「い＋事」（例: 隠し事は「し」なので拾わないが、未知の「〜い事」は拾う）は警告で止まる程度にしている
 
 
 class SkimTest(unittest.TestCase):
@@ -225,7 +230,7 @@ class CliCase(unittest.TestCase):
             constructivism = self.tmp / "constructivism"
             constructivism.mkdir()
             (constructivism / "SKILL.md").write_text("stub\n", encoding="utf-8")
-        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp), CYRUS_YOMIYASU=str(YOMIYASU_CHECK),
+        self.env = dict(os.environ, CYRUS_ROOT=str(self.tmp), CYRUS_KOKO=str(KOKO), KOKO_FAKE_SCORER="1",
                         CYRUS_CONSTRUCTIVISM=str(constructivism), CYRUS_VISUAL_PATTERNS=str(VISUAL_PATTERNS))
         for k in ("CLAUDE_PROJECT_DIR", "CYRUS_CONFIG", "CYRUS_DOCS_DIR", "CYRUS_AGY", "CYRUS_AGY_MODEL"):  # 開発者の環境を持ち込まない
             self.env.pop(k, None)
@@ -243,12 +248,32 @@ class CliCase(unittest.TestCase):
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(FIXTURE / rel, dst)
 
-    def yomiyasu_run(self):
-        """ステージ13の推敲のあとに yomiyasu が残す検査の記録を、draft.md と final.md で作る。"""
-        r = subprocess.run([sys.executable, str(YOMIYASU_CHECK), "run", "--source", str(self.doc / "draft.md"),
-                            "--final", str(self.doc / "final.md")], capture_output=True, text=True, cwd=str(self.tmp),
-                           timeout=300)
+    def koko(self, *args):
+        """koko を、取り決めどおり `uv run <koko.py>` で動かす（仮の採点。判定モデルは使わない）。"""
+        env = dict(self.env, KOKO_FAKE_SCORER="1")
+        return subprocess.run(["uv", "run", "--quiet", str(KOKO), *map(str, args)], capture_output=True, text=True,
+                              env=env, cwd=str(self.tmp), timeout=300)
+
+    def koko_run(self, revised: dict[str, str] | None = None):
+        """ステージ13の推敲のあとに koko が残す記録を final.md で作る（blocks → 計画 → split → assemble）。
+
+        revised は、まとまりの id → 推敲後の本文。省けば、どのまとまりも推敲せずに組み立てる（final.md は変わらない）。
+        """
+        work = self.doc / "koko"
+        shutil.rmtree(work, ignore_errors=True)  # 毎回まっさらな koko の一巡（split の退避先は秒単位の名前で、同じ秒だとぶつかる）
+        r = self.koko("blocks", self.doc / "final.md", "--plan-out", work / "plan.json", "--style", "です・ます調")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        plan = json.loads((work / "plan.json").read_text(encoding="utf-8"))
+        for c in plan["chunks"]:
+            c["intent"] = f"{c['section']} の要点"
+        (work / "plan.json").write_text(json.dumps(plan, ensure_ascii=False), encoding="utf-8")
+        r = self.koko("split", "--plan", work / "plan.json", "--workdir", work)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        for cid, text in (revised or {}).items():
+            (work / "chunks" / f"{cid}.revised.md").write_text(text, encoding="utf-8")
+        r = self.koko("assemble", "--plan", work / "plan.json")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        return plan
 
     def advance_through(self, upto: str):
         for key, rel in STAGE_FILES:
@@ -579,25 +604,57 @@ class GateTest(CliCase):
         self.assertIn("原稿の指紋", r.stdout)
         self.assertTrue((self.doc / "skim" / "meta.json").exists())
 
-    @unittest.skipUnless(HAS_YOMIYASU, "yomiyasu が入っていない（apm install）")
-    def test_wording_requires_yomiyasu_record(self):
+    @unittest.skipUnless(HAS_KOKO, "koko か uv が入っていない（apm install）")
+    def test_wording_requires_koko_record(self):
         self.advance_through("wording")
         self.put("final.md")
-        self.assertIn("GT134", self.run_cli("check").stdout)  # yomiyasu の検査の記録がない
-        self.yomiyasu_run()
+        out = self.run_cli("check").stdout
+        self.assertIn("GT134", out)  # koko の記録がない
+        self.assertIn("no_record", out)
+        plan = self.koko_run()
         r = self.run_cli("check")
         self.assertNotIn("GT134", r.stdout)
         self.assertEqual(r.returncode, 0, r.stdout)
+        self.assertIn("GT138", r.stdout)  # 推敲の結果の要約
+        self.assertIn("GT137", r.stdout)  # 目標未満のまま推敲していないまとまり（仮の採点では全部が目標未満）
+        self.assertIn(plan["chunks"][0]["id"], r.stdout)
+        self.assertTrue((self.doc / "koko" / "record.json").exists())
         with open(self.doc / "final.md", "a", encoding="utf-8") as f:
             f.write("\n検査のあとで足した段落です。\n")
         out = self.run_cli("check").stdout
-        self.assertIn("GT134", out)  # 検査したあとで本文が変わった
-        self.assertIn("final_changed", out)
+        self.assertIn("GT134", out)  # 採点したあとで本文が変わった
+        self.assertIn("modified", out)
+        self.assertIn("revised.md", out)  # 直し方は、まとまりを直して assemble
 
-    def test_wording_without_yomiyasu(self):
+    @unittest.skipUnless(HAS_KOKO, "koko か uv が入っていない（apm install）")
+    def test_wording_reads_koko_machine_check(self):
         self.advance_through("wording")
         self.put("final.md")
-        self.env["CYRUS_YOMIYASU"] = str(self.tmp / "no-such" / "yomiyasu_check.py")
+        plan = self.koko_run()
+        chunks_dir = self.doc / "koko" / "chunks"
+        texts = {c["id"]: (chunks_dir / f"{c['id']}.md").read_text(encoding="utf-8") for c in plan["chunks"]}
+        numbered = next(cid for cid, text in texts.items() if re.search(r"\d", re.sub(r"[（(][^（）()]*[）)]", "", text)))
+        # 数値が消えた推敲は注意（GT136）になる
+        self.koko_run({numbered: re.sub(r"\d+", "", texts[numbered])})
+        out = self.run_cli("check").stdout
+        self.assertNotIn("GT134", out)  # 本文は記録のまま
+        self.assertNotIn("GT135", out)
+        self.assertIn("GT136", out)
+        self.assertIn("数値", out)
+        self.assertIn(numbered, out)
+        # 見出しを作った推敲は、機械チェックのエラー（GT135）になる
+        self.put("final.md")
+        first = plan["chunks"][0]["id"]
+        self.koko_run({first: "## 見出しを作ってしまった\n\n書き直した段落です。\n"})
+        out = self.run_cli("check").stdout
+        self.assertIn("GT135", out)
+        self.assertIn(first, out)
+        self.assertNotIn("GT134", out)
+
+    def test_wording_without_koko(self):
+        self.advance_through("wording")
+        self.put("final.md")
+        self.env["CYRUS_KOKO"] = str(self.tmp / "no-such" / "koko.py")
         self.assertIn("GT133", self.run_cli("check").stdout)
 
     def test_back_clears_later_confirmations(self):
@@ -2047,7 +2104,11 @@ class HarnessConsistencyTest(unittest.TestCase):
             self.assertIn(m, self.read("skills/cyrus/stages/11-writing.md"), m)
         for m in ("cyrus figure read", "figure_test", "match / partial / mismatch / misread"):
             self.assertIn(m, self.read("skills/cyrus/stages/12-cogload.md"), m)
-        self.assertIn("genre", self.read("skills/cyrus/stages/13-wording.md"))
+        wording_guide = self.read("skills/cyrus/stages/13-wording.md")
+        for m in ("koko", "record.json", "intent", "cNN.revised.md", "assemble", "GT135", "GT137", "09-storyline.json", "です・ます調"):
+            self.assertIn(m, wording_guide, m)
+        self.assertNotIn("yomiyasu", wording_guide)
+        self.assertNotIn("genre", wording_guide)  # 文書の種類の対応表は koko にはない
         self.assertIn("purpose", self.read("skills/cyrus/stages/03-reader.md"))
         self.assertIn("message_kind", self.read("skills/cyrus/stages/05-claims.md"))
         skill = self.read("skills/cyrus/SKILL.md")
@@ -2169,7 +2230,7 @@ class PrivateSubjectTest(CliCase):
         self.assertIn("手戻りの一覧", r.stdout)
 
 
-@unittest.skipUnless(HAS_LEAN and HAS_YOMIYASU, "lean か yomiyasu が見つからないため全ステージのテストを省略")
+@unittest.skipUnless(HAS_LEAN and HAS_KOKO, "lean か koko（uv）が見つからないため全ステージのテストを省略")
 class EndToEndTest(CliCase):
     def test_all_stages(self):
         self.assertEqual(self.run_cli("new", "wiki-search", "--title", "社内Wiki検索の刷新提案").returncode, 0)
@@ -2181,7 +2242,7 @@ class EndToEndTest(CliCase):
             for extra in EXTRA_FILES.get(key, []):
                 self.put(extra)
             if key == "wording":
-                self.yomiyasu_run()
+                self.koko_run()
             r = self.run_cli("check")
             self.assertEqual(r.returncode, 0, f"{key}: {r.stdout}")
             r = self.run_cli("advance", "--confirmed", "テスト承認", "--accept-warnings")
