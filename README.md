@@ -48,11 +48,11 @@ Claude が目的と読者を聞き取り、事実を確かめ、論理を検証�
 文書を書きたいプロジェクトで、次のコマンドを実行します。
 
 ```bash
-apm install asuka1975/cyrus-harness#v0.3.0
+apm install asuka1975/cyrus-harness#v0.4.0
 ```
 
 スキル（cyrus と visual-patterns）、サブエージェント、コマンド、フックが Claude Code に入ります。
-ステージ8の構成に使う constructivism と、ステージ13の推敲に使う koko も、依存として一緒に入ります。別に入れる必要はありません。koko は初回の使用の前に実行環境を用意します（`uv run .claude/skills/koko/scripts/koko.py doctor` が案内します。cyrus のステージ13でも案内されます）。koko のライセンスは GPL-3.0-or-later です（cyrus からは別のプロセスとして呼びます）。
+ステージ8の構成に使う constructivism と、ステージ13の推敲に使う koko も、依存として一緒に入ります。別に入れる必要はありません。koko は初回の使用の前に実行環境を用意します（`uv run .claude/skills/koko/scripts/koko.py doctor` が案内します。cyrus のステージ13でも案内されます）。koko のライセンスも GPL-3.0-or-later です。
 
 `.claude/` がまだないプロジェクトでは、APM が入れ先を判断できません。そのときは `--target claude` を付けてください。
 
@@ -104,4 +104,5 @@ Lean、koko（と uv）、Chrome、Pillow のない環境では、それらを�
 
 ## ライセンス
 
-[MIT](LICENSE)
+0.4.0 から GNU General Public License v3.0 or later（GPL-3.0-or-later）です（[LICENSE](LICENSE)）。0.3.x までは MIT でした。
+`apm install` で展開されるスキル（cyrus と visual-patterns）にも、同じ文面のライセンス文書が付属します（`.apm/skills/cyrus/LICENSE`、`.apm/skills/visual-patterns/LICENSE`）。
