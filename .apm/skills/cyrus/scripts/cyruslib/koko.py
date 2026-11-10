@@ -1,8 +1,9 @@
 """koko（asuka1975/koko）の記録との照合。
 
 ステージ13の推敲は koko スキルが受け持つ。koko は final.md を意味のまとまりに分け、まとまりごとに
-koko-copy-editor に推敲させ、判定モデルの値（P(Yes)。人が書いた文と判定する確率）で採点し直して、
-記録（documents/<slug>/koko/record.json。本文のハッシュとまとまりごとの値・機械チェック）を残す。
+koko-copy-editor に推敲させ、koko-proofreader に校正させ（書き手がしたことの受け身を能動に。判定モデルの値は見ない）、
+判定モデルの値（P(Yes)。人が書いた文と判定する確率）で採点し直して、
+記録（documents/<slug>/koko/record.json。本文のハッシュとまとまりごとの値・校正の有無・機械チェック）を残す。
 ここでは `koko.py verify` で final.md がその本文のままかを確かめ、record.json から機械チェックの結果と
 まとまりの状態を読む。頼るのは koko の references/interface.md にある取り決めだけ。
 """
@@ -20,6 +21,8 @@ from .workspace import SKILL_DIR, project_root
 
 SCRIPT_REL = Path("koko") / "scripts" / "koko.py"
 WORKDIR = "koko"  # documents/<slug>/koko/（計画・まとまり・報告・記録の置き場所）
+# assemble が本文に使うファイル。koko のあとの直しはここに書く（校正後の本文があるのに revised.md を直すと、assemble が止まる）
+BODY_FILES = "chunks/cNN.proofread.md（校正していないまとまりは cNN.revised.md）"
 STATUS_RE = re.compile(r"^koko-check: (\S+)", re.M)
 CHUNK_STATUSES = {"met": "達成", "not_met": "未達", "already_met": "推敲前から達成", "unrevised": "未推敲"}
 
@@ -76,7 +79,8 @@ def summarize(rec: dict) -> str:
     s = rec.get("summary") or {}
     chunks = rec.get("chunks") or []
     n = {k: sum(1 for c in chunks if c.get("status") == k) for k in CHUNK_STATUSES}
+    proofread = s.get("proofread") if isinstance(s.get("proofread"), int) else sum(1 for c in chunks if c.get("proofread"))
     def mean(v):
         return "—" if not isinstance(v, (int, float)) else f"{v:.2f}"
-    return (f"まとまり {len(chunks)}（達成 {n['met']}・未達 {n['not_met']}・推敲前から達成 {n['already_met']}・未推敲 {n['unrevised']}）、"
-            f"平均 P(Yes) {mean(s.get('mean_before'))} → {mean(s.get('mean_after'))}（目標 {rec.get('target', '—')}）")
+    return (f"まとまり {len(chunks)}（達成 {n['met']}・未達 {n['not_met']}・推敲前から達成 {n['already_met']}・未推敲 {n['unrevised']}、"
+            f"校正 {proofread}）、平均 P(Yes) {mean(s.get('mean_before'))} → {mean(s.get('mean_after'))}（目標 {rec.get('target', '—')}）")

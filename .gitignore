@@ -5,6 +5,7 @@ apm_modules/
 .claude/skills/constructivism/
 .claude/skills/koko/
 .claude/agents/koko-copy-editor.md
+.claude/agents/koko-proofreader.md
 
 # Python
 __pycache__/

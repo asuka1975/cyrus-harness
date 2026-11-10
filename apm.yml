@@ -8,7 +8,7 @@ targets:
 dependencies:
   apm:
   - asuka1975/constructivism#v1.0.1
-  - asuka1975/koko#v0.1.2
+  - asuka1975/koko#v0.2.0
   mcp: []
 includes: auto
 scripts: {}

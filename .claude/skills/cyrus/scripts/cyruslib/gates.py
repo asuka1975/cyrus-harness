@@ -1112,10 +1112,13 @@ def gate_wording(ws: Workspace) -> list[Issue]:
         if rc != 0 and status == "no_record":
             issues.append(Issue("GT134", "error", f"final.md に koko の記録（{koko.WORKDIR}/record.json）がありません（no_record）。"
                                                   "stages/13-wording.md の手順2で、koko で final.md を推敲してください。"))
+        elif rc != 0 and status == "model_changed":
+            issues.append(Issue("GT134", "error", "koko の記録を採点した判定モデルと、いまの判定モデルが違います（model_changed。koko を更新したあとに出ます）。"
+                                                  "本文は変えずに、koko の assemble をやり直して採点し直してください（stages/13-wording.md の手順3）。"))
         elif rc != 0:
             reason = first.split("。")[0] + "。" if first else ""
             issues.append(Issue("GT134", "error", f"final.md が、koko で採点した本文と合いません（{status}）。{reason}"
-                                                  f"final.md を直接直さず、{koko.WORKDIR}/chunks/cNN.revised.md を直して assemble をやり直してください"
+                                                  f"final.md を直接直さず、{koko.WORKDIR}/{koko.BODY_FILES} を直して assemble をやり直してください"
                                                   "（stages/13-wording.md の手順3）。final.md を作り直したのなら、手順2の koko からやり直します。"))
         else:
             issues += _koko_record(koko.read_record(workdir))
@@ -1133,7 +1136,7 @@ def _koko_record(rec: dict | None) -> list[Issue]:
     if errs:
         issues.append(Issue("GT135", "error", f"koko の機械チェックにエラーのあるまとまりが {len({i for i, _ in errs})} つあります: "
                                               + "、".join(f"{i}（{e}）" for i, e in errs[:4]) + ("…" if len(errs) > 4 else "")
-                                              + f"。{koko.WORKDIR}/chunks/cNN.revised.md を直して assemble をやり直してください。"))
+                                              + f"。{koko.WORKDIR}/{koko.BODY_FILES} を直して assemble をやり直してください。"))
     warns = [(c.get("id"), w) for c in chunks for w in (c.get("check_warnings") or [])]
     if warns:
         issues.append(Issue("GT136", "warn", f"koko の機械チェックに注意のあるまとまりが {len({i for i, _ in warns})} つあります: "

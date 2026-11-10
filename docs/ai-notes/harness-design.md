@@ -29,7 +29,7 @@
 | コマンド | `prompts/cyrus.prompt.md`, `cyrus-status.prompt.md` | `/cyrus`, `/cyrus-status` |
 | ルール | `instructions/cyrus-documents.instructions.md` | `documents/` を編集するときの約束 |
 | フック | `hooks/cyrus-hooks.json` | 成果物を保存したら自動で検査／セッション開始時に進捗を知らせる |
-| 依存（APM） | `apm.yml` の `dependencies.apm` | ステージ8の構成の選択に使う constructivism（asuka1975/constructivism）と、ステージ13の推敲に使う koko（asuka1975/koko。スキルと koko-copy-editor サブエージェント）。`apm install asuka1975/cyrus-harness` で cyrus を入れると、推移的に入る。中身はこのリポジトリに含めない（`.gitignore`） |
+| 依存（APM） | `apm.yml` の `dependencies.apm` | ステージ8の構成の選択に使う constructivism（asuka1975/constructivism）と、ステージ13の推敲に使う koko（asuka1975/koko。スキルと、推敲する koko-copy-editor・校正する koko-proofreader のサブエージェント）。`apm install asuka1975/cyrus-harness` で cyrus を入れると、推移的に入る。中身はこのリポジトリに含めない（`.gitignore`） |
 | 同期スクリプト | `scripts/sync-visual-patterns.py` | 図表パターンのカタログ（手元の研究リポジトリ visual-patterns）を `skills/visual-patterns/references/catalog/` に写し、`data/index.json` を作り直す（開発時だけ。PyYAML が要る） |
 
 CLI は Python の標準ライブラリだけで動きます。Lean の検査には Lean 4（elan）が必要です。Vega-Lite の図を PNG にするのと、図表の逆読みには、`cyrus vision` と同じヘッドレス Chrome を使います。
@@ -56,7 +56,7 @@ CLI は Python の標準ライブラリだけで動きます。Lean の検査に
 | 10 詳細設計 | 表現の種類、図表の spec（根拠の形の目安、趣旨と候補、規模・精度・記法、描く手段）、図表のない節にも手順2 の記録（根拠の形と数）があるか、1節あたりの新しい用語の数、字数と読了時間 | 見せ方の判断、図表の選択と作図判断（visual-patterns スキル） |
 | 11 執筆 | 見出しが設計どおりか、図表が設計どおりか（キャプションに答えの一文、描き方、画像の有無）、文体、図表の参照 | 執筆、作図 |
 | 12 認知負荷 | lint のエラーが0か、拾い読みの再現率が基準以上か、図表の逆読みに不一致・誤推論がないか、指摘すべてに対応したか | ペルソナ通読、拾い読み、図表の逆読み、照合判定 |
-| 13 言葉遣い | 読者辞書に基づく検査、ひらく漢字（補助動詞・形式名詞を含む）・表記ゆれ、koko の記録の照合（本文のハッシュ、機械チェック、まとまりの状態） | 推敲（koko スキル。まとまりの分け方と伝えたいことの指定、koko-copy-editor による書き直し）。ユーザーの承認 |
+| 13 言葉遣い | 読者辞書に基づく検査、ひらく漢字（補助動詞・形式名詞を含む）・表記ゆれ、koko の記録の照合（本文のハッシュ、機械チェック、まとまりの状態） | 推敲（koko スキル。まとまりの分け方と伝えたいことの指定、koko-copy-editor による書き直し、koko-proofreader による校正）。ユーザーの承認 |
 
 ## Lean による論理検証と確信度
 
@@ -239,12 +239,13 @@ Gemini の指摘（07 の成果物が 8〜11 に渡っていない）とユー�
 - ひらく漢字と表記ゆれは `data/wording-rules.json` の辞書で検出する。
 
 推敲は koko スキル（asuka1975/koko）に任せます。koko は、判定モデル（saihai-v1-8b をファインチューニングしたもの）が1文ごとに付ける P(Yes)（人が書いた文と判定する確率）を指標に、原稿を意味のまとまりに分け、まとまりごとに koko-copy-editor サブエージェントに書き直させます。伝えたいこと（`intent`）、前後との整合、数値、主張の強さは保つ約束で、`intent` にない細部は省いてよいものとして扱われます。そのため cyrus は、`intent` の根拠として 09 のメッセージ、08 の置き方と留保、07 の hedge、10 の根拠の形を節ごとに渡し、全体への補足で数値・固有名詞・読者辞書・1文の長さを守らせます（`stages/13-wording.md`）。
+koko 0.2.0 からは、推敲したまとまりを koko-proofreader サブエージェントが校正します（書き手がしたことを受け身で書いた文を能動に直す。判定モデルの値は見ない）。語り手（「筆者」「私」）は、koko が地の文で数えて決め、推敲で変わると機械チェックの注意になります。cyrus は語り手を指定せず、手順1で混在をそろえるだけです（cyrus の成果物に語り手を記録する欄はないため）。
 
 koko は表記を変えないので、表記の検査は cyrus に残し、以前は推敲に任せていた補助動詞と形式名詞「事」「為」も `wording-rules.json` の kana に入れました（WD005）。硬い漢語と冗長な言い方は、ステージ11の執筆の指針（`japanese-style.md` の［執筆］）で守るだけで、道具では拾いません。
 
-順序も決めています。koko はまとまり（段落・箇条書き）の中だけを書き換え、見出し・図表・キャプション・表は変えないので、辞書と表記の直しを先に final.md で済ませ、そのあとに koko を final.md に上書きでかけます（作業ディレクトリは `documents/<slug>/koko/`、元の写しは `koko/source.md`）。koko のあとの直しは `koko/chunks/cNN.revised.md` に書いて `assemble` で組み立て直す決まりで、final.md を直接直すと記録と合わなくなります。
+順序も決めています。koko はまとまり（段落・箇条書き）の中だけを書き換え、見出し・図表・キャプション・表は変えないので、辞書と表記の直しを先に final.md で済ませ、そのあとに koko を final.md に上書きでかけます（作業ディレクトリは `documents/<slug>/koko/`、元の写しは `koko/source.md`）。koko のあとの直しは、assemble が本文に使っているファイル（校正後の `koko/chunks/cNN.proofread.md`、校正していなければ `cNN.revised.md`）に書いて `assemble` で組み立て直す決まりで、final.md を直接直すと記録と合わなくなります（校正後の本文があるのに `cNN.revised.md` を直すと、assemble が止まります）。
 
-ステージ13の完了条件は `koko.py verify --workdir documents/<slug>/koko --final final.md` で、final.md が koko で採点した本文のままかを確かめ（GT133・GT134）、`koko/record.json`（koko-record-v1）から機械チェックのエラー（GT135。見出しを作った、リンクが消えた）と注意（GT136。数値や「」の表現が消えた）、目標未満のまま推敲していないまとまり（GT137）を読み、達成・未達の数と平均 P(Yes) の前後を一行で出します（GT138）。目標に届かなかったまとまりはエラーにしません。作業や結果の報告の文は上がりにくいと koko 自身が言っており、内容を変えて届かせるほうが害だからです。ゲートは koko の `doctor` を呼びません（採点サーバの環境を調べる処理が重いため）。準備の確認はガイドの手順です。
+ステージ13の完了条件は `koko.py verify --workdir documents/<slug>/koko --final final.md` で、final.md が koko で採点した本文のままかを確かめ（GT133・GT134。判定モデルが変わった `model_changed` は、本文を変えずに assemble で採点し直すよう別の文言で知らせます）、`koko/record.json`（koko-record-v1）から機械チェックのエラー（GT135。見出しを作った、リンクが消えた）と注意（GT136。数値や「」の表現が消えた）、目標未満のまま推敲していないまとまり（GT137）を読み、達成・未達・校正の数と平均 P(Yes) の前後を一行で出します（GT138）。目標に届かなかったまとまりはエラーにしません。作業や結果の報告の文は上がりにくいと koko 自身が言っており、内容を変えて届かせるほうが害だからです。ゲートは koko の `doctor` を呼びません（採点サーバの環境を調べる処理が重いため）。準備の確認はガイドの手順です。
 
 ## 実機での確認
 

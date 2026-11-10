@@ -254,10 +254,11 @@ class CliCase(unittest.TestCase):
         return subprocess.run(["uv", "run", "--quiet", str(KOKO), *map(str, args)], capture_output=True, text=True,
                               env=env, cwd=str(self.tmp), timeout=300)
 
-    def koko_run(self, revised: dict[str, str] | None = None):
+    def koko_run(self, revised: dict[str, str] | None = None, proofread: dict[str, str] | None = None):
         """ステージ13の推敲のあとに koko が残す記録を final.md で作る（blocks → 計画 → split → assemble）。
 
         revised は、まとまりの id → 推敲後の本文。省けば、どのまとまりも推敲せずに組み立てる（final.md は変わらない）。
+        proofread は、まとまりの id → 校正後の本文（推敲したまとまりにだけ置ける。assemble はこちらを本文に使う）。
         """
         work = self.doc / "koko"
         shutil.rmtree(work, ignore_errors=True)  # 毎回まっさらな koko の一巡（split の退避先は秒単位の名前で、同じ秒だとぶつかる）
@@ -271,6 +272,11 @@ class CliCase(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         for cid, text in (revised or {}).items():
             (work / "chunks" / f"{cid}.revised.md").write_text(text, encoding="utf-8")
+        for cid, text in (proofread or {}).items():
+            p = work / "chunks" / f"{cid}.proofread.md"
+            p.write_text(text, encoding="utf-8")
+            t = (work / "chunks" / f"{cid}.revised.md").stat().st_mtime + 1  # 校正は推敲より後（古い校正は assemble が使わない）
+            os.utime(p, (t, t))
         r = self.koko("assemble", "--plan", work / "plan.json")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         return plan
@@ -650,6 +656,47 @@ class GateTest(CliCase):
         self.assertIn("GT135", out)
         self.assertIn(first, out)
         self.assertNotIn("GT134", out)
+
+    @unittest.skipUnless(HAS_KOKO, "koko か uv が入っていない（apm install）")
+    def test_wording_uses_koko_proofread(self):
+        """校正後の本文（cNN.proofread.md）が final.md に入り、記録の校正の数が要約（GT138）に出る。"""
+        self.advance_through("wording")
+        self.put("final.md")
+        plan = self.koko_run()
+        first = plan["chunks"][0]["id"]
+        self.koko_run({first: "推敲した段落です。\n"}, {first: "校正した段落です。\n"})
+        final = (self.doc / "final.md").read_text(encoding="utf-8")
+        self.assertIn("校正した段落です。", final)
+        self.assertNotIn("推敲した段落です。", final)
+        r = self.run_cli("check")
+        self.assertNotIn("GT134", r.stdout)
+        self.assertIn("校正 1", r.stdout)  # GT138 の要約
+        rec = json.loads((self.doc / "koko" / "record.json").read_text(encoding="utf-8"))
+        self.assertTrue(rec["chunks"][0]["proofread"])
+        # 本文を直す先は、使われているファイル（校正後の本文）。直し方の案内もそう言う
+        with open(self.doc / "final.md", "a", encoding="utf-8") as f:
+            f.write("\n検査のあとで足した段落です。\n")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT134", out)
+        self.assertIn("cNN.proofread.md", out)
+
+    @unittest.skipUnless(HAS_KOKO, "koko か uv が入っていない（apm install）")
+    def test_wording_koko_model_changed(self):
+        """koko を更新して判定モデルが変わったら、本文を直す案内ではなく、採点し直す案内になる。"""
+        self.advance_through("wording")
+        self.put("final.md")
+        self.koko_run()
+        rec_path = self.doc / "koko" / "record.json"
+        rec = json.loads(rec_path.read_text(encoding="utf-8"))
+        rec["model_id"] = "old-model"
+        rec_path.write_text(json.dumps(rec, ensure_ascii=False), encoding="utf-8")
+        out = self.run_cli("check").stdout
+        self.assertIn("GT134", out)
+        self.assertIn("model_changed", out)
+        self.assertIn("判定モデル", out)
+        self.assertIn("assemble", out)
+        self.assertNotIn("revised.md", out)
+        self.assertNotIn("proofread.md", out)
 
     def test_wording_without_koko(self):
         self.advance_through("wording")
@@ -2105,7 +2152,8 @@ class HarnessConsistencyTest(unittest.TestCase):
         for m in ("cyrus figure read", "figure_test", "match / partial / mismatch / misread"):
             self.assertIn(m, self.read("skills/cyrus/stages/12-cogload.md"), m)
         wording_guide = self.read("skills/cyrus/stages/13-wording.md")
-        for m in ("koko", "record.json", "intent", "cNN.revised.md", "assemble", "GT135", "GT137", "09-storyline.json", "です・ます調"):
+        for m in ("koko", "record.json", "intent", "cNN.revised.md", "cNN.proofread.md", "koko-proofreader", "語り手", "model_changed",
+                  "assemble", "GT135", "GT137", "09-storyline.json", "です・ます調"):
             self.assertIn(m, wording_guide, m)
         self.assertNotIn("yomiyasu", wording_guide)
         self.assertNotIn("genre", wording_guide)  # 文書の種類の対応表は koko にはない
