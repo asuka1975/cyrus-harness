@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-11-09T18:33:53.143797+00:00'
+generated_at: '2026-11-10T01:22:02.072731+00:00'
 apm_version: 0.35.0
 dependencies:
 - repo_url: asuka1975/constructivism
@@ -349,7 +349,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:5b0ce06e6138c91b87ffc89ad87f0f4727b13556080c6a7c6911cc51428c2b45
+  content_hash: sha256:c2da32caeb21cdf5b94dd6bb58f5abe52146d1bf4d4130eeba023f434b886b59
 - kind: project-relative
   target: claude
   value: .claude/skills/cyrus/scripts/cyruslib/cli.py
@@ -1947,7 +1947,7 @@ local_deployed_file_hashes:
   .claude/skills/cyrus/references/owner-principles.md: sha256:67b2558f04890283d7a51548c1129e3a77ef31144c515969ddad15d8345664b3
   .claude/skills/cyrus/references/search-howto.md: sha256:9a8e9572450dd008d9984c883d61165f2645952fdc6d52403c75bb8383ff78a8
   .claude/skills/cyrus/scripts/cyrus.py: sha256:81d0385b82a17f0b754a5ddcd43c281d3a22bcbe056970ea756a9d7e35d00025
-  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:5b0ce06e6138c91b87ffc89ad87f0f4727b13556080c6a7c6911cc51428c2b45
+  .claude/skills/cyrus/scripts/cyruslib/__init__.py: sha256:c2da32caeb21cdf5b94dd6bb58f5abe52146d1bf4d4130eeba023f434b886b59
   .claude/skills/cyrus/scripts/cyruslib/cli.py: sha256:139cf8f98edb2cace286afa84ec06a38c6a2cd1ab9423439c95c4ecd4d8cbf23
   .claude/skills/cyrus/scripts/cyruslib/figure.py: sha256:c3356fa85d947a2140a6fdd887210bda0f88a7d452506d437b70bcec2769cf0b
   .claude/skills/cyrus/scripts/cyruslib/gates.py: sha256:7063c1b182de69fc55f49339dab117dbb912594aad39486c978ce88e92dfe6b0
